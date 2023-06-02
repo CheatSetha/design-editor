@@ -59,7 +59,7 @@ export default function () {
         metadata: {},
       }
       console.log(font);
-      editor.objects.add(options)
+      // editor.objects.add(options)
       console.log(editor.objects.add(options));
 
       

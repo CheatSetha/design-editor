@@ -250,18 +250,30 @@ class ApiService {
     })
   }
 
-  // FONTS
-  getFonts(): Promise<IFontFamily[]> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { data } = await this.base.get("/fonts")
-        resolve(data.fonts)
+  // // FONTS
+  // getFonts(): Promise<IFontFamily[]> {
+  //   return new Promise(async (resolve, reject) => {
+  //     try {
+  //       const { data } = await this.base.get("/fonts")
+  //       resolve(data.fonts)
         
-      } catch (err) {
-        reject(err)
-      }
-    })
+  //     } catch (err) {
+  //       reject(err)
+  //     }
+  //   })
+  // }
+
+  fetchFonts = async () => {
+    try {
+      // const { data } = await this.base.get("/fonts")
+      const { data } = await axios.get("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o")
+      console.log(data.items);
+      return data.fonts
+    } catch (err) {
+      console.log(err)
+    }
   }
+
 
 
 

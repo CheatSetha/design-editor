@@ -16,6 +16,8 @@ import { queryFonts } from "~/store/slices/fonts/actions"
 import InfiniteScrolling from "~/components/InfiniteScrolling"
 import { useDebounce } from "use-debounce"
 import LazyLoadImage from "~/components/LazyLoadImage/LazyLoadImage"
+import { use } from "i18next"
+import { SAMPLE_FONTS } from "~/constants/editor"
 
 export default function () {
   const [hasMore, setHasMore] = React.useState(true)
@@ -25,33 +27,28 @@ export default function () {
   const fonts = useSelector(selectFonts)
   // const [commonFonts, setCommonFonts] = React.useState<any[]>([])
   const [commonFonts, setCommonFonts] = React.useState([
-    // set font object
-    {
-      family: "Roboto",
-      postScriptName: "Roboto-Regular",
-      url: "https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2",
-    },
-    { family: "Roboto", postScriptName: "Roboto-Black", url: "https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmEU9fBBc4.woff2", },
-    { family: "Roboto", postScriptName: "Roboto-Bold", url: "https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fBBc4.woff2" },
-    { family: "Roboto", postScriptName: "Roboto-Light", url: "https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfBBc4.woff2" },
-    { family: "Roboto", postScriptName: "Roboto-Medium", url: "https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmYUtfBBc4.woff2" },
-    { family: "Roboto", postScriptName: "Roboto-Thin", url: "https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmEU9fChc4EsA.woff2" },
-    { family: "Roboto", postScriptName: "RobotoCondensed-Bold", url: "https://fonts.gstatic.com/s/robotocondensed/v18/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7CA.woff2" },
-    { family: "Roboto", postScriptName: "RobotoCondensed-BoldItalic", url: "https://fonts.gstatic.com/s/robotocondensed/v18/ieVj2ZhZI2eCN5jzbjEETS9weq8-1-1mDw.woff2" },
-    { family: "Roboto", postScriptName: "RobotoCondensed-Italic", url: "https://fonts.gstatic.com/s/robotocondensed/v18/ieVj2ZhZI2eCN5jzbjEETS9weq8-1-1mDw.woff2" },
-
-    { family: "Roboto", postScriptName: "RobotoCondensed-Light", url: "https://fonts.gstatic.com/s/robotocondensed/v18/ieVj2ZhZI2eCN5jzbjEETS9weq8-1-1mDw.woff2" },
-    {family:"Montserrat",postScriptName:"Montserrat-Black",url:"https://fonts.gstatic.com/s/montserrat/v15/JTURjIg1_i6t8kCHKm45_dJE3gnD-w.ttf"},
-    {family:"Montserrat",postScriptName:"Montserrat-BlackItalic",url:"https://fonts.gstatic.com/s/montserrat/v15/JTURjIg1_i6t8kCHKm45_dJE3gnD-w.ttf"},
-    {family:"Montserrat",postScriptName:"Montserrat-Bold",url:"https://fonts.gstatic.com/s/montserrat/v15/JTURjIg1_i6t8kCHKm45_dJE3gnD-w.ttf"},
-    {family:"Montserrat",postScriptName:"Montserrat-BoldItalic",url:"https://fonts.gstatic.com/s/montserrat/v15/JTURjIg1_i6t8kCHKm45_dJE3gnD-w.ttf"},
-    {family:"Montserrat",postScriptName:"Montserrat-ExtraBold",url:"https://fonts.gstatic.com/s/montserrat/v15/JTURjIg1_i6t8kCHKm45_dJE3gnD-w.ttf"},
-    {family:"Montserrat",postScriptName:"Montserrat-ExtraBoldItalic",url:"https://fonts.gstatic.com/s/montserrat/v15/JTURjIg1_i6t8kCHKm45_dJE3gnD-w.ttf"},
-    {family:"Montserrat",postScriptName:"Montserrat-ExtraLight",url:"https://fonts.gstatic.com/s/montserrat/v15/JTURjIg1_i6t8kCHKm45_dJE3gnD-w.ttf"},
-
-    {family:"Khmer os",postScriptName:"Khmeros-Bold",url:"https://fonts.gstatic.com/s/khmeros/v14/1Ptsg8LOU_aOmQvTsF4ISotrDfGGxA.ttf"},
+    // object of trending font on google font but use http://fonts.gstatic.com/s/abhayalibre/v14/
 
   ])
+  useEffect(() => {
+    const apiKey = 'AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o';
+    const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`;
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        const fonts = data.items.map((item: { family: string; category: string, menu: string }) => ({
+          family: item.family,
+          postScriptName: item.category,
+          url: item.menu
+        }));
+        console.log("fonts: ", fonts);
+        setCommonFonts(fonts)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [])
+
 
   const [searchQuery] = useDebounce(query, 250)
   const [css] = useStyletron()
@@ -72,12 +69,16 @@ export default function () {
   //   })
   //   setCommonFonts(standardFonts)
   // }, [fonts])
+ 
 
+
+  // get font from google font api and add to common fo
 
 
   const handleFontFamilyChange = async (x: any) => {
     if (editor) {
       const font = {
+
         name: x.postScriptName,
         url: x.url,
       }
@@ -159,13 +160,14 @@ export default function () {
 
       <Scrollable>
         <Block $style={{ padding: "0 1.5rem", display: "grid", gap: "0.2rem" }}>
-          <InfiniteScrolling fetchData={fetchData} hasMore={hasMore}>
+          <InfiniteScrolling hasMore={hasMore}>
             <Block $style={{ display: "grid" }}>
               {commonFonts.map((font, index) => {
                 return (
                   <div
                     key={index}
                     onClick={() => handleFontFamilyChange(font)}
+
                     className={css({
                       height: "40px",
                       display: "flex",
