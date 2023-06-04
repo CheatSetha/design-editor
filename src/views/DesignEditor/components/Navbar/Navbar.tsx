@@ -281,7 +281,7 @@ const Navbar = () => {
         <DesignTitle />
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
           <input
-            multiple={false}
+            multiple={true}
             onChange={handleFileInput}
             type="file"
             id="file"

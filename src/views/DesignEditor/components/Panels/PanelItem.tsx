@@ -11,6 +11,7 @@ const PanelsList = () => {
   const [state, setState] = React.useState<State>({ panel: "Text" })
   const isSidebarOpen = useIsSidebarOpen()
   const { activePanel, activeSubMenu } = useAppContext()
+  console.log(" test "+ isSidebarOpen);
 
   React.useEffect(() => {
     // this is for when we click on the sub menu item
@@ -35,6 +36,7 @@ const PanelsList = () => {
 
   //  @ts-ignore
   const Component = panelItems[state.panel]
+  // console.log(Component +"panelItem");
 
   return (
     <Block

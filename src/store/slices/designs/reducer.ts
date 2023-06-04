@@ -15,5 +15,6 @@ const initialState: DesignsState = {
 export const designsReducer = createReducer(initialState, (builder) => {
   builder.addCase(setPublicDesigns, (state, { payload }) => {
     state.public = payload
+
   })
 })

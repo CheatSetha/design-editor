@@ -203,7 +203,7 @@ export default function () {
                 onClick={makeAddComponent}
                 key={component.id}
                 component={component}
-              />
+              /> 
             ))}
           </Block>
         </Block>
@@ -250,7 +250,7 @@ function TextComponentItem({
           pointerEvents: "none",
           verticalAlign: "middle",
         })}
-      />
+      /> 
     </div>
   )
 }

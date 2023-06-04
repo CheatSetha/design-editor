@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useActiveObject, useEditor } from "@layerhub-io/react"
 import { Input } from "baseui/input"
 import { Block } from "baseui/block"
@@ -19,7 +19,7 @@ import TextAlignLeft from "~/components/Icons/TextAlignLeft"
 import TextAlignRight from "~/components/Icons/TextAlignRight"
 import { Slider } from "baseui/slider"
 import useAppContext from "~/hooks/useAppContext"
-import { FONT_SIZES } from "~/constants/editor"
+import { FONT_SIZES, SAMPLE_FONTS } from "~/constants/editor"
 import { IStaticText } from "@layerhub-io/types"
 import { getTextProperties } from "../../utils/text"
 import { loadFonts } from "~/utils/fonts"
@@ -42,7 +42,6 @@ interface StyleOptions {
 }
 
 const initialOptions: TextState = {
-
   // family: "CoreLang",
   family: "OpenSans-Regular",
   bold: false,
@@ -86,19 +85,60 @@ export default function () {
     }
   }, [editor, activeObject])
 
+  // what i fixed haha. make your own way hehe
+  const handleBold = React.useCallback(() => {
+    if (!state.bold) {
+      editor.objects.update({
+        // @ts-ignore
+        fontWeight: "bold",
+      })
+
+      setState({ ...state, bold: true })
+    }
+    if (state.bold) {
+      editor.objects.update({
+        // @ts-ignore
+        fontWeight: "normal",
+      })
+      setState({ ...state, bold: false })
+    }
+  }, [editor, state])
+
+  // handle italic
+  const handleItalic = React.useCallback(() => {
+    if (!state.italic) {
+      editor.objects.update({
+        // @ts-ignore
+        fontStyle: "italic",
+      })
+      setState({ ...state, italic: true })
+    }
+    if (state.italic) {
+      editor.objects.update({
+        // @ts-ignore
+        fontStyle: "normal",
+      })
+      setState({ ...state, italic: false })
+    }
+  }, [editor, state])
   const makeBold = React.useCallback(async () => {
+    // state.bold means the text is bold
+    // console.log(state.styleOptions)
+
     if (state.bold) {
       let desiredFont
 
       if (state.italic) {
         // look for regular italic
         desiredFont = state.styleOptions.options.find((option) => {
+          console.log(option)
           const postScriptNames = option.post_script_name.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^Italic$/)
         })
       } else {
         // look for  regular
         desiredFont = state.styleOptions.options.find((option) => {
+          console.log(option + " option")
           const postScriptNames = option.post_script_name.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^Regular$/)
         })
@@ -230,12 +270,12 @@ export default function () {
           display={"flex"}
           alignItems={"center"}
         >
-       
           <Block>{state.family}</Block>
           <Block display={"flex"}>
             <ChevronDown size={22} />
           </Block>
         </Block>
+        <TextFontFamily />
 
         <TextFontSize />
         <Block display={"flex"} alignItems={"center"}>
@@ -254,7 +294,8 @@ export default function () {
             <Button
               style={{ ...(!state.bold && { color: "rgb(169,169,169)" }) }}
               disabled={!state.styleOptions.hasBold}
-              onClick={makeBold}
+              // onClick={makeBold}
+              onClick={handleBold}
               size={SIZE.mini}
               kind={KIND.tertiary}
             >
@@ -266,7 +307,8 @@ export default function () {
             <Button
               style={{ ...(!state.italic && { color: "rgb(169,169,169)" }) }}
               disabled={!state.styleOptions.hasItalic}
-              onClick={makeItalic}
+              // onClick={makeItalic}
+              onClick={handleItalic}
               size={SIZE.mini}
               kind={KIND.tertiary}
             >
@@ -311,6 +353,104 @@ export default function () {
       </Block>
       <Common />
     </Block>
+  )
+}
+
+function TextFontFamily() {
+  const editor = useEditor()
+  const activeObject = useActiveObject()
+  const [value, setValue] = React.useState("Arial")
+
+  React.useEffect(() => {
+    // @ts-ignore
+    if (activeObject && activeObject.type === "StaticText") {
+      // @ts-ignore
+      setValue(activeObject.fontFamily)
+    }
+  }, [activeObject])
+  const handleOnChange = (fontFamily: string) => {
+    editor.objects.update({ fontFamily: fontFamily })
+    setValue(fontFamily)
+  }
+
+  return (
+    <StatefulPopover
+      content={({ close }) => (
+        <Scrollbar style={{ height: "320px", width: "90px" }}>
+          <Block backgroundColor={"#ffffff"} padding={"10px 0"}>
+            {SAMPLE_FONTS.map((font, index) => (
+              <Block
+                onClick={() => {
+                  handleOnChange(font.family)
+                  close()
+                }}
+                $style={{
+                  height: "32px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  padding: "0 20px",
+                  display: "flex",
+                  alignItems: "center",
+                  ":hover": {
+                    background: "rgb(243,243,243)",
+                  },
+                }}
+                key={index}
+              >
+                {font.full_name}
+              </Block>
+            ))}
+          </Block>
+        </Scrollbar>
+      )}
+    >
+      <Block width={"100px"}>
+        <Input
+          value={value}
+          onChange={(e: any) => handleOnChange(e.target.value)}
+          placeholder="Font Family"
+          size={SIZE.mini}
+          endEnhancer={<ChevronDown size={22} />}
+          overrides={{
+            EndEnhancer: {
+              style: {
+                paddingRight: "8px",
+                paddingLeft: 0,
+                backgroundColor: "#ffffff",
+              },
+            },
+            Root: {
+              style: {
+                paddingRight: 0,
+                borderTopWidth: "1px",
+                borderBottomWidth: "1px",
+                borderRightWidth: "1px",
+                borderLeftWidth: "1px",
+                borderBottomColor: "rgb(185,185,185)",
+                borderTopColor: "rgb(185,185,185)",
+                borderRightColor: "rgb(185,185,185)",
+                borderLeftColor: "rgb(185,185,185)",
+                borderEndEndRadius: "4px",
+                borderTopLeftRadius: "4px",
+                borderTopRightRadius: "4px",
+                borderStartEndRadius: "4px",
+                borderBottomLeftRadius: "4px",
+                backgroundColor: "#ffffff",
+              },
+            },
+            Input: {
+              style: {
+                backgroundColor: "#ffffff",
+                paddingRight: 0,
+                fontWeight: 500,
+                fontFamily: "Poppins",
+                fontSize: "14px",
+              },
+            },
+          }}
+        />
+      </Block>
+    </StatefulPopover>
   )
 }
 
@@ -411,6 +551,7 @@ function TextFontSize() {
     </StatefulPopover>
   )
 }
+// handle fontweight base on active object fontweight value and update fontweight value
 
 function TextLetterCase() {
   const [state, setState] = React.useState<{ upper: boolean }>({ upper: false })

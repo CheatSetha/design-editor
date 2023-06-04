@@ -15,6 +15,7 @@ class ApiService {
     })
   }
 
+
   signin(props: any) {
     return new Promise((resolve, reject) => {
       this.base
@@ -164,7 +165,8 @@ class ApiService {
   getPublicDesigns(): Promise<IDesign[]> {
     return new Promise(async (resolve, reject) => {
       try {
-        const { data } = await this.base.get("/designs")
+        // const { data } = await this.base.get("/designs")
+        const { data } = await this.base.get("/templates/published")
         resolve(data.designs)
       } catch (err) {
         reject(err)
@@ -262,11 +264,29 @@ class ApiService {
   //     }
   //   })
   // }
+  //flaticon
+  fetchFlatIcon = async()=>{
+    try{
+      const { data } = await axios.get("https://api.flaticon.com/v3",{
+        headers:{
+          'Accept':'application/json',
+  'Authorization':'string'}
+      })
+
+      console.log(data);
+      return data.icons
+    }catch(err){
+      console.log(err)
+    }
+  }
+  //const apiKey = 'AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o';
+  //   const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`;
 
   fetchFonts = async () => {
     try {
-      // const { data } = await this.base.get("/fonts")
-      const { data } = await axios.get("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o")
+      //  const { data } = await this.base.get("/fonts")
+      const {data} = await axios.get("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o")
+      // const { data } = await axios.get("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o")
       console.log(data.items);
       return data.fonts
     } catch (err) {

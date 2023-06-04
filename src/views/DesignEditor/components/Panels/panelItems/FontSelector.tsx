@@ -18,7 +18,7 @@ import { useDebounce } from "use-debounce"
 import LazyLoadImage from "~/components/LazyLoadImage/LazyLoadImage"
 import { use } from "i18next"
 import { SAMPLE_FONTS } from "~/constants/editor"
-
+import { SAMPLE_TEMPLATES } from "~/constants/editor"
 export default function () {
   const [hasMore, setHasMore] = React.useState(true)
   const [pageNumber, setPageNumber] = React.useState(1)
@@ -48,6 +48,9 @@ export default function () {
         console.error(error);
       });
   }, [])
+  // useEffect(()=>{
+  //   const fonts = SAMPLE_FONTS
+  // })
 
 
   const [searchQuery] = useDebounce(query, 250)

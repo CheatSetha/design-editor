@@ -338,7 +338,7 @@ const ResizeTemplate = () => {
                     }}
                     size={SIZE.compact}
                     kind="tertiary"
-                  >
+                  > hello
                     <SwapHorizontal size={24} />
                   </Button>
                   <Input

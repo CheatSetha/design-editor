@@ -1,11 +1,14 @@
 import { nanoid } from "nanoid"
 import { IFrame, IScene } from "@layerhub-io/types"
+import { images } from "./mock-data"
+import Images from "~/views/DesignEditor/components/Panels/panelItems/Images"
 
 export const defaultTemplate: IScene = {
   id: nanoid(),
   frame: {
     width: 1200,
     height: 1200,
+  
   },
   layers: [
     {

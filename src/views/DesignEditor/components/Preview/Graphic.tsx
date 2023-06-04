@@ -12,6 +12,9 @@ const Graphic = () => {
   const makePreview = React.useCallback(async () => {
     if (editor) {
       const template = editor.scene.exportToJSON()
+      // convert from json to svg
+     
+     
       const image = (await editor.renderer.render(template)) as string
       setState({ image })
       setLoading(false)
