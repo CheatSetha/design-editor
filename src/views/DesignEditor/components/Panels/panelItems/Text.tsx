@@ -35,7 +35,7 @@ export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const components = useSelector(selectPublicComponents) 
-  const google_font_api_key = "AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o"
+  // const google_font_api_key = "AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o"
   const addObject = async () => {
     if (editor) {
       const font: FontItem = {

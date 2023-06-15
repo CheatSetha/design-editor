@@ -35,6 +35,9 @@ const Common = () => {
     zoomRatio: 20,
     zoomRatioTemp: 20
   })
+
+
+
   // handle undo
   const handleUndo = () => {
     if (editor) {
@@ -50,7 +53,16 @@ const Common = () => {
   const handleReset = () => {
    // delete all elements
     if (editor) {
-      editor.scene.clear()
+      editor.objects.clear()
+    }
+  }
+
+  // handl show all history logs when click on history button
+  const handleHistory = () => {
+    if (editor) {
+      editor.history.getStatus()
+      console.log(editor.history.getStatus());
+
     }
   }
 
@@ -70,6 +82,10 @@ const Common = () => {
     }
   }
 
+  React.useEffect(() => {
+    setOptions((prevOptions) => ({ ...prevOptions, zoomRatioTemp: options.zoomRatio }));
+  }, [options.zoomRatio]);
+
   const applyZoomRatio = (type: string, e: any) => {
     const value = e.target.value
     if (editor) {
@@ -88,17 +104,22 @@ const Common = () => {
       }
     }
   }
+  const handleExpand = () => {
+    if (editor) {
+      editor.zoom.zoomToRatio(1/2)
+    }
+  }
 
   return (
     <Container>
       <div>
         <Button kind={KIND.tertiary} size={SIZE.compact}>
-          <Icons.Layers size={20} />
+          <Icons.Layers size={20} /> 
         </Button>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Button kind={KIND.tertiary} size={SIZE.compact}>
-          <Icons.Expand size={16} />
+        <Button onClick={handleExpand} kind={KIND.tertiary} size={SIZE.compact}>
+          <Icons.Expand size={16} /> 
         </Button>
         <Button kind={KIND.tertiary} size={SIZE.compact} onClick={() => editor.zoom.zoomToFit()}>
           <Icons.Compress size={16} />
@@ -207,7 +228,7 @@ const Common = () => {
         <Button onClick={handleRedo} kind={KIND.tertiary} size={SIZE.compact}>
           <Icons.Redo size={22} />
         </Button>
-        <Button kind={KIND.tertiary} size={SIZE.compact}>
+        <Button onClick={handleHistory} kind={KIND.tertiary} size={SIZE.compact}>
           <Icons.TimePast size={16} />
         </Button>
       </div>

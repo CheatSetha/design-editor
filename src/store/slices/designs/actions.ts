@@ -11,10 +11,10 @@ export const getPublicDesigns = createAsyncThunk<void, never, { rejectValue: Rec
   "designs/getPublicDesigns",
   async (_, { rejectWithValue, dispatch }) => {
     try {
+      // const designs = await api.getPublicDesigns()
       const designs = await api.getPublicDesigns()
- 
       dispatch(setPublicDesigns(designs))
-      console.log(dispatch(setPublicDesigns(designs)));
+
     } catch (err) {
       return rejectWithValue((err as any).response?.data?.error.data || null)
     }

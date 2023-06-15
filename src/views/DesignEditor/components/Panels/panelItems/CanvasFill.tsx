@@ -23,6 +23,7 @@ const PRESET_COLORS = [
 
 const CanvasFill = () => {
   const editor = useEditor()
+  
 
   const updateCanvasBackground = throttle((color: string) => {
     editor.canvas.setBackgroundColor(color)

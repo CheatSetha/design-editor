@@ -40,3 +40,18 @@ input[type="number"] {
 .react-player video {
     max-height: 740px;
 }
+
+.scrollable-element {
+    max-height: 300px; /* Adjust this value to set the desired maximum height */
+    overflow-y: auto; /* Add a scrollbar when the content overflows the max-height */
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  .scrollable-element::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  .scrollable-element::-webkit-scrollbar-thumb {
+    background-color: #888;
+  }

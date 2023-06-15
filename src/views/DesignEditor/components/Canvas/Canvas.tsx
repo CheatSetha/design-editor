@@ -3,6 +3,7 @@ import { Canvas as LayerhubCanvas } from "@layerhub-io/react"
 import Playback from "../Playback"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
 import ContextMenu from "../ContextMenu"
+import Scrollable from "~/components/Scrollable"
 
 const Canvas = () => {
   const { displayPlayback } = useDesignEditorContext()
@@ -10,9 +11,11 @@ const Canvas = () => {
     <div style={{ flex: 1, display: "flex", position: "relative" }}>
       {displayPlayback && <Playback />}
       <ContextMenu />
-      <LayerhubCanvas
+    
+      <LayerhubCanvas 
         config={{
           background: "#f1f2f6",
+         
           controlsPosition: {
             rotation: "BOTTOM",
           },
@@ -24,6 +27,8 @@ const Canvas = () => {
           },
         }}
       />
+ 
+  
     </div>
   )
 }

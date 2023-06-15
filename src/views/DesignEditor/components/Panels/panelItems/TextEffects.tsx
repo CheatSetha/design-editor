@@ -76,6 +76,31 @@ const EFFECTS = {
       enabled: true,
     },
   },
+  slicedText: {
+    stroke: "#000000",
+    fill: null,
+    strokeWidth: 2,
+    shadow: {
+      blur: 0,
+      color: "#afafaf",
+      offsetX: 10,
+      offsetY: 10,
+      enabled: true,
+    },
+  },
+  Outline: {
+    stroke: "#000000",
+    fill: null,
+    strokeWidth: 2,
+    shadow: {
+      blur: 0,
+      color: "#afafaf",
+      offsetX: 10,
+      offsetY: 10,
+      enabled: false,
+    },
+  },
+ 
 }
 const TextEffects = () => {
   const [color, setColor] = React.useState("#b32aa9")
@@ -141,7 +166,7 @@ const TextEffects = () => {
                       fontSize: "14px",
                     }}
                   >
-                    {effect.name}
+                    {effect.name} 
                   </Block>
                 </Block>
               )

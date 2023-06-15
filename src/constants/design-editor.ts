@@ -81,4 +81,15 @@ export const TEXT_EFFECTS = [
     name: "Neon",
     preview: "https://i.ibb.co/fHdD2mx/neon.webp",
   },
+  {
+    id: 7,
+    name: "Outline",
+    preview: "https://i.ibb.co/0jJQY5Q/outline.webp",
+  },
+  {
+    id: 8,
+    name: "slicedText",
+    preview: "https://i.ibb.co/0jJQY5Q/outline.webp",
+  }
+  
 ]

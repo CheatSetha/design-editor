@@ -165,6 +165,7 @@ const Navbar = () => {
   const loadGraphicTemplate = async (payload: IDesign) => {
     const scenes = []
     const { scenes: scns, ...design } = payload
+    
 
     for (const scn of scns) {
       const scene: IScene = {
@@ -176,6 +177,7 @@ const Navbar = () => {
       }
       const loadedScene = await loadVideoEditorAssets(scene)
       await loadTemplateFonts(loadedScene)
+  
 
       const preview = (await editor.renderer.render(loadedScene)) as string
       scenes.push({ ...loadedScene, preview })

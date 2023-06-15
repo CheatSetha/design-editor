@@ -24,74 +24,47 @@ export default function () {
   const [pageNumber, setPageNumber] = React.useState(1)
   const [query, setQuery] = React.useState("")
   const { setActiveSubMenu } = useAppContext()
-  const fonts = useSelector(selectFonts)
-  // const [commonFonts, setCommonFonts] = React.useState<any[]>([])
-  const [commonFonts, setCommonFonts] = React.useState([
-    // object of trending font on google font but use http://fonts.gstatic.com/s/abhayalibre/v14/
-
-  ])
-  useEffect(() => {
-    const apiKey = 'AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o';
-    const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`;
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        const fonts = data.items.map((item: { family: string; category: string, menu: string }) => ({
-          family: item.family,
-          postScriptName: item.category,
-          url: item.menu
-        }));
-        console.log("fonts: ", fonts);
-        setCommonFonts(fonts)
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [])
-  // useEffect(()=>{
-  //   const fonts = SAMPLE_FONTS
-  // })
-
-
+  // const fonts = useSelector(selectFonts)
+  const [commonFonts, setCommonFonts] = React.useState<any[]>([])
   const [searchQuery] = useDebounce(query, 250)
   const [css] = useStyletron()
   const editor = useEditor()
   const dispath = useAppDispatch()
-  // alert("totoal font :"+commonFonts.length)
-  console.log("totoal font :"+commonFonts.length);
 
-  // React.useEffect(() => {
-  //   const grouped = groupBy(fonts, "family")
-  //   const standardFonts = Object.keys(grouped).map((key) => {
-  //     const familyFonts = grouped[key]
-  //     const standardFont = familyFonts.find((familyFont) => familyFont.postScriptName.includes("-Regular"))
-  //     if (standardFont) {
-  //       return standardFont
-  //     }
-  //     return familyFonts[familyFonts.length - 1]
-  //   })
-  //   setCommonFonts(standardFonts)
-  // }, [fonts])
- 
+  const fonts = SAMPLE_FONTS
+  console.log(fonts.length + " b sl o")
 
+  React.useEffect(() => {
+    const grouped = groupBy(fonts, "family")
+    // console.log(grouped);
+    const standardFonts = Object.keys(grouped).map((key) => {
+      const familyFonts = grouped[key]
+      console.log(familyFonts + "family fonts")
+      const standardFont = familyFonts.find((familyFont) => familyFont.postscript_name.includes("-Regular"))
+      if (standardFont) {
+        return standardFont
+      }
+      return familyFonts[familyFonts.length - 1]
+    })
+    // @ts-ignore
+    setCommonFonts(standardFonts)
+  }, [fonts])
+  // @ts-ignore
 
   // get font from google font api and add to common fo
-
 
   const handleFontFamilyChange = async (x: any) => {
     if (editor) {
       const font = {
-
-        name: x.postScriptName,
+        name: x.postscript_name,
         url: x.url,
       }
       await loadFonts([font])
 
       editor.objects.update({
-        fontFamily: x.postScriptName,
+        fontFamily: x.postscript_name,
         fontURL: font.url,
       })
-      console.log(font.url);
     }
   }
 
@@ -163,14 +136,13 @@ export default function () {
 
       <Scrollable>
         <Block $style={{ padding: "0 1.5rem", display: "grid", gap: "0.2rem" }}>
-          <InfiniteScrolling hasMore={hasMore}>
+          <InfiniteScrolling  hasMore={hasMore}>
             <Block $style={{ display: "grid" }}>
-              {commonFonts.map((font, index) => {
+              {/* {commonFonts.map((font, index) => {
                 return (
                   <div
                     key={index}
                     onClick={() => handleFontFamilyChange(font)}
-
                     className={css({
                       height: "40px",
                       display: "flex",
@@ -183,9 +155,38 @@ export default function () {
                     })}
                     // id={font.id}
                   >
+                    <LazyLoadImage
+                      src={font.url}
+                      alt={font.family}
+                      width={40}
+                      height={40}
+                      style={{ marginRight: "0.5rem" }}
+                    />
                     <Block $style={{ marginRight: "0.5rem" }}>{font.family}</Block>
-                    {/* <img src={font.preview} /> */}
-                    {/* <LazyLoadImage url={font.preview} /> */}
+                  </div>
+                )
+              })} */}
+
+              {commonFonts.map((font, index) => {
+                return (
+                  <div
+                    key={index}
+                    onClick={() => handleFontFamilyChange(font)}
+                    className={css({
+                      height: "40px",
+                      display: "flex",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      ":hover": {
+                        backgroundColor: "rgb(245,246,247)",
+                      },
+                    })}
+                    id={font.id}
+                  >
+                    {/* <img src={font.preview} />
+                    <LazyLoadImage url={font.preview} /> */}
+                    <Block $style={{ marginRight: "0.5rem" }}>{font.family}</Block>
                   </div>
                 )
               })}

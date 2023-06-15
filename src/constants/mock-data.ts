@@ -360,6 +360,33 @@ export const graphics = [
     id: "3w9KPQbyeUe3kgtwpMZx4",
   },
   {
+    // this is circle
+    left: 0,
+    top: 0,
+    width: 512,
+    height: 512,
+    originX: "left",
+    originY: "top",
+    scaleX: 0.47,
+    scaleY: 0.47,
+    type: "StaticPath",
+    path: [
+      ["M", 256, 0],
+      ["C", 114.617188, 0, 0, 114.617188, 0, 256],
+      ["C", 0, 397.382812, 114.617188, 512, 256, 512],
+      ["C", 397.382812, 512, 512, 397.382812, 512, 256],
+      ["C", 512, 114.617188, 397.382812, 0, 256, 0],
+      ["z"],
+      ["M", 256, 0],
+    ],
+    fill: "#CBCBCB",
+    metadata: {},
+    preview: "https://cdn-icons-png.flaticon.com/512/0/14.png",
+    id: "168",
+  },
+
+ 
+  {
     left: 0,
     top: 0,
     width: 458.41,
@@ -493,6 +520,9 @@ export const graphics = [
     // preview: "https://ik.imagekit.io/scenify/1635014340531_452464.png",
     id: "vAE3f8-4M0-2j5PF04cVY",
   },
+
+  
+
 ]
 
 export const vectors = [

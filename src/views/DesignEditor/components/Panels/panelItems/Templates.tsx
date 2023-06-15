@@ -14,31 +14,27 @@ import { IScene } from "@layerhub-io/types"
 import { nanoid } from "nanoid"
 import api from "~/services/api"
 import useEditorType from "~/hooks/useEditorType"
-import { template } from "~/constants/templates"
+import {template} from "~/constants/templates"
 
 export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const { setCurrentScene, currentScene, setScenes, setCurrentDesign } = useDesignEditorContext()
-  const designs = useSelector(selectPublicDesigns)
+  // const designs = useSelector(selectPublicDesigns)
+  const [designs, setDesigns] = React.useState([template])
   const editorType = useEditorType()
-  console.log(designs.length <= 0 ? "no design templete" : "design available")
 
-  // just test
-  const testDesign = [
-    {
-      id: "1",
-      url: "https://static.fandomspot.com/images/01/11400/00-featured-houtarou-oreki-hyouka-introverted-screenshot.jpg",
-    },
-    {
-      id: "2",
-      url: "https://i.pinimg.com/originals/62/c0/33/62c033e9bb9324ca72d9352b3f639e66.png",
-    },
-  ]
+  console.log(designs)
+  
   const loadGraphicTemplate = async (payload: IDesign): Promise<{ scenes: IScene[]; design: IDesign }> => {
-    // initialize scenes as empty array and then populate it with the scenes from the payload
     const scenes: IScene[] = []
-    const { scenes: scns, ...design } = payload
+    const design = payload
+    const scns = design && design.scenes ? design.scenes : []
+
+
+    console.log("payload  ", payload)
+    console.log("scns", scns)
+    console.log("design", design)
 
     for (const scn of scns) {
       const scene: IScene = {
@@ -51,9 +47,9 @@ export default function () {
       await loadTemplateFonts(scene)
 
       const preview = (await editor.renderer.render(scene)) as string
-
       scenes.push({ ...scene, preview })
     }
+
 
     return { scenes, design: design as IDesign }
   }
@@ -61,12 +57,14 @@ export default function () {
   const loadDesignById = React.useCallback(
     async (designId: string) => {
       if (editor) {
-        const design = await api.getPublicDesignById(designId)
+        // const design = await api.getPublicDesignById(designId)
+        const design = designs.find((d) => d.id === designId)
+        console.log("design in loadDesignById", design)
+        // @ts-ignore
         const loadedDesign = await loadGraphicTemplate(design)
         setScenes(loadedDesign.scenes)
         setCurrentScene(loadedDesign.scenes[0])
         setCurrentDesign(loadedDesign.design)
-     
       }
     },
     [editor, currentScene]
@@ -83,7 +81,7 @@ export default function () {
           padding: "1.5rem",
         }}
       >
-        <Block>Template</Block>
+        <Block>Templates</Block>
 
         <Block onClick={() => setIsSidebarOpen(false)} $style={{ cursor: "pointer", display: "flex" }}>
           <AngleDoubleLeft size={18} />
@@ -92,23 +90,17 @@ export default function () {
       <Scrollable>
         <div style={{ padding: "0 1.5rem" }}>
           <div style={{ display: "grid", gap: "0.5rem", gridTemplateColumns: "1fr 1fr" }}>
-            {designs.length < 1
-              ? testDesign.map((design, index) => (
-                  <ImageItem onClick={() => loadDesignById(design.id)} key={index} preview={`${design.url}?tr=w-320`} />
-                ))
-              : designs
-                  .filter((d) => d.type === editorType)
-                  .map((design, index) => {
-                    console.log(design)
-                    return (
-                      <ImageItem
-                        onClick={() => loadDesignById(design.id)}
-                        key={index}
-                        preview={`${design.previews[0].src}?tr=w-320`}
-                      />
-                    )
-                  })}
-
+            {designs
+              .filter((d) => d.type === editorType)
+              .map((design, index) => {
+                return (
+                  <ImageItem
+                    onClick={() => loadDesignById(design.id)}
+                    key={index}
+                    preview={`${design.previews[0].src}?tr=w-320`}
+                  />
+                )
+              })}
           </div>
         </div>
       </Scrollable>
@@ -116,7 +108,7 @@ export default function () {
   )
 }
 
-function ImageItem({ preview, onClick }: { preview: any; onClick?: (option: any) => void }) {
+function ImageItem({preview, onClick }: { preview: any; onClick?: (option: any) => void }) {
   const [css] = useStyletron()
   return (
     <div
@@ -164,9 +156,7 @@ function ImageItem({ preview, onClick }: { preview: any; onClick?: (option: any)
             opacity: 1,
           },
         })}
-      >
-        {" "}
-      </div>
+      ></div>
       <img
         src={preview}
         className={css({
@@ -176,8 +166,7 @@ function ImageItem({ preview, onClick }: { preview: any; onClick?: (option: any)
           pointerEvents: "none",
           verticalAlign: "middle",
         })}
-      />{" "}
-      where it is ?
+      />
     </div>
   )
 }

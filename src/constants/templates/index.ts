@@ -1,6 +1,6 @@
 export const template = {
   id: "QNXHMtlKF29nUtmFg8gsv",
-  name: "Untitled",
+  name: "template title",
   layers: [
     {
       id: "_3IvwWbkaDbo6JSbKr9ay",
@@ -6231,4 +6231,11 @@ export const template = {
     width: 1200,
     height: 1200,
   },
+  previews: [
+    {
+      id: "previews",
+      src: "https://images.immediate.co.uk/production/volatile/sites/3/2021/07/One-Piece-3c05a95-e1679912095666.jpg?quality=90&resize=980,654",
+    },
+  ],
+  type: "GRAPHIC",
 }

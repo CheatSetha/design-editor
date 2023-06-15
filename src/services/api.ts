@@ -253,17 +253,17 @@ class ApiService {
   }
 
   // // FONTS
-  // getFonts(): Promise<IFontFamily[]> {
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       const { data } = await this.base.get("/fonts")
-  //       resolve(data.fonts)
+  getFonts(): Promise<IFontFamily[]> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const {data} = await axios.get("http://192.168.1.226:8080/api/v1/fonts")
+        resolve(data.fonts)
         
-  //     } catch (err) {
-  //       reject(err)
-  //     }
-  //   })
-  // }
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
   //flaticon
   fetchFlatIcon = async()=>{
     try{
@@ -282,17 +282,17 @@ class ApiService {
   //const apiKey = 'AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o';
   //   const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`;
 
-  fetchFonts = async () => {
-    try {
-      //  const { data } = await this.base.get("/fonts")
-      const {data} = await axios.get("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o")
-      // const { data } = await axios.get("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o")
-      console.log(data.items);
-      return data.fonts
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  // fetchFonts = async () => {
+  //   try {
+  //     //  const { data } = await this.base.get("/fonts")
+  //     const {data} = await axios.get("http://192.168.1.226:8080/api/v1/fonts")
+  //     // const { data } = await axios.get("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o")
+  //     console.log(data.items);
+  //     return data.fonts
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
 
 

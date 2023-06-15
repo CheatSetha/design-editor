@@ -26,6 +26,7 @@ import { loadFonts } from "~/utils/fonts"
 import Scrollbar from "@layerhub-io/react-custom-scrollbar"
 import { useSelector } from "react-redux"
 import { selectAllFonts } from "~/store/slices/fonts/selectors"
+import { groupBy } from "lodash"
 interface TextState {
   color: string
   bold: boolean
@@ -123,18 +124,24 @@ export default function () {
   }, [editor, state])
   const makeBold = React.useCallback(async () => {
     // state.bold means the text is bold
-    // console.log(state.styleOptions)
+   
+    console.log(state.styleOptions + " options")
 
     if (state.bold) {
-      let desiredFont
-
+      let desiredFont = SAMPLE_FONTS.find((font) => font.family === state.family)
+console.log(desiredFont + " desired font");
       if (state.italic) {
         // look for regular italic
+        const wantedFont = groupBy(SAMPLE_FONTS, "family")
+       
+        state.styleOptions.options = wantedFont[state.family]
         desiredFont = state.styleOptions.options.find((option) => {
-          console.log(option)
+          console.log(wantedFont + " test");
           const postScriptNames = option.post_script_name.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^Italic$/)
         })
+       
+
       } else {
         // look for  regular
         desiredFont = state.styleOptions.options.find((option) => {
@@ -145,12 +152,16 @@ export default function () {
       }
 
       const font = {
-        name: desiredFont.post_script_name,
+        // name: desiredFont.post_script_name,
+        // @ts-ignore
+        name: desiredFont.postscript_name,
+         // @ts-ignore
         url: desiredFont.url,
       }
       await loadFonts([font])
 
       editor.objects.update({
+        // @ts-ignore
         fontFamily: desiredFont.post_script_name,
         fontURL: font.url,
       })
@@ -172,7 +183,8 @@ export default function () {
       }
 
       const font = {
-        name: desiredFont.post_script_name,
+        // name: desiredFont.post_script_name,
+        name: desiredFont.postscript_name,
         url: desiredFont.url,
       }
       await loadFonts([font])
@@ -203,7 +215,8 @@ export default function () {
       }
 
       const font = {
-        name: desiredFont.post_script_name,
+        // name: desiredFont.post_script_name,
+        name: desiredFont.postscript_name,
         url: desiredFont.url,
       }
       await loadFonts([font])
@@ -231,7 +244,8 @@ export default function () {
       }
 
       const font = {
-        name: desiredFont.post_script_name,
+        // name: desiredFont.post_script_name,
+        name: desiredFont.postscript_name,
         url: desiredFont.url,
       }
       await loadFonts([font])
@@ -275,7 +289,7 @@ export default function () {
             <ChevronDown size={22} />
           </Block>
         </Block>
-        <TextFontFamily />
+        {/* <TextFontFamily /> */}
 
         <TextFontSize />
         <Block display={"flex"} alignItems={"center"}>
@@ -294,8 +308,8 @@ export default function () {
             <Button
               style={{ ...(!state.bold && { color: "rgb(169,169,169)" }) }}
               disabled={!state.styleOptions.hasBold}
-              // onClick={makeBold}
-              onClick={handleBold}
+              onClick={makeBold}
+              // onClick={handleBold}
               size={SIZE.mini}
               kind={KIND.tertiary}
             >
