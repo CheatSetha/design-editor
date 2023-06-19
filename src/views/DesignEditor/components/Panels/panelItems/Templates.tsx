@@ -7,34 +7,32 @@ import AngleDoubleLeft from "~/components/Icons/AngleDoubleLeft"
 import { useStyletron } from "baseui"
 import useSetIsSidebarOpen from "~/hooks/useSetIsSidebarOpen"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
-import { useSelector } from "react-redux"
-import { selectPublicDesigns } from "~/store/slices/designs/selectors"
+// import { useSelector } from "react-redux"
+// import { selectPublicDesigns } from "~/store/slices/designs/selectors"
 import { IDesign } from "~/interfaces/DesignEditor"
 import { IScene } from "@layerhub-io/types"
 import { nanoid } from "nanoid"
-import api from "~/services/api"
+// import api from "~/services/api"
 import useEditorType from "~/hooks/useEditorType"
-import {template} from "~/constants/templates"
+import { template } from "~/constants/templates"
 
 export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const { setCurrentScene, currentScene, setScenes, setCurrentDesign } = useDesignEditorContext()
   // const designs = useSelector(selectPublicDesigns)
-  const [designs, setDesigns] = React.useState([template])
-  const editorType = useEditorType()
+  //add template
+  const [designs, setDesigns] = React.useState(template)
 
-  console.log(designs)
-  
+  const editorType = useEditorType()
+  console.log("type editor",editorType)
   const loadGraphicTemplate = async (payload: IDesign): Promise<{ scenes: IScene[]; design: IDesign }> => {
     const scenes: IScene[] = []
+    // const { scenes: scns, ...design } = payload
+
     const design = payload
-    const scns = design && design.scenes ? design.scenes : []
-
-
-    console.log("payload  ", payload)
-    console.log("scns", scns)
-    console.log("design", design)
+    const scns = design.scenes
+    console.log("payload",payload);
 
     for (const scn of scns) {
       const scene: IScene = {
@@ -50,7 +48,6 @@ export default function () {
       scenes.push({ ...scene, preview })
     }
 
-
     return { scenes, design: design as IDesign }
   }
 
@@ -59,8 +56,8 @@ export default function () {
       if (editor) {
         // const design = await api.getPublicDesignById(designId)
         const design = designs.find((d) => d.id === designId)
-        console.log("design in loadDesignById", design)
-        // @ts-ignore
+        console.log("design",design)
+        //@ts-ignore
         const loadedDesign = await loadGraphicTemplate(design)
         setScenes(loadedDesign.scenes)
         setCurrentScene(loadedDesign.scenes[0])
@@ -97,7 +94,7 @@ export default function () {
                   <ImageItem
                     onClick={() => loadDesignById(design.id)}
                     key={index}
-                    preview={`${design.previews[0].src}?tr=w-320`}
+                    preview={`${design.preview}?tr=w-320`}
                   />
                 )
               })}
@@ -108,7 +105,7 @@ export default function () {
   )
 }
 
-function ImageItem({preview, onClick }: { preview: any; onClick?: (option: any) => void }) {
+function ImageItem({ preview, onClick }: { preview: any; onClick?: (option: any) => void }) {
   const [css] = useStyletron()
   return (
     <div

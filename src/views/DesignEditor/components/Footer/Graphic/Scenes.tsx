@@ -52,6 +52,7 @@ const Scenes = () => {
       }
     }
   }, [editor, scenes, currentScene])
+  // console.log(currentScene, "currentScene")
 
   React.useEffect(() => {
     // watcher is a function that watches for changes in the editor and updates the current preview
@@ -183,6 +184,7 @@ const Scenes = () => {
     >
       <Block
         id="TimelineItemsContainer"
+
         $style={{ padding: "0.25rem 0.75rem", background: "#ffffff", position: "relative" }}
       >
         <div className={css({ display: "flex", alignItems: "center" })}>
@@ -201,12 +203,14 @@ const Scenes = () => {
                 }
               />
             ))}
+
             <div
               style={{
                 background: "#ffffff",
                 padding: "1rem 1rem 1rem 0.5rem",
               }}
             >
+              {/*handle add new scence*/}
               <div
                 onClick={addScene}
                 className={css({

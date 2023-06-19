@@ -57,6 +57,7 @@ const Pages = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+
                   }}
                   key={page.id}
                 >

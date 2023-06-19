@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Block } from "baseui/block"
 import AngleDoubleLeft from "~/components/Icons/AngleDoubleLeft"
 import Scrollable from "~/components/Scrollable"
@@ -10,6 +10,12 @@ import { nanoid } from "nanoid"
 import { captureFrame, loadVideoResource } from "~/utils/video"
 import { ILayer } from "@layerhub-io/types"
 import { toBase64 } from "~/utils/data"
+import { getDefaultTemplate } from "~/constants/design-editor"
+import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
+import { DesignEditorContext } from "~/contexts/DesignEditor"
+import { add } from "@dnd-kit/utilities"
+
+
 
 // export default function () {
 //   const inputFileRef = React.useRef<HTMLInputElement>(null)
@@ -123,6 +129,8 @@ export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
 
+
+  console.log("uploads", uploads)
   const handleDropFiles = async (files: FileList) => {
     const uploadPromises = Array.from(files).map(async (file) => {
       const isVideo = file.type.includes("video")
@@ -161,6 +169,97 @@ export default function () {
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
   }
+  // ------------------| test code here |------------------//
+const scenes = useDesignEditorScenes()
+  const { setScenes, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
+    React.useContext(DesignEditorContext)
+
+  const [currentPreview, setCurrentPreview] = React.useState("")
+//handle create new scene when upload new image
+  const handleAddNewScene = React.useCallback(async () => {
+    setCurrentPreview("")
+    const updatedTemplate = editor.scene.exportToJSON()
+    const updatedPreview = await editor.renderer.render(updatedTemplate)
+
+    const updatedPages = scenes.map((p) => {
+      if (p.id === updatedTemplate.id) {
+        return { ...updatedTemplate, preview: updatedPreview }
+      }
+      return p
+    })
+
+    const defaultTemplate = getDefaultTemplate(currentDesign.frame)
+    const newPreview = await editor.renderer.render(defaultTemplate)
+    const newPage = { ...defaultTemplate, id: nanoid(), preview: newPreview } as any
+    const newPages = [...updatedPages, newPage] as any[]
+    setScenes(newPages)
+    setCurrentScene(newPage)
+
+  }, [scenes, currentDesign])
+
+
+
+
+useEffect(() => {
+  if(uploads.length > 0 && scenes.length <= uploads.length-1){
+    handleAddNewScene()
+  
+  }
+  uploads.forEach((upload, index) => {
+    const scene = scenes[index]
+    const uploadImg = uploads[index]
+ // if uploaded image's index equal to scene's index then add image to scene
+   //find the index of uploaded image in scenes
+    if (uploadImg.id === scene.id) {
+      // add image to scene
+      addImageToCanvas(uploadImg)
+    }
+  })
+}, [uploads, scenes, handleAddNewScene])
+
+
+//   safe code
+
+// create new scene based on number of uploaded images
+  // React.useEffect(() => {
+
+  //   console.log(uploads.length, scenes.length, 'length')
+
+
+  //   // scence index 1
+
+
+
+  //   if (uploads.length > 0 && scenes.length <= uploads.length) {
+  //     handleAddImageToScene()
+  //     handleAddNewScene()
+  //     // add image to scence base on index
+  //     // const upload = uploads[scenes.length]
+  //     // console.log(upload,'uploaded image ')
+  //     // addImageToCanvas(upload)
+
+  //   //   add image to each scene one image per scene
+
+
+
+
+
+  //   }
+  // }, [uploads, handleAddNewScene])
+
+
+
+
+
+
+
+  // ------------------| test code here |------------------//
+
+
+
+
+
+
 
   return (
     <DropZone handleDropFiles={handleDropFiles}>
@@ -195,6 +294,21 @@ export default function () {
             >
               Computer
             </Button>
+            <Button
+  
+         
+              size={SIZE.compact}
+              overrides={{
+                Root: {
+                  style: {
+                    width: "100%",
+                  },
+                },
+              }}
+            >
+              Add to all scenes
+            </Button>
+            
             <input
               onChange={handleFileInput}
               type="file"
@@ -203,7 +317,7 @@ export default function () {
               style={{ display: "none" }}
               multiple 
             />
-
+   
             <div
               style={{
                 marginTop: "1rem",
@@ -212,6 +326,7 @@ export default function () {
                 gridTemplateColumns: "1fr 1fr",
               }}
             >
+
               {uploads.map((upload) => (
                 <div
                   key={upload.id}
