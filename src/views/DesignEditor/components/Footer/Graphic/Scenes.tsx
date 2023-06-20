@@ -85,7 +85,7 @@ const Scenes = () => {
           frame: defaultTemplate.frame,
           metadata: {},
           name: "Untitled Design",
-          preview: "",
+          preview: " ",
           scenes: [],
           type: "PRESENTATION",
         })
@@ -182,6 +182,7 @@ const Scenes = () => {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
     >
+      <div className={css({overflow:'auto',width:'1100px'})}>
       <Block
         id="TimelineItemsContainer"
 
@@ -191,6 +192,7 @@ const Scenes = () => {
           {contextMenuTimelineRequest.visible && <SceneContextMenu />}
 
           <SortableContext items={scenes} strategy={horizontalListSortingStrategy}>
+
             {scenes.map((page, index) => (
               <SceneItem
                 key={index}
@@ -203,6 +205,7 @@ const Scenes = () => {
                 }
               />
             ))}
+
 
             <div
               style={{
@@ -242,6 +245,7 @@ const Scenes = () => {
           </DragOverlay>
         </div>
       </Block>
+      </div>
     </DndContext>
   )
 }

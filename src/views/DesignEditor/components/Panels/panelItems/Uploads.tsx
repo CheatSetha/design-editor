@@ -166,9 +166,59 @@ export default function () {
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
   }
-
   // ------------------| test code here |------------------//
   const scenes = useDesignEditorScenes()
+  const dropImages =async () => {
+    if (!currentScene) {
+      console.log("currentScene is null");
+      return; // Handle the case where currentScene is null or undefined
+    }
+    console.log("currentScene is not null")
+    const updatedScenes = scenes.map((scene) => {
+      const updatedScene = { ...scene }
+      let images = uploads
+      images.forEach((image) => {
+        const { src, type } = image
+        const newLayer =     {
+          id: nanoid(),
+          name: "StaticImage",
+          angle: 0,
+          strokeWidth: 0,
+          left: 275.0000000000001,
+          top: 261.34000000000003,
+          width: 650,
+          height: 650,
+          opacity: 1,
+          originX: "left",
+          originY: "top",
+          scaleX: 1,
+          scaleY: 1,
+          type: "StaticImage",
+          flipX: false,
+          flipY: false,
+          skewX: 0,
+          skewY: 0,
+          visible: true,
+          src: src,
+          cropX: 0,
+          cropY: 0,
+          metadata: {}
+        }
+
+        if(updatedScene.layers.length<2) {
+          updatedScene.layers.push(newLayer)
+          setCurrentScene(updatedScene)
+          images.shift();
+        }
+      })
+      console.log("length image",images.length)
+
+
+      return updatedScene
+    })
+    console.log("1scence")
+    setScenes(updatedScenes)
+  }
   const { setScenes, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
     React.useContext(DesignEditorContext)
 
@@ -194,6 +244,19 @@ export default function () {
     setCurrentScene(newPage)
   }, [scenes, currentDesign])
 
+
+  React.useEffect(() => {
+    // scence index 1
+    if (uploads.length > 1 && scenes.length < uploads.length) {
+     handleAddNewScene()
+
+    }
+
+
+  }, [uploads,handleAddNewScene])
+
+
+
   //   safe code
 
   // create new scene based on number of uploaded images
@@ -217,51 +280,6 @@ export default function () {
   // }, [uploads, handleAddNewScene])
 
   // ------------------| test code here |------------------//
-  useEffect(() => {
-    if (uploads.length > 0 && scenes.length < uploads.length) {
-      handleAddNewScene()
-      // add first image to first scene and so on
-
-      // for (let i = 0; i < uploads.length; i++) {
-      //   console.log(i, "i")
-
-      //   console.log(scenes.length, "scenes length")
-      //   for (let j = 0; j <= scenes.length; j++) {
-      //     console.log(j, "index", i, "i")
-      //     console.log(j, "j")
-      //     if (scenes[j] === uploads[i]) {
-      //       console.log(" b sl o")
-      //       const upload = uploads[i]
-      //       addImageToCanvas(upload)
-      //     }
-      //   }
-      // }
-      //add image to scene.layer based on index
-      const upload = uploads[scenes.length]
-      addImageToCanvas(upload)
-      console.log(currentScene, "current scene")
-    }
-  }, [uploads, handleAddNewScene])
-
-  const handleCreateScenes = () => {
-    console.log(uploads.length, "length of uploaded images")
-    console.log(scenes.length, "length of scenes")
-
-    for (let i = 0; i < uploads.length; i++) {
-      console.log(i, "i")
-
-      console.log(scenes.length, "scenes length")
-      for (let j = 0; j <= scenes.length; j++) {
-        console.log(j, "j")
-        if (scenes[j] === uploads[i]) {
-          console.log(j, "index", i, "i")
-          const upload = uploads[j]
-          console.log(upload, "uploaded image ")
-          addImageToCanvas(upload)
-        }
-      }
-    }
-  }
 
   return (
     <DropZone handleDropFiles={handleDropFiles}>
@@ -297,7 +315,7 @@ export default function () {
               Computer
             </Button>
             <Button
-              onClick={handleCreateScenes}
+             onClick={dropImages}
               size={SIZE.compact}
               overrides={{
                 Root: {

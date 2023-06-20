@@ -150,6 +150,7 @@ class PlaybackController {
       this.app.stage.addChild(value.sprite)
     }
   }
+  
   /**
    * Changes the sprite options
    * Used to show or hide elements

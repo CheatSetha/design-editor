@@ -13,8 +13,7 @@ const Graphic = () => {
     if (editor) {
       const template = editor.scene.exportToJSON()
       // convert from json to svg
-     
-     
+
       const image = (await editor.renderer.render(template)) as string
       setState({ image })
       setLoading(false)
@@ -27,8 +26,7 @@ const Graphic = () => {
 
   return (
     <Block $style={{ flex: 1, alignItems: "center", justifyContent: "center", display: "flex", padding: "5rem" }}>
-      {!loading && <img width="auto" height="100%" src={state.image} />}
-      
+      {!loading && <img width="auto" height="100%" src={state.image} />} b slo o
     </Block>
   )
 }
