@@ -15,8 +15,6 @@ import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { DesignEditorContext } from "~/contexts/DesignEditor"
 import { add } from "@dnd-kit/utilities"
 
-
-
 // export default function () {
 //   const inputFileRef = React.useRef<HTMLInputElement>(null)
 //   const [uploads, setUploads] = React.useState<any[]>([])
@@ -129,7 +127,6 @@ export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
 
-
   console.log("uploads", uploads)
   const handleDropFiles = async (files: FileList) => {
     const uploadPromises = Array.from(files).map(async (file) => {
@@ -169,13 +166,14 @@ export default function () {
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
   }
+
   // ------------------| test code here |------------------//
-const scenes = useDesignEditorScenes()
+  const scenes = useDesignEditorScenes()
   const { setScenes, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
     React.useContext(DesignEditorContext)
 
   const [currentPreview, setCurrentPreview] = React.useState("")
-//handle create new scene when upload new image
+  //handle create new scene when upload new image
   const handleAddNewScene = React.useCallback(async () => {
     setCurrentPreview("")
     const updatedTemplate = editor.scene.exportToJSON()
@@ -194,72 +192,76 @@ const scenes = useDesignEditorScenes()
     const newPages = [...updatedPages, newPage] as any[]
     setScenes(newPages)
     setCurrentScene(newPage)
-
   }, [scenes, currentDesign])
 
+  //   safe code
 
-
-
-useEffect(() => {
-  if(uploads.length > 0 && scenes.length <= uploads.length-1){
-    handleAddNewScene()
-  
-  }
-  uploads.forEach((upload, index) => {
-    const scene = scenes[index]
-    const uploadImg = uploads[index]
- // if uploaded image's index equal to scene's index then add image to scene
-   //find the index of uploaded image in scenes
-    if (uploadImg.id === scene.id) {
-      // add image to scene
-      addImageToCanvas(uploadImg)
-    }
-  })
-}, [uploads, scenes, handleAddNewScene])
-
-
-//   safe code
-
-// create new scene based on number of uploaded images
+  // create new scene based on number of uploaded images
   // React.useEffect(() => {
 
   //   console.log(uploads.length, scenes.length, 'length')
 
-
   //   // scence index 1
 
-
-
   //   if (uploads.length > 0 && scenes.length <= uploads.length) {
-  //     handleAddImageToScene()
+
   //     handleAddNewScene()
   //     // add image to scence base on index
-  //     // const upload = uploads[scenes.length]
-  //     // console.log(upload,'uploaded image ')
-  //     // addImageToCanvas(upload)
+  //     const upload = uploads[scenes.length]
+  //     console.log(upload,'uploaded image ')
+  //     addImageToCanvas(upload)
 
   //   //   add image to each scene one image per scene
-
-
-
-
 
   //   }
   // }, [uploads, handleAddNewScene])
 
-
-
-
-
-
-
   // ------------------| test code here |------------------//
+  useEffect(() => {
+    if (uploads.length > 0 && scenes.length < uploads.length) {
+      handleAddNewScene()
+      // add first image to first scene and so on
 
+      // for (let i = 0; i < uploads.length; i++) {
+      //   console.log(i, "i")
 
+      //   console.log(scenes.length, "scenes length")
+      //   for (let j = 0; j <= scenes.length; j++) {
+      //     console.log(j, "index", i, "i")
+      //     console.log(j, "j")
+      //     if (scenes[j] === uploads[i]) {
+      //       console.log(" b sl o")
+      //       const upload = uploads[i]
+      //       addImageToCanvas(upload)
+      //     }
+      //   }
+      // }
+      //add image to scene.layer based on index
+      const upload = uploads[scenes.length]
+      addImageToCanvas(upload)
+      console.log(currentScene, "current scene")
+    }
+  }, [uploads, handleAddNewScene])
 
+  const handleCreateScenes = () => {
+    console.log(uploads.length, "length of uploaded images")
+    console.log(scenes.length, "length of scenes")
 
+    for (let i = 0; i < uploads.length; i++) {
+      console.log(i, "i")
 
-
+      console.log(scenes.length, "scenes length")
+      for (let j = 0; j <= scenes.length; j++) {
+        console.log(j, "j")
+        if (scenes[j] === uploads[i]) {
+          console.log(j, "index", i, "i")
+          const upload = uploads[j]
+          console.log(upload, "uploaded image ")
+          addImageToCanvas(upload)
+        }
+      }
+    }
+  }
 
   return (
     <DropZone handleDropFiles={handleDropFiles}>
@@ -295,8 +297,7 @@ useEffect(() => {
               Computer
             </Button>
             <Button
-  
-         
+              onClick={handleCreateScenes}
               size={SIZE.compact}
               overrides={{
                 Root: {
@@ -308,16 +309,16 @@ useEffect(() => {
             >
               Add to all scenes
             </Button>
-            
+
             <input
               onChange={handleFileInput}
               type="file"
               id="file"
               ref={inputFileRef}
               style={{ display: "none" }}
-              multiple 
+              multiple
             />
-   
+
             <div
               style={{
                 marginTop: "1rem",
@@ -326,7 +327,6 @@ useEffect(() => {
                 gridTemplateColumns: "1fr 1fr",
               }}
             >
-
               {uploads.map((upload) => (
                 <div
                   key={upload.id}
