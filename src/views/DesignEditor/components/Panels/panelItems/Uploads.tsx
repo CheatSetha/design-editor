@@ -167,11 +167,46 @@ export default function () {
     editor.objects.add(props)
   }
   // ------------------| test code here |------------------//
-  const scenes = useDesignEditorScenes()
-  const dropImages =async () => {
+  //add logo
+  const addLogo = () => {
+    // Handle the case where currentScene is null or undefined
     if (!currentScene) {
-      console.log("currentScene is null");
-      return; // Handle the case where currentScene is null or undefined
+      console.log("currentScene is null")
+      return
+    }
+    console.log("currentScene is not null")
+    const updatedScenes = scenes.map((scene) => {
+      const updatedScene = { ...scene }
+      uploads.forEach((upload) => {
+        const { src, type } = upload
+        const newLayer = {
+          id: nanoid(),
+          name: "StaticImage",
+
+          left: 275.0000000000001,
+          top: 261.34000000000003,
+          opacity: 1,
+          originX: "left",
+          originY: "top",
+          scaleX: 0.2,
+          scaleY: 0.2,
+          type: "StaticImage",
+          src: src,
+          metadata: {},
+        }
+        updatedScene.layers.push(newLayer)
+      })
+      setCurrentScene(updatedScene)
+      return updatedScene
+    })
+    setScenes(updatedScenes)
+  }
+
+  const scenes = useDesignEditorScenes()
+  const dropImages = async () => {
+    if (!currentScene) {
+      console.log("currentScene is null")
+      return // Handle the case where currentScene is null or undefined
     }
     console.log("currentScene is not null")
     const updatedScenes = scenes.map((scene) => {
@@ -179,40 +214,24 @@ export default function () {
       let images = uploads
       images.forEach((image) => {
         const { src, type } = image
-        const newLayer =     {
+        const newLayer = {
           id: nanoid(),
           name: "StaticImage",
-          angle: 0,
-          strokeWidth: 0,
-          left: 275.0000000000001,
-          top: 261.34000000000003,
-          // width: 650,
-          // height: 650,
           opacity: 1,
-          originX: "left",
-          originY: "top",
+          type: "StaticImage",
           scaleX: 1,
           scaleY: 1,
-          type: "StaticImage",
-          flipX: false,
-          flipY: false,
-          skewX: 0,
-          skewY: 0,
-          visible: true,
           src: src,
-          cropX: 0,
-          cropY: 0,
-          metadata: {}
+          metadata: {},
         }
 
-        if(updatedScene.layers.length<2) {
+        if (updatedScene.layers.length < 2) {
           updatedScene.layers.push(newLayer)
           setCurrentScene(updatedScene)
-          images.shift();
+          images.shift()
         }
       })
-      console.log("length image",images.length)
-
+      console.log("length image", images.length)
 
       return updatedScene
     })
@@ -244,18 +263,12 @@ export default function () {
     setCurrentScene(newPage)
   }, [scenes, currentDesign])
 
-
   React.useEffect(() => {
     // scence index 1
     if (uploads.length > 1 && scenes.length < uploads.length) {
-     handleAddNewScene()
-
+      handleAddNewScene()
     }
-
-
-  }, [uploads,handleAddNewScene])
-
-
+  }, [uploads, handleAddNewScene])
 
   //   safe code
 
@@ -315,19 +328,32 @@ export default function () {
               Computer
             </Button>
             <Button
-             onClick={dropImages}
+              onClick={dropImages}
               size={SIZE.compact}
               overrides={{
                 Root: {
                   style: {
                     width: "100%",
                     marginTop: "0.75rem",
-
                   },
                 },
               }}
             >
               Add to all scenes
+            </Button>
+            <Button
+              onClick={addLogo}
+              size={SIZE.compact}
+              overrides={{
+                Root: {
+                  style: {
+                    width: "100%",
+                    marginTop: "0.75rem",
+                  },
+                },
+              }}
+            >
+              addLogo
             </Button>
 
             <input
