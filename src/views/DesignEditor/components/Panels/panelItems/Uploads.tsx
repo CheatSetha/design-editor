@@ -321,6 +321,8 @@ export default function () {
                 Root: {
                   style: {
                     width: "100%",
+                    marginTop: "0.75rem",
+
                   },
                 },
               }}
