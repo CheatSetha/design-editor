@@ -52,15 +52,27 @@ const Presentation = () => {
         position: "relative",
       }}
     >
-      <Block $style={{ position: "absolute", maxWidth: "840px" }}>
+      <Block $style={{ position: "absolute"}}>
         {loading ? (
-          <Loading />
+          <Loading /> 
         ) : (
-          <Carousel showIndicators={false} showThumbs={false} useKeyboardArrows={true} showStatus={false}>
-            {slides.map((page, index) => (
-              <img width="auto" height="100%" key={index} src={page.preview} />
-            ))}
-          </Carousel>
+          // <Carousel showIndicators={false} showThumbs={false} useKeyboardArrows={true} showStatus={false}>
+          //   {slides.map((page, index) => (
+          //     <img width="auto" height="100%" key={index} src={page.preview} />
+          //   ))}
+          // </Carousel>
+
+
+
+        < Block className="w-full h-screen flex gap-5 flex-wrap">
+          {
+             slides.map((page, index) => (
+              <img className="w-64" src={page.preview} alt="preview imiage" key={index} />
+            
+              ))
+          }
+           </Block>
+
         )}
       </Block>
     </Block>

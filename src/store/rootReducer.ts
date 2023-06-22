@@ -5,6 +5,7 @@ import { uploadsReducer } from "./slices/uploads/reducer"
 import { resourcesReducer } from "./slices/resources/reducer"
 import { designsReducer } from "./slices/designs/reducer"
 import { componentsReducer } from "./slices/components/reducer"
+import uploadImageSlice from "./slices/uploadImage/uploadImageSlice"
 
 const rootReducer = combineReducers({
   designEditor: designEditorReducer,
@@ -13,6 +14,8 @@ const rootReducer = combineReducers({
   resources: resourcesReducer,
   designs: designsReducer,
   components: componentsReducer,
+  uploadImage: uploadImageSlice,
+
 })
 
 export type RootState = ReturnType<typeof rootReducer>

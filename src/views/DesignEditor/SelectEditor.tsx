@@ -72,8 +72,8 @@ const SelectEditor = () => {
          
         </Block>
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-          <Button style={{ width: "180px", background:"#150259"}} onClick={() => setEditorType(selectedEditor)}>
-            Continue
+          <Button className="w-[1000px]" style={{ width: "180px", background:"#150259"}} onClick={() => setEditorType(selectedEditor)}>
+           Continue
           </Button>
         </Block>
       </Block>

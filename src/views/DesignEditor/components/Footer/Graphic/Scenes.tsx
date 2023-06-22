@@ -20,7 +20,7 @@ const Scenes = () => {
   // distructure individual functions from DesignEditorContext
   const { setScenes, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
     React.useContext(DesignEditorContext)
-    // editor is a reference to the DesignEditor instance and use for manipulating the design
+  // editor is a reference to the DesignEditor instance and use for manipulating the design
   const editor = useEditor()
   const [css] = useStyletron()
   // currentPreview is a string of the current scene preview
@@ -31,7 +31,7 @@ const Scenes = () => {
   const [draggedScene, setDraggedScene] = React.useState<IScene | null>(null)
   // contextMenuTimelineRequest is a reference to the context menu request. we can use this to show/hide the context menu
   const contextMenuTimelineRequest = useContextMenuTimelineRequest()
-// sensors is an array of sensors that we can use to detect drag events
+  // sensors is an array of sensors that we can use to detect drag events
   const sensors = [
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -41,10 +41,10 @@ const Scenes = () => {
   ]
 
   React.useEffect(() => {
-    // check if the current scene is loaded in the editor 
+    // check if the current scene is loaded in the editor
     if (editor && scenes && currentScene) {
       // if edtor and scenes and currentScene are not null then check if the current scene is loaded in the editor
-      // it's meant to check if the current scene is loaded in the editor and 
+      // it's meant to check if the current scene is loaded in the editor and
       const isCurrentSceneLoaded = scenes.find((s) => s.id === currentScene?.id)
       // if the current scene is not loaded in the editor then set the current scene to the first scene in the scenes array
       if (!isCurrentSceneLoaded) {
@@ -115,8 +115,9 @@ const Scenes = () => {
   const addScene = React.useCallback(async () => {
     setCurrentPreview("")
     const updatedTemplate = editor.scene.exportToJSON()
-    const updatedPreview = await editor.renderer.render(updatedTemplate)
 
+    const updatedPreview = await editor.renderer.render(updatedTemplate)
+    console.log(updatedPreview, "updatedPreview")
     const updatedPages = scenes.map((p) => {
       if (p.id === updatedTemplate.id) {
         return { ...updatedTemplate, preview: updatedPreview }
@@ -182,69 +183,79 @@ const Scenes = () => {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
     >
-      <div className={css({overflow:'auto',width:'1100px'})}>
-      <Block
-        id="TimelineItemsContainer"
+      <div className={css({ overflow: "auto", width: "1100px" })}>
+        <Block
+          id="TimelineItemsContainer"
+          $style={{ padding: "0.25rem 0.75rem", background: "#ffffff", position: "relative" }}
+        >
+          <div className={css({ display: "flex", alignItems: "center" })}>
+            {contextMenuTimelineRequest.visible && <SceneContextMenu />}
 
-        $style={{ padding: "0.25rem 0.75rem", background: "#ffffff", position: "relative" }}
-      >
-        <div className={css({ display: "flex", alignItems: "center" })}>
-          {contextMenuTimelineRequest.visible && <SceneContextMenu />}
+            <SortableContext items={scenes} strategy={horizontalListSortingStrategy}>
+              {/*{scenes.map((page, index) => (*/}
+              {/*  <SceneItem*/}
+              {/*    key={index}*/}
+              {/*    isCurrentScene={page.id === currentScene?.id}*/}
+              {/*    // isCurrentScene={true}*/}
+              {/*    scene={page}*/}
+              {/*    index={index}*/}
+              {/*    changePage={changePage}*/}
+              {/*    preview={*/}
+              {/*      currentPreview && page.id === currentScene?.id ? currentPreview : page.preview ? page.preview : ""*/}
+              {/*      // currentPreview*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*))}*/}
 
-          <SortableContext items={scenes} strategy={horizontalListSortingStrategy}>
-
-            {scenes.map((page, index) => (
-              <SceneItem
-                key={index}
-                isCurrentScene={page.id === currentScene?.id}
-                scene={page}
-                index={index}
-                changePage={changePage}
-                preview={
-                  currentPreview && page.id === currentScene?.id ? currentPreview : page.preview ? page.preview : ""
-                }
-              />
-            ))}
-
-
-            <div
-              style={{
-                background: "#ffffff",
-                padding: "1rem 1rem 1rem 0.5rem",
-              }}
-            >
-              {/*handle add new scence*/}
+              {scenes.slice(0, 1).map((page, index) => (
+                <SceneItem
+                  key={index}
+                  isCurrentScene={page.id === currentScene?.id}
+                  scene={page}
+                  index={index}
+                  changePage={changePage}
+                  preview={
+                    currentPreview && page.id === currentScene?.id ? currentPreview : page.preview ? page.preview : ""
+                  }
+                />
+              ))}
               <div
-                onClick={addScene}
-                className={css({
-                  width: "100px",
-                  height: "56px",
-                  background: "rgb(243,244,246)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                })}
-              >
-                <Add size={20} />
-              </div>
-            </div>
-          </SortableContext>
-          <DragOverlay>
-            {draggedScene ? (
-              <Block
-                $style={{
-                  backgroundImage: `url(${draggedScene.preview})`,
-                  backgroundSize: `${frame ? (frame.width * 70) / frame.height : 70}px 70px`,
-                  height: "80px",
-                  opacity: 0.75,
+                style={{
+                  background: "#ffffff",
+                  padding: "1rem 1rem 1rem 0.5rem",
                 }}
-              />
-            ) : null}
-            
-          </DragOverlay>
-        </div>
-      </Block>
+              >
+                {/*handle add new scence*/}
+                {/* <div
+                  onClick={addScene}
+                  className={css({
+                    width: "100px",
+                    height: "56px",
+                    background: "rgb(243,244,246)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  })}
+                >
+                  <Add size={20} />
+                </div> */}
+              </div>
+            </SortableContext>
+            <DragOverlay>
+              {draggedScene ? (
+                <Block
+                  $style={{
+                    backgroundImage: `url(${draggedScene.preview})`,
+                    backgroundSize: `${frame ? (frame.width * 70) / frame.height : 70}px 70px`,
+                    height: "80px",
+                    opacity: 0.75,
+                  }}
+                />
+              ) : null}
+            </DragOverlay>
+          </div>
+        </Block>
       </div>
     </DndContext>
   )

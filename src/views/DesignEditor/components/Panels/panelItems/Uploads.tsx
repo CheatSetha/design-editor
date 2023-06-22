@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Block } from "baseui/block"
 import AngleDoubleLeft from "~/components/Icons/AngleDoubleLeft"
 import Scrollable from "~/components/Scrollable"
 import { Button, SIZE } from "baseui/button"
 import DropZone from "~/components/Dropzone"
-import { useEditor } from "@layerhub-io/react"
+import { useActiveObject, useEditor } from "@layerhub-io/react"
 import useSetIsSidebarOpen from "~/hooks/useSetIsSidebarOpen"
 import { nanoid } from "nanoid"
 import { captureFrame, loadVideoResource } from "~/utils/video"
@@ -13,7 +13,8 @@ import { toBase64 } from "~/utils/data"
 import { getDefaultTemplate } from "~/constants/design-editor"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { DesignEditorContext } from "~/contexts/DesignEditor"
-import { add } from "@dnd-kit/utilities"
+import { useDispatch } from "react-redux"
+import { addUploads } from "~/store/slices/uploadImage/uploadImageSlice"
 
 // export default function () {
 //   const inputFileRef = React.useRef<HTMLInputElement>(null)
@@ -127,6 +128,8 @@ export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
 
+  const dispatch = useDispatch()
+
   console.log("uploads", uploads)
   const handleDropFiles = async (files: FileList) => {
     const uploadPromises = Array.from(files).map(async (file) => {
@@ -153,6 +156,7 @@ export default function () {
 
     const newUploads = await Promise.all(uploadPromises)
     setUploads([...uploads, ...newUploads])
+    dispatch(addUploads([...uploads, ...newUploads]))
   }
 
   const handleInputFileRefClick = () => {
@@ -211,6 +215,7 @@ export default function () {
     console.log("currentScene is not null")
     const updatedScenes = scenes.map((scene) => {
       const updatedScene = { ...scene }
+
       let images = uploads
       images.forEach((image) => {
         const { src, type } = image
@@ -227,12 +232,18 @@ export default function () {
 
         if (updatedScene.layers.length < 2) {
           updatedScene.layers.push(newLayer)
+          const updatedTemplate = editor.scene.exportToJSON()
+          const updatedPreview = editor.renderer.render(updatedTemplate)
+          // @ts-ignore
+          updatedScene.preview = updatedPreview
           setCurrentScene(updatedScene)
+          console.log("updated preview", updatedPreview)
           images.shift()
         }
       })
       console.log("length image", images.length)
 
+      console.log(updatedScene, "updatedScene")
       return updatedScene
     })
     console.log("1scence")
@@ -262,6 +273,24 @@ export default function () {
     setScenes(newPages)
     setCurrentScene(newPage)
   }, [scenes, currentDesign])
+
+  // handle when user upload multiple images at once and we just add image index 0 to canvas
+  let activeObject = useActiveObject()
+  const addToScence = () => {
+    const upload = uploads[0]
+    addImageToCanvas(upload)
+    handleAddImages()
+
+    editor.objects.setAsBackgroundImage()
+  }
+
+  // add all uploaded images to addImages slice
+  // const dispatch = useDispatch()
+  // push all uploaded images to addImages slice
+  const handleAddImages = () => {
+    dispatch(setUploads(uploads))
+    console.log("added ")
+  }
 
   React.useEffect(() => {
     // scence index 1
@@ -325,7 +354,7 @@ export default function () {
                 },
               }}
             >
-              Computer
+              Select File
             </Button>
             <Button
               onClick={dropImages}
@@ -339,7 +368,7 @@ export default function () {
                 },
               }}
             >
-              Add to all scenes
+              Add to Scence
             </Button>
             <Button
               onClick={addLogo}

@@ -71,9 +71,7 @@ class ApiService {
       }
     })
   }
-
   // TEMPLATES
-
   createTemplate(props: Partial<Template>): Promise<Template> {
     return new Promise((resolve, reject) => {
       this.base
@@ -264,21 +262,7 @@ class ApiService {
       }
     })
   }
-  //flaticon
-  fetchFlatIcon = async()=>{
-    try{
-      const { data } = await axios.get("https://api.flaticon.com/v3",{
-        headers:{
-          'Accept':'application/json',
-  'Authorization':'string'}
-      })
-
-      console.log(data);
-      return data.icons
-    }catch(err){
-      console.log(err)
-    }
-  }
+  
   //const apiKey = 'AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o';
   //   const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`;
 
@@ -298,18 +282,18 @@ class ApiService {
 
 
 
-  getPixabayImages = (props: { query: string; perPage: number; page: number }): Promise<Resource[]> => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { data } = await this.base.get(
-          `resources/pixabay/images?page=${props.page}&per_page=${props.perPage}&query=${props.query}`
-        )
-        resolve(data.images)
-      } catch (err) {
-        reject(err)
-      }
-    })
-  }
+  // getPixabayImages = (props: { query: string; perPage: number; page: number }): Promise<Resource[]> => {
+  //   return new Promise(async (resolve, reject) => {
+  //     try {
+  //       const { data } = await this.base.get(
+  //         `resources/pixabay/images?page=${props.page}&per_page=${props.perPage}&query=${props.query}`
+  //       )
+  //       resolve(data.images)
+  //     } catch (err) {
+  //       reject(err)
+  //     }
+  //   })
+  // }
 }
 
 export default new ApiService()

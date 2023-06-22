@@ -13,7 +13,7 @@ interface Props {
   index: number
   changePage: (p: IScene) => void
 }
-
+// const SceneItem = ({ isCurrentScene, scene, preview, index, changePage }: Props) => {
 const SceneItem = ({ isCurrentScene, scene, preview, index, changePage }: Props) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: scene.id })
   const sceneRef = React.useRef<HTMLDivElement>(null)
