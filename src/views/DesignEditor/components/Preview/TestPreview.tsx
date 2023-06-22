@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Block } from "baseui/block"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { Carousel } from "react-responsive-carousel"
@@ -7,69 +7,63 @@ import { IScene } from "@layerhub-io/types"
 import Loading from "~/components/Loading"
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 
-const Presentation = () => {
-  const [slides, setSlides] = React.useState<{ id: string; preview: string }[]>([])
-  const scenes = useDesignEditorScenes()
+const PreviewALl = () => {
   const editor = useEditor()
   const [loading, setLoading] = React.useState(true)
 
-  const loadSlides = React.useCallback(
-    async (scenes: IScene[]) => {
-      const slides = []
-      for (const scene of scenes) {
+  //+++++++++++++++--------- test code ++++++++++++++++++++++++//
+
+  const scences = useDesignEditorScenes()
+  const [images, setImages] = useState<{ id: string; preview: string }[]>([])
+  console.log(scences, "scences in preview ")
+  const loadImage = useCallback(
+    async (scences: IScene[]) => {
+      const images = []
+      for (const scene of scences) {
         const preview = (await editor.renderer.render(scene)) as string
-        slides.push({
+        images.push({
           id: scene.id,
           preview,
         })
       }
-      setSlides(slides)
+      setImages(images)
       setLoading(false)
     },
     [editor]
   )
-
-  React.useEffect(() => {
-    if (scenes && editor) {
+  useEffect(() => {
+    if (scences && editor) {
       const currentScene = editor.scene.exportToJSON()
-      const updatedScenes = scenes.map((scene) => {
+      const updatedScences = scences.map((scene) => {
         if (scene.id === currentScene.id) {
           return currentScene
         }
         return scene
       })
-      loadSlides(updatedScenes)
+      loadImage(updatedScences)
     }
-  }, [editor, scenes])
+  }, [editor, scences])
+
+  console.log(images, "images in preview version 2")
+  // end of test code
 
   return (
-    <Block
-      $style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        display: "flex",
-        position: "relative",
-      }}
-    >
-      {/* <Block $style={{ position: "absolute", maxWidth: "840px" }}>
-        {loading ? (
-          <Loading />
-        ) : (
-          <Carousel showIndicators={false} showThumbs={false} useKeyboardArrows={true} showStatus={false}>
-            {slides.map((page, index) => (
-              <img width="auto" height="100%" key={index} src={page.preview} />
-            ))}
-          </Carousel>
-        )}
-      </Block> */}
-     <Block className="">
-     {slides.map((page, index) => (
-        <img width="auto" height="100px" key={index} src={page.preview} />
-      ))}
-     </Block>
-    </Block>
+    <>
+    
+    <h1>Total Images {images.length}</h1>
+    <div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="flex flex-wrap gap-5">
+          {images.map((image, i) => (
+            <img className="w-64" key={i} src={image.preview} alt="preview" />
+          ))}
+        </div>
+      )}
+    </div>
+    </>
   )
 }
 
-export default Presentation
+export default PreviewALl
