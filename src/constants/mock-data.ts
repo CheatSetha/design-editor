@@ -1,4 +1,9 @@
 import logo from "../assets/logo.png";
+import setha from "../assets/setha.png"
+import istad from "../assets/logos/istad.png"
+import logov1 from "../assets/logos/logo.png"
+import mainlogoblack from "../assets/logos/mainlogo-blackv2.png"
+import mainlogolight from "../assets/logos/mainlogov2.png"
 export const graphics = [
   {
     left: 0,
@@ -13,7 +18,8 @@ export const graphics = [
     path: [["M", 60, 0], ["L", 0, 0], ["L", 0, 60], ["L", 60, 60], ["L", 60, 0], ["Z"]],
     fill: "#CBCBCB",
     metadata: {},
-    preview: "   https://cdn-icons-png.flaticon.com/512/649/649730.png ",
+    preview: "https://cdn-icons-png.flaticon.com/512/649/649730.png ",
+  
     // preview: "https://ik.imagekit.io/scenify/1635011325399_603749.png",
     id: "E2mcHFkwGA-MTJcfl3Abs",
   },
@@ -526,55 +532,15 @@ export const graphics = [
 ]
 
 export const vectors = [
-
-  "   https://cdn-icons-png.flaticon.com/512/3065/3065883.png ",
-  "   https://cdn-icons-png.flaticon.com/512/2700/2700361.png ",
-  "https://cdn-icons-png.flaticon.com/512/520/520464.png",
-  "   https://cdn-icons-png.flaticon.com/512/677/677684.png ",
-  "   https://cdn-icons-png.flaticon.com/512/3199/3199999.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924915.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924913.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924916.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924917.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924918.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924919.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924920.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924921.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924922.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924923.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924924.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924925.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924926.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924927.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924928.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924929.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924930.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924931.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924932.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924933.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924934.png ",
+  istad,
+  logov1,
+  mainlogoblack,
+  mainlogolight,
+  "https://images.pexels.com/photos/16424418/pexels-photo-16424418/free-photo-of-young-girl-in-a-japanese-school-uniform-taking-a-picture-with-a-camera.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Flag_map_of_Cambodia.svg/1249px-Flag_map_of_Cambodia.svg.png",
  
 
-  "   https://cdn-icons-png.flaticon.com/512/924/924937.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924938.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924939.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924940.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924941.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924942.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924943.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924944.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924945.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924946.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924947.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924948.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924949.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924950.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924951.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924952.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924953.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924954.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924955.png ",
-  "   https://cdn-icons-png.flaticon.com/512/924/924956.png ",
+ 
 
 
 ]

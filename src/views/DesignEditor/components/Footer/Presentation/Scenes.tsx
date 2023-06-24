@@ -161,7 +161,7 @@ const Scenes = () => {
     }
     setDraggedScene(null)
   }
-
+ 
   return (
     <DndContext
       modifiers={[restrictToFirstScrollableAncestor, restrictToHorizontalAxis]}

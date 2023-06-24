@@ -32,6 +32,7 @@ const SelectEditor = () => {
             gap: "2rem",
           }}
         >
+          
           <Block
             onClick={() => setSelectedEditor("GRAPHIC")}
             $style={{
@@ -69,7 +70,7 @@ const SelectEditor = () => {
             <Presentation size={36} />
             <Block>Generate Certificate</Block>
           </Block>
-         
+          
         </Block>
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
           <Button className="w-[1000px]" style={{ width: "180px", background:"#150259"}} onClick={() => setEditorType(selectedEditor)}>

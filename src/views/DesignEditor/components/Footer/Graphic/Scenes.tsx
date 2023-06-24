@@ -18,7 +18,7 @@ import SceneContextMenu from "./SceneContextMenu"
 const Scenes = () => {
   const scenes = useDesignEditorPages()
   // distructure individual functions from DesignEditorContext
-  const { setScenes, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
+  const { setScenes, setContextMenuTimelineRequest, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
     React.useContext(DesignEditorContext)
   // editor is a reference to the DesignEditor instance and use for manipulating the design
   const editor = useEditor()
@@ -175,6 +175,15 @@ const Scenes = () => {
     setDraggedScene(null)
   }
 
+  const makeDuplicateScene = () => {
+    const currentScene = scenes.find((s) => s.id === contextMenuTimelineRequest.id)
+    const updatedScenes = [...scenes, { ...currentScene, id: nanoid() }]
+    // @ts-ignore
+    setScenes(updatedScenes)
+    setContextMenuTimelineRequest({ ...contextMenuTimelineRequest, visible: false })
+  }
+  console.log({ contextMenuTimelineRequest }, "contextMenuTimelineRequest")
+
   return (
     <DndContext
       modifiers={[restrictToFirstScrollableAncestor, restrictToHorizontalAxis]}
@@ -192,33 +201,18 @@ const Scenes = () => {
             {contextMenuTimelineRequest.visible && <SceneContextMenu />}
 
             <SortableContext items={scenes} strategy={horizontalListSortingStrategy}>
-              {/*{scenes.map((page, index) => (*/}
-              {/*  <SceneItem*/}
-              {/*    key={index}*/}
-              {/*    isCurrentScene={page.id === currentScene?.id}*/}
-              {/*    // isCurrentScene={true}*/}
-              {/*    scene={page}*/}
-              {/*    index={index}*/}
-              {/*    changePage={changePage}*/}
-              {/*    preview={*/}
-              {/*      currentPreview && page.id === currentScene?.id ? currentPreview : page.preview ? page.preview : ""*/}
-              {/*      // currentPreview*/}
-              {/*    }*/}
-              {/*  />*/}
-              {/*))}*/}
-
-              {scenes.slice(0, 1).map((page, index) => (
+              {scenes.map((s, i) => (
                 <SceneItem
-                  key={index}
-                  isCurrentScene={page.id === currentScene?.id}
-                  scene={page}
-                  index={index}
+                  key={i}
+                  isCurrentScene={s.id === currentScene?.id}
+                  scene={s}
+                  index={i}
                   changePage={changePage}
-                  preview={
-                    currentPreview && page.id === currentScene?.id ? currentPreview : page.preview ? page.preview : ""
-                  }
+                  preview={currentPreview && s.id === currentScene?.id ? currentPreview : s.preview ? s.preview : ""}
                 />
               ))}
+              
+
               <div
                 style={{
                   background: "#ffffff",
@@ -226,8 +220,8 @@ const Scenes = () => {
                 }}
               >
                 {/*handle add new scence*/}
-                {/* <div
-                  onClick={addScene}
+                <div
+                  onClick={makeDuplicateScene}
                   className={css({
                     width: "100px",
                     height: "56px",
@@ -239,7 +233,7 @@ const Scenes = () => {
                   })}
                 >
                   <Add size={20} />
-                </div> */}
+                </div>
               </div>
             </SortableContext>
             <DragOverlay>

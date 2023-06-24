@@ -1,15 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { Block } from "baseui/block"
-import { useEditor } from "@layerhub-io/react"
-import { useSelector } from "react-redux"
-import { selectUploads } from "~/store/slices/uploads/selectors"
-import { template } from "lodash"
-import { selectDesigns } from "~/store/slices/designs/selectors"
+import { useEditor, useFrame } from "@layerhub-io/react"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
-import { Root } from "react-dom/client"
 import { IScene } from "@layerhub-io/types"
 import { Link } from "react-router-dom"
-// import { setImages } from "~/store/slices/images/imagesSlice"
+import useDesignEditorUpload from "~/hooks/useDesignEditorUpload"
 
 const Graphic = () => {
   const editor = useEditor()
@@ -21,8 +16,10 @@ const Graphic = () => {
   //+++++++++++++++--------- test code ++++++++++++++++++++++++//
 
   const scences = useDesignEditorScenes()
+  const uploads = useDesignEditorUpload()
+  console.log(uploads, "uploads in preview context upload")
   const [images, setImages] = useState<{ id: string; preview: string }[]>([])
-  console.log(scences, "scences in preview ")
+  // console.log(scences, "scences in preview ")
   const loadImage = useCallback(
     async (scences: IScene[]) => {
       const images = []
@@ -51,14 +48,13 @@ const Graphic = () => {
     }
   }, [editor, scences])
 
-  console.log(images, "images in preview version 2")
   // end of test code
 
   let template
   const makePreview = React.useCallback(async () => {
     if (editor) {
       template = editor.scene.exportToJSON()
-      console.log(template, "template")
+      // console.log(template, "template")
 
       const image = (await editor.renderer.render(template)) as string
 
@@ -70,10 +66,10 @@ const Graphic = () => {
   React.useEffect(() => {
     makePreview()
   }, [editor])
-  console.log(state, "state image")
+  // console.log(state, "state image")
 
   return (
-    <div>
+    <div className="w-full">
       <Link className="flex justify-center mt-5" to={"/previewall"}>
         <button
           type="button"
@@ -85,17 +81,15 @@ const Graphic = () => {
 
       <Block
         $style={{
-          flex: 1,
           alignItems: "center",
           justifyContent: "center",
           display: "flex",
           padding: "5rem",
           overflow: "auto",
+          width: "100%",
         }}
       >
-        {!loading && <img width="auto" height="100%" src={state.image} />}
-
-        {/* {scences && scences.map((s, index) => <img key={index} width="auto" height="100%" src={s.layers[1].src} />)} */}
+        {!loading && <img className="w-auto h-[600px] " src={state.image} />}
       </Block>
     </div>
   )

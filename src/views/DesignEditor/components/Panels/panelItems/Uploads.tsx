@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Block } from "baseui/block"
 import AngleDoubleLeft from "~/components/Icons/AngleDoubleLeft"
 import Scrollable from "~/components/Scrollable"
@@ -9,12 +9,16 @@ import useSetIsSidebarOpen from "~/hooks/useSetIsSidebarOpen"
 import { nanoid } from "nanoid"
 import { captureFrame, loadVideoResource } from "~/utils/video"
 import { ILayer } from "@layerhub-io/types"
-import { toBase64 } from "~/utils/data"
+import { toBase64} from "~/utils/data"
 import { getDefaultTemplate } from "~/constants/design-editor"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { DesignEditorContext } from "~/contexts/DesignEditor"
 import { useDispatch } from "react-redux"
 import { addUploads } from "~/store/slices/uploadImage/uploadImageSlice"
+import { current } from "@reduxjs/toolkit"
+import useAppContext from "~/hooks/useAppContext"
+import { AppContext } from "~/contexts/AppContext"
+
 
 // export default function () {
 //   const inputFileRef = React.useRef<HTMLInputElement>(null)
@@ -123,19 +127,39 @@ import { addUploads } from "~/store/slices/uploadImage/uploadImageSlice"
 //   )
 // }
 export default function () {
+  const scenes = useDesignEditorScenes()
   const inputFileRef = React.useRef<HTMLInputElement>(null)
-  const [uploads, setUploads] = React.useState<any[]>([])
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
 
-  const dispatch = useDispatch()
+  const { uploads, setUploads } = useContext(AppContext)
 
-  console.log("uploads", uploads)
+
+
+  // const fileToBlob = (file: File): Promise<Blob> => {
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader()
+  //     reader.readAsArrayBuffer(file)
+  //     reader.onload = () => {
+  //       const blob = new Blob([reader.result as ArrayBuffer], { type: file.type })
+  //       resolve(blob)
+  //     }
+  //     reader.onerror = () => {
+  //       reject(new Error("Failed to convert file to blob"))
+  //     }
+  //   })
+  // }
+
+
   const handleDropFiles = async (files: FileList) => {
     const uploadPromises = Array.from(files).map(async (file) => {
       const isVideo = file.type.includes("video")
       const base64 = (await toBase64(file)) as string
+   
+      console.log("blob", base64)
+      
       let preview = base64
+     
       if (isVideo) {
         const video = await loadVideoResource(base64)
         const frame = await captureFrame(video)
@@ -153,60 +177,57 @@ export default function () {
 
       return upload
     })
-
     const newUploads = await Promise.all(uploadPromises)
     setUploads([...uploads, ...newUploads])
-    dispatch(addUploads([...uploads, ...newUploads]))
   }
+  console.log("upload blob",uploads)
+
+
+
+
+
+
 
   const handleInputFileRefClick = () => {
     inputFileRef.current?.click()
   }
 
+
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleDropFiles(e.target.files!)
+    
   }
+
+
 
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
   }
   // ------------------| test code here |------------------//
-  //add logo
-  const addLogo = () => {
-    // Handle the case where currentScene is null or undefined
-    if (!currentScene) {
-      console.log("currentScene is null")
-      return
+  const applyAll = async () => {
+    console.log("all scenes", scenes)
+
+    for (let i = 0; i < uploads.length; i++) {
+      const { src, id } = uploads[i]
+      // Clone the object of scenes[0]
+      const image = JSON.parse(JSON.stringify(scenes[0]))
+      console.log("image in scene", image)
+
+      // Push the modified image object to scenes array
+      image.id = id
+      image.layers[1].preview = src
+      image.layers[1].src = src
+      image.layers[1].id = id
+      image.preview = ""
+      console.log("image in scene already push", image)
+      // setScenes(image);
+      scenes.push(image)
+      console.log("all scenes", scenes)
     }
-    console.log("currentScene is not null")
-    const updatedScenes = scenes.map((scene) => {
-      const updatedScene = { ...scene }
-      uploads.forEach((upload) => {
-        const { src, type } = upload
-        const newLayer = {
-          id: nanoid(),
-          name: "StaticImage",
-
-          left: 275.0000000000001,
-          top: 261.34000000000003,
-          opacity: 1,
-          originX: "left",
-          originY: "top",
-          scaleX: 0.2,
-          scaleY: 0.2,
-          type: "StaticImage",
-          src: src,
-          metadata: {},
-        }
-        updatedScene.layers.push(newLayer)
-      })
-      setCurrentScene(updatedScene)
-      return updatedScene
-    })
-    setScenes(updatedScenes)
   }
+  
+  
 
-  const scenes = useDesignEditorScenes()
   const dropImages = async () => {
     if (!currentScene) {
       console.log("currentScene is null")
@@ -253,75 +274,7 @@ export default function () {
     React.useContext(DesignEditorContext)
 
   const [currentPreview, setCurrentPreview] = React.useState("")
-  //handle create new scene when upload new image
-  const handleAddNewScene = React.useCallback(async () => {
-    setCurrentPreview("")
-    const updatedTemplate = editor.scene.exportToJSON()
-    const updatedPreview = await editor.renderer.render(updatedTemplate)
-
-    const updatedPages = scenes.map((p) => {
-      if (p.id === updatedTemplate.id) {
-        return { ...updatedTemplate, preview: updatedPreview }
-      }
-      return p
-    })
-
-    const defaultTemplate = getDefaultTemplate(currentDesign.frame)
-    const newPreview = await editor.renderer.render(defaultTemplate)
-    const newPage = { ...defaultTemplate, id: nanoid(), preview: newPreview } as any
-    const newPages = [...updatedPages, newPage] as any[]
-    setScenes(newPages)
-    setCurrentScene(newPage)
-  }, [scenes, currentDesign])
-
-  // handle when user upload multiple images at once and we just add image index 0 to canvas
-  let activeObject = useActiveObject()
-  const addToScence = () => {
-    const upload = uploads[0]
-    addImageToCanvas(upload)
-    handleAddImages()
-
-    editor.objects.setAsBackgroundImage()
-  }
-
-  // add all uploaded images to addImages slice
-  // const dispatch = useDispatch()
-  // push all uploaded images to addImages slice
-  const handleAddImages = () => {
-    dispatch(setUploads(uploads))
-    console.log("added ")
-  }
-
-  React.useEffect(() => {
-    // scence index 1
-    if (uploads.length > 1 && scenes.length < uploads.length) {
-      handleAddNewScene()
-    }
-  }, [uploads, handleAddNewScene])
-
-  //   safe code
-
-  // create new scene based on number of uploaded images
-  // React.useEffect(() => {
-
-  //   console.log(uploads.length, scenes.length, 'length')
-
-  //   // scence index 1
-
-  //   if (uploads.length > 0 && scenes.length <= uploads.length) {
-
-  //     handleAddNewScene()
-  //     // add image to scence base on index
-  //     const upload = uploads[scenes.length]
-  //     console.log(upload,'uploaded image ')
-  //     addImageToCanvas(upload)
-
-  //   //   add image to each scene one image per scene
-
-  //   }
-  // }, [uploads, handleAddNewScene])
-
-  // ------------------| test code here |------------------//
+ 
 
   return (
     <DropZone handleDropFiles={handleDropFiles}>
@@ -354,38 +307,15 @@ export default function () {
                 },
               }}
             >
-              Select File
+              Select Folder
             </Button>
-            <Button
-              onClick={dropImages}
-              size={SIZE.compact}
-              overrides={{
-                Root: {
-                  style: {
-                    width: "100%",
-                    marginTop: "0.75rem",
-                  },
-                },
-              }}
-            >
-              Add to Scence
-            </Button>
-            <Button
-              onClick={addLogo}
-              size={SIZE.compact}
-              overrides={{
-                Root: {
-                  style: {
-                    width: "100%",
-                    marginTop: "0.75rem",
-                  },
-                },
-              }}
-            >
-              addLogo
-            </Button>
+      
+
+           
 
             <input
+            // @ts-ignore
+              webkitdirectory="true"
               onChange={handleFileInput}
               type="file"
               id="file"
@@ -393,6 +323,7 @@ export default function () {
               style={{ display: "none" }}
               multiple
             />
+          
 
             <div
               style={{
@@ -413,7 +344,7 @@ export default function () {
                   onClick={() => addImageToCanvas(upload)}
                 >
                   <div>
-                    <img width="100%" src={upload.preview ? upload.preview : upload.url} alt="preview" />
+                    <img className="rounded-[10px]" width="100%" src={upload.preview ? upload.preview : upload.url} alt="preview" />
                   </div>
                 </div>
               ))}

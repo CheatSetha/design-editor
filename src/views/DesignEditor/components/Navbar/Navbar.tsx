@@ -2,7 +2,6 @@ import React from "react"
 import { styled, ThemeProvider, DarkTheme } from "baseui"
 import { Theme } from "baseui/theme"
 import { Button, KIND } from "baseui/button"
-import Logo from "~/components/Icons/Logo"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
 import Play from "~/components/Icons/Play"
 import { Block } from "baseui/block"
@@ -13,8 +12,7 @@ import { loadTemplateFonts } from "~/utils/fonts"
 import { loadVideoEditorAssets } from "~/utils/video"
 import DesignTitle from "./DesignTitle"
 import { IDesign } from "~/interfaces/DesignEditor"
-import Github from "~/components/Icons/Github"
-import logo from "~/assets/logo.png"
+import logo from "~/assets/logos/mainlogov2.png"
 
 const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   height: "64px",
