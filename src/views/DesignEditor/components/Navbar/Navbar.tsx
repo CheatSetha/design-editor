@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext, useEffect } from "react"
 import { styled, ThemeProvider, DarkTheme } from "baseui"
 import { Theme } from "baseui/theme"
 import { Button, KIND } from "baseui/button"
@@ -13,6 +13,9 @@ import { loadVideoEditorAssets } from "~/utils/video"
 import DesignTitle from "./DesignTitle"
 import { IDesign } from "~/interfaces/DesignEditor"
 import logo from "~/assets/logos/mainlogov2.png"
+import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
+import { AppContext } from "~/contexts/AppContext"
+import { add } from "lodash"
 
 const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   height: "64px",
@@ -29,46 +32,47 @@ const Navbar = () => {
   const editor = useEditor()
   const inputFileRef = React.useRef<HTMLInputElement>(null)
 
-
   /**
-   * @todo 
-   * 
+   * @todo
+   *
    */
   // for editor design
-      const parseGraphicJSON = () => {
-        const currentScene = editor.scene.exportToJSON()
+  const parseGraphicJSON = () => {
+    const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
     // the current scene is updated with the current scene's layers
-        const updatedScenes = scenes.map((scn) => {
-          if (scn.id === currentScene.id) {
-            return {
-              id: currentScene.id,
-              layers: currentScene.layers,
-              name: currentScene.name,
-            }
-          }
-          return {
-            id: scn.id,
-            layers: scn.layers,
-            name: scn.name,
-          }
-        })
-
-        if (currentDesign) {
-          const graphicTemplate: IDesign = {
-            id: currentDesign.id,
-            type: "GRAPHIC",
-            name: currentDesign.name,
-            frame: currentDesign.frame,
-            scenes: updatedScenes,
-            metadata: {},
-            preview: "",
-          }
-          makeDownload(graphicTemplate)
-        } else {
-          console.log("NO CURRENT DESIGN")
+    addScene()
+  
+    const updatedScenes = scenes.map((scn) => {
+      if (scn.id === currentScene.id) {
+        return {
+          id: currentScene.id,
+          layers: currentScene.layers,
+          name: currentScene.name,
         }
       }
+      return {
+        id: scn.id,
+        layers: scn.layers,
+        name: scn.name,
+      }
+    })
+
+    if (currentDesign) {
+      const graphicTemplate: IDesign = {
+        id: currentDesign.id,
+        type: "GRAPHIC",
+        name: currentDesign.name,
+        frame: currentDesign.frame,
+        scenes: updatedScenes,
+        metadata: {},
+        preview: "",
+      }
+      makeDownload(graphicTemplate)
+    } else {
+      console.log("NO CURRENT DESIGN")
+    }
+  }
 
   const parsePresentationJSON = () => {
     const currentScene = editor.scene.exportToJSON()
@@ -141,6 +145,7 @@ const Navbar = () => {
   }
 
   const makeDownload = (data: Object) => {
+    addScene()
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
     const a = document.createElement("a")
     a.href = dataStr
@@ -149,21 +154,50 @@ const Navbar = () => {
   }
 
   const makeDownloadTemplate = async () => {
+    addScene()
+ 
     if (editor) {
       if (editorType === "GRAPHIC") {
         return parseGraphicJSON()
       } else if (editorType === "PRESENTATION") {
         return parsePresentationJSON()
       } else {
-      return parseVideoJSON()
+        return parseVideoJSON()
       }
     }
   }
 
+  const scences = useDesignEditorScenes()
+  const { uploads, setUploads } = useContext(AppContext)
+  const addScene = React.useCallback(async () => {
+    for (let i = 0; i < uploads.length; i++) {
+      const { src, id } = uploads[i]
+      const template = editor.scene.exportToJSON()
+      const previewImg = JSON.parse(JSON.stringify(template))
+      console.log(template, "template")
+
+      // Push the modified image object to scenes array
+      previewImg.id = id
+      previewImg.layers[1].preview = src
+      previewImg.layers[1].src = src
+      previewImg.layers[1].id = id
+      previewImg.preview = ""
+      // console.log("image in scene already push", previewImg)
+      // setScenes(image);
+      //remove scence index 0
+
+      scences.push(previewImg)
+      console.log("all scenes ", scences)
+    }
+    scences.splice(0, 1)
+
+    // remove all element in upload array
+    setUploads([])
+  }, [])
+console.log("sccene in nav", scenes);
   const loadGraphicTemplate = async (payload: IDesign) => {
     const scenes = []
     const { scenes: scns, ...design } = payload
-    
 
     for (const scn of scns) {
       const scene: IScene = {
@@ -175,7 +209,6 @@ const Navbar = () => {
       }
       const loadedScene = await loadVideoEditorAssets(scene)
       await loadTemplateFonts(loadedScene)
-  
 
       const preview = (await editor.renderer.render(loadedScene)) as string
       scenes.push({ ...loadedScene, preview })
@@ -265,6 +298,9 @@ const Navbar = () => {
       reader.readAsText(file)
     }
   }
+  useEffect(()=>{
+    addScene()
+  },[scences])
 
   return (
     // @ts-ignore
@@ -272,11 +308,9 @@ const Navbar = () => {
       <Container>
         {/* logo section */}
         {/* <div style={{ color: "#ffffff" }}> */}
-          {/* <Logo size={36} /> */}
-          <img src={logo} alt="logo" 
-          style={{width: "100px"}}
-          />
-         
+        {/* <Logo size={36} /> */}
+        <img src={logo} alt="logo" style={{ width: "100px" }} />
+
         {/* </div> */}
         <DesignTitle />
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
@@ -319,7 +353,6 @@ const Navbar = () => {
           </Button>
           <Button
             size="compact"
-            
             onClick={() => setDisplayPreview(true)}
             kind={KIND.tertiary}
             overrides={{
@@ -330,25 +363,8 @@ const Navbar = () => {
               },
             }}
           >
-            <Play size={24}/>  preview
+            <Play size={24} /> preview
           </Button>
-
-          {/* <Button
-            size="compact"
-            onClick={() => window.location.replace("https://github.com/layerhub-io/react-design-editor")}
-            kind={KIND.tertiary}
-          >
-            <Github size={24} />
-          </Button> */}
-
-          {/* <Button
-            style={{ marginLeft: "0.5rem" }}
-            size="compact"
-            onClick={() => window.location.replace("https://editor.layerhub.io")}
-            kind={KIND.primary}
-          >
-            Try PRO
-          </Button> */}
         </Block>
       </Container>
     </ThemeProvider>

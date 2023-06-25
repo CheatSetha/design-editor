@@ -79,18 +79,18 @@ const Graphic = () => {
         </button>
       </Link>
 
-      <Block
-        $style={{
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-          padding: "5rem",
-          overflow: "auto",
-          width: "100%",
-        }}
+      <div className="flex justify-center p-2 items-center overflow-auto w-full mt-5"
+        // $style={{
+        //   alignItems: "center",
+        //   justifyContent: "center",
+        //   display: "flex",
+        //   padding: "5rem",
+        //   overflow: "auto",
+        //   width: "100%",
+        // }}
       >
         {!loading && <img className="w-auto h-[600px] " src={state.image} />}
-      </Block>
+      </div>
     </div>
   )
 }

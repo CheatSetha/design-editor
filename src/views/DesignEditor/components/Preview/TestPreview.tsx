@@ -8,6 +8,7 @@ import Loading from "~/components/Loading"
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import useDesignEditorUpload from "~/hooks/useDesignEditorUpload"
 import { AppContext } from "~/contexts/AppContext"
+import { Link } from "react-router-dom"
 
 const PreviewALl = () => {
   const editor = useEditor()
@@ -63,23 +64,7 @@ const PreviewALl = () => {
     setUploads([])
   }, [])
 
-  // for (let i = 0; i < uploads.length; i++) {
-  //   const { src, id } = uploads[i]
-  //   const template = editor.scene.exportToJSON()
-  //   const previewImg = JSON.parse(JSON.stringify(template))
-  //   // console.log(template, "template")
 
-  //   // Push the modified image object to scenes array
-  //   previewImg.id = id
-  //   previewImg.layers[1].preview = src
-  //   previewImg.layers[1].src = src
-  //   previewImg.layers[1].id = id
-  //   previewImg.preview = ""
-  //   // console.log("image in scene already push", previewImg)
-  //   // setScenes(image);
-  //   scences.push(previewImg)
-  //   console.log("all scenes ", scences)
-  // }
 
   useEffect(() => {
     addScene()
@@ -95,7 +80,14 @@ const PreviewALl = () => {
     }
   }, [])
   if (scences.length === 0) {
-    return <div className="w-full h-screen flex justify-center items-center text-5xl text-green-800">No Image</div>
+    return <div className="w-full h-screen flex-col flex justify-center items-center text-5xl text-green-800">
+      <p>There is no scene to preview</p>
+      <div>
+        <Link to={'/'}>
+        <button className="p-2.5 bg-slate-600 text-white rounded-[16px] mt-3 text-xl font-light px-10">Back To Home Page</button>
+        </Link>
+      </div>
+    </div>
   }
 
   return (

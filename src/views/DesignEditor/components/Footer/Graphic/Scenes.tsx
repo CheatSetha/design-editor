@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { useStyletron } from "baseui"
 import Add from "~/components/Icons/Add"
 import useDesignEditorPages from "~/hooks/useDesignEditorScenes"
@@ -14,6 +14,8 @@ import SceneItem from "./SceneItem"
 import { Block } from "baseui/block"
 import useContextMenuTimelineRequest from "~/hooks/useContextMenuTimelineRequest"
 import SceneContextMenu from "./SceneContextMenu"
+import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
+import { AppContext } from "~/contexts/AppContext"
 
 const Scenes = () => {
   const scenes = useDesignEditorPages()
@@ -70,8 +72,12 @@ const Scenes = () => {
       }
     }
   }, [editor])
+  const scences = useDesignEditorScenes()
+  const { uploads, setUploads } = useContext(AppContext)
+
 
   React.useEffect(() => {
+
     if (editor) {
       if (currentScene) {
         updateCurrentScene(currentScene)
@@ -211,7 +217,6 @@ const Scenes = () => {
                   preview={currentPreview && s.id === currentScene?.id ? currentPreview : s.preview ? s.preview : ""}
                 />
               ))}
-              
 
               <div
                 style={{
