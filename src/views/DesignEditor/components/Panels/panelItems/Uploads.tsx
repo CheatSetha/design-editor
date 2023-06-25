@@ -186,6 +186,19 @@ export default function () {
             >
               Select Folder
             </Button>
+            <Button
+              onClick={handleInputFileRefClick}
+              size={SIZE.compact}
+              overrides={{
+                Root: {
+                  style: {
+                    width: "100%",
+                  },
+                },
+              }}
+            >
+              Select Files
+            </Button>
       
 
            

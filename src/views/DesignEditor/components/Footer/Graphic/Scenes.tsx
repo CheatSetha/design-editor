@@ -218,13 +218,13 @@ const Scenes = () => {
                 />
               ))}
 
-              <div
+              {/* <div
                 style={{
                   background: "#ffffff",
                   padding: "1rem 1rem 1rem 0.5rem",
                 }}
               >
-                {/*handle add new scence*/}
+        
                 <div
                   onClick={makeDuplicateScene}
                   className={css({
@@ -239,7 +239,7 @@ const Scenes = () => {
                 >
                   <Add size={20} />
                 </div>
-              </div>
+              </div> */}
             </SortableContext>
             <DragOverlay>
               {draggedScene ? (
