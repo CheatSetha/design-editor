@@ -57,10 +57,6 @@ const DropZone = ({ children, handleDropFiles }: Props) => {
       dragCounter = 0
     }
   }
- 
-
-
-
   return (
     <div style={{ display: "flex", height: "100%", position: "relative", flex: 1 }} ref={dropRef}>
       {isDragging && (

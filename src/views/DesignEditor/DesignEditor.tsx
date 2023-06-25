@@ -6,10 +6,14 @@ import VideoEditor from "./VideoEditor"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
 import Preview from "./components/Preview"
 import ContextMenu from "./components/ContextMenu"
+import { set } from "lodash"
 
 const DesignEditor = () => {
   const editorType = useEditorType()
-  const { displayPreview, setDisplayPreview } = useDesignEditorContext()
+
+  
+  const { displayPreview, setDisplayPreview,setEditorType } = useDesignEditorContext()
+  
 
   return (
     <>
