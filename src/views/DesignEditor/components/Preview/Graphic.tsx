@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { Block } from "baseui/block"
 import { useEditor, useFrame } from "@layerhub-io/react"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { IScene } from "@layerhub-io/types"
@@ -80,14 +79,6 @@ const Graphic = () => {
       </Link>
 
       <div className="flex justify-center p-2 items-center overflow-auto w-full mt-5"
-        // $style={{
-        //   alignItems: "center",
-        //   justifyContent: "center",
-        //   display: "flex",
-        //   padding: "5rem",
-        //   overflow: "auto",
-        //   width: "100%",
-        // }}
       >
         {!loading && <img className="w-auto h-[600px] " src={state.image} />}
       </div>

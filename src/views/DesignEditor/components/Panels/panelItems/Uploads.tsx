@@ -22,6 +22,7 @@ import { AppContext } from "~/contexts/AppContext"
 export default function () {
   const scenes = useDesignEditorScenes()
   const inputFileRef = React.useRef<HTMLInputElement>(null)
+  const inputFileSingleRef = React.useRef<HTMLInputElement>(null)
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
 
@@ -68,6 +69,10 @@ export default function () {
   const handleInputFileRefClick = () => {
     inputFileRef.current?.click()
   }
+  const handleInputSingleFileRefClick = () => {
+    inputFileSingleRef.current?.click()
+
+  }
 
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,30 +84,9 @@ export default function () {
 
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
+   
   }
-  // ------------------| test code here |------------------//
-  const applyAll = async () => {
-    console.log("all scenes", scenes)
 
-    for (let i = 0; i < uploads.length; i++) {
-      const { src, id } = uploads[i]
-      // Clone the object of scenes[0]
-      const image = JSON.parse(JSON.stringify(scenes[0]))
-      console.log("image in scene", image)
-
-      // Push the modified image object to scenes array
-      image.id = id
-      image.layers[1].preview = src
-      image.layers[1].src = src
-      image.layers[1].id = id
-      image.preview = ""
-      console.log("image in scene already push", image)
-      // setScenes(image);
-      scenes.push(image)
-      console.log("all scenes", scenes)
-    }
-  }
-  
   
 
   const dropImages = async () => {
@@ -139,7 +123,7 @@ export default function () {
           images.shift()
         }
       })
-      console.log("length image", images.length)
+
 
       console.log(updatedScene, "updatedScene")
       return updatedScene
@@ -150,7 +134,6 @@ export default function () {
   const { setScenes, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
     React.useContext(DesignEditorContext)
 
-  const [currentPreview, setCurrentPreview] = React.useState("")
  
 
   return (
@@ -184,34 +167,49 @@ export default function () {
                 },
               }}
             >
-              Select Folder
+              Select a batch of images
             </Button>
             <Button
-              onClick={handleInputFileRefClick}
+              onClick={handleInputSingleFileRefClick}
               size={SIZE.compact}
               overrides={{
                 Root: {
                   style: {
                     width: "100%",
+                    marginTop: "0.5rem",
                   },
                 },
               }}
             >
-              Select Files
+              Select an image
             </Button>
       
 
            
 
             <input
-            // @ts-ignore
-              webkitdirectory="true"
+           
               onChange={handleFileInput}
               type="file"
               id="file"
               ref={inputFileRef}
               style={{ display: "none" }}
+              // @ts-ignore
+              webkitdirectory="true"
+              mozdirectory="true"
+              directory="true"
               multiple
+        
+            />
+            <input
+         
+              onChange={handleFileInput}
+              type="file"
+              id="file"
+              ref={inputFileSingleRef}
+              style={{ display: "none" }}
+              multiple
+           
             />
           
 

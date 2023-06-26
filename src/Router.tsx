@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import DesignEditor from "~/views/DesignEditor"
 import Dashboard from "~/views/Dashboard"
 import PreviewALl from "./views/DesignEditor/components/Preview/TestPreview"
-import Testv2 from "./views/DesignEditor/components/Preview/TestPre"
+
 import DesignEditorWatermak from "./views/DesignEditor/WatermarkRoute"
 import DesignEditorCertificate from "./views/DesignEditor/Certificate"
 
@@ -14,7 +14,6 @@ const Router = () => {
         <Route path="/manage" element={<Dashboard />} />
         <Route path="/" element={<DesignEditor />} />
         <Route path="/previewall" element={<PreviewALl />} />
-        <Route path="/t2" element={<Testv2 />} />
         <Route path="/watermark" element={<DesignEditorWatermak />} />
         <Route path="/generatecertificate" element={<DesignEditorCertificate/>} />
 

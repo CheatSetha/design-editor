@@ -61,3 +61,13 @@ input[type="number"] {
   .scrollable-element::-webkit-scrollbar-thumb {
     background-color: #888;
   }
+
+  #scrollbar::-webkit-scrollbar {
+    width: 7px;
+
+   
+  }
+  #scrollbar::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #f7f7f7;
+  }

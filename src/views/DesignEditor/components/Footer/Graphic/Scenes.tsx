@@ -41,7 +41,7 @@ const Scenes = () => {
       },
     }),
   ]
-
+console.log("frame ",frame);
   React.useEffect(() => {
     // check if the current scene is loaded in the editor
     if (editor && scenes && currentScene) {
@@ -84,7 +84,10 @@ const Scenes = () => {
       } else {
         const defaultTemplate = getDefaultTemplate({
           width: 1200,
-          height: 1200,
+          height: 800,
+          // set width and height to the current frame width and height base on width and height of added images
+          // width: frame.width,
+          // height: frame.height,
         })
         setCurrentDesign({
           id: nanoid(),
@@ -183,12 +186,13 @@ const Scenes = () => {
 
   const makeDuplicateScene = () => {
     const currentScene = scenes.find((s) => s.id === contextMenuTimelineRequest.id)
+  
     const updatedScenes = [...scenes, { ...currentScene, id: nanoid() }]
     // @ts-ignore
     setScenes(updatedScenes)
     setContextMenuTimelineRequest({ ...contextMenuTimelineRequest, visible: false })
   }
-  console.log({ contextMenuTimelineRequest }, "contextMenuTimelineRequest")
+
 
   return (
     <DndContext

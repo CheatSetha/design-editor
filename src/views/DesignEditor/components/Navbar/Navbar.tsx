@@ -189,7 +189,7 @@ const Navbar = () => {
       scences.push(previewImg)
       console.log("all scenes ", scences)
     }
-    scences.splice(0, 1)
+    // scences.splice(0, 1)
 
     // remove all element in upload array
     setUploads([])
