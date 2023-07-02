@@ -11,7 +11,7 @@ const initialState: FontsState = {
   fonts: [],
   result: [],
 }
-
+// for search font 
 function fuzzySearch(items: IFontFamily[], query: string) {
   let search = query.split(" ")
   let ret = items.reduce((found, i) => {

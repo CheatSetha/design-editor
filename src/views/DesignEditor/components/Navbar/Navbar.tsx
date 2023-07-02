@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { styled, ThemeProvider, DarkTheme } from "baseui"
 import { Theme } from "baseui/theme"
 import { Button, KIND } from "baseui/button"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
 import Play from "~/components/Icons/Play"
 import { Block } from "baseui/block"
-import { useEditor } from "@layerhub-io/react"
+import { useEditor, useFrame } from "@layerhub-io/react"
 import useEditorType from "~/hooks/useEditorType"
 import { IScene } from "@layerhub-io/types"
 import { loadTemplateFonts } from "~/utils/fonts"
@@ -15,7 +15,9 @@ import { IDesign } from "~/interfaces/DesignEditor"
 import logo from "~/assets/logos/mainlogov2.png"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { AppContext } from "~/contexts/AppContext"
-import { add } from "lodash"
+import { add, template } from "lodash"
+import useAppContext from "~/hooks/useAppContext"
+import { nanoid } from "nanoid"
 
 const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   height: "64px",
@@ -30,20 +32,29 @@ const Navbar = () => {
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
   const editorType = useEditorType()
   const editor = useEditor()
+  const {uploadTemp}=useAppContext()
   const inputFileRef = React.useRef<HTMLInputElement>(null)
+  const scences = useDesignEditorScenes()
+  const frame = useFrame()
 
-  /**
-   * @todo
-   *
-   */
-  // for editor design
-  const parseGraphicJSON = () => {
+
+  const [loading,setLoading]= useState(false)
+
+
+console.log(uploadTemp,"uploadTemp");
+console.log(frame,"frame");
+
+  // handle template upload to server
+  const handleUpload = async (): Promise<void> => {
+    setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
     // the current scene is updated with the current scene's layers
-    addScene()
-  
+   
+ 
+
     const updatedScenes = scenes.map((scn) => {
+      console.log(scn, "scn");
       if (scn.id === currentScene.id) {
         return {
           id: currentScene.id,
@@ -63,7 +74,69 @@ const Navbar = () => {
         id: currentDesign.id,
         type: "GRAPHIC",
         name: currentDesign.name,
-        frame: currentDesign.frame,
+        frame: frame,
+        scenes: updatedScenes,
+        metadata: {},
+        preview: "",
+      }
+
+
+      let template = graphicTemplate
+      const data = {
+        editorJson: template,
+        createdBy: 32, // add createdBy property
+        folderName: uploadTemp.folderName, // add folderName property
+        // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
+      }
+      const response = await fetch("http://136.228.158.126:8002/api/v1/watermarks/generate-watermark", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+      const result = await response.json()
+      setLoading(false)
+      console.log(result, "result")
+      // if success, redirect to download url
+      if (result.code === 200) {
+        window.location.href = result.data.downloadUrl
+      }
+    } else {
+      console.log("NO CURRENT DESIGN")
+    }
+  }
+
+  const parseGraphicJSON = () => {
+    const currentScene = editor.scene.exportToJSON()
+    // udpatedScenes is an array of scenes that are updated
+    // the current scene is updated with the current scene's layers
+ 
+    addScene()
+
+    const updatedScenes = scenes.map((scn) => {
+      if (scn.id === currentScene.id) {
+        console.log(scn, "scn");
+        return {
+          id: currentScene.id,
+          layers: currentScene.layers,
+          name: currentScene.name,
+        }
+      }
+      return {
+        id: scn.id,
+        layers: scn.layers,
+        name: scn.name,
+      }
+    })
+
+
+    if (currentDesign) {
+      const graphicTemplate: IDesign = {
+        id: currentDesign.id,
+        type: "GRAPHIC",
+        name: currentDesign.name,
+        frame: frame,
         scenes: updatedScenes,
         metadata: {},
         preview: "",
@@ -73,7 +146,9 @@ const Navbar = () => {
       console.log("NO CURRENT DESIGN")
     }
   }
-
+console.log(currentDesign.frame,"currentDesign.frame");
+console.log(scences[0]?.frame,"scences[0]?.frame");
+;
   const parsePresentationJSON = () => {
     const currentScene = editor.scene.exportToJSON()
 
@@ -155,7 +230,7 @@ const Navbar = () => {
 
   const makeDownloadTemplate = async () => {
     addScene()
- 
+
     if (editor) {
       if (editorType === "GRAPHIC") {
         return parseGraphicJSON()
@@ -167,8 +242,10 @@ const Navbar = () => {
     }
   }
 
-  const scences = useDesignEditorScenes()
+
+
   const { uploads, setUploads } = useContext(AppContext)
+
   const addScene = React.useCallback(async () => {
     for (let i = 0; i < uploads.length; i++) {
       const { src, id } = uploads[i]
@@ -194,7 +271,8 @@ const Navbar = () => {
     // remove all element in upload array
     setUploads([])
   }, [])
-console.log("sccene in nav", scenes);
+
+
   const loadGraphicTemplate = async (payload: IDesign) => {
     const scenes = []
     const { scenes: scns, ...design } = payload
@@ -298,9 +376,10 @@ console.log("sccene in nav", scenes);
       reader.readAsText(file)
     }
   }
-  useEffect(()=>{
+
+  useEffect(() => {
     addScene()
-  },[scences])
+  }, [scences])
 
   return (
     // @ts-ignore
@@ -353,6 +432,20 @@ console.log("sccene in nav", scenes);
           </Button>
           <Button
             size="compact"
+            onClick={handleUpload}
+            kind={KIND.tertiary}
+            overrides={{
+              StartEnhancer: {
+                style: {
+                  marginRight: "4px",
+                },
+              },
+            }}
+          >
+            Download
+          </Button>
+          <Button
+            size="compact"
             onClick={() => setDisplayPreview(true)}
             kind={KIND.tertiary}
             overrides={{
@@ -367,6 +460,7 @@ console.log("sccene in nav", scenes);
           </Button>
         </Block>
       </Container>
+      {loading && <div className="loader"></div>}
     </ThemeProvider>
   )
 }

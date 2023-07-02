@@ -533,16 +533,12 @@ export const graphics = [
 
 export const vectors = [
   istad,
+  "http://136.228.158.126:8002/files/77afb54c-e9f8-4253-98db-a7246c8e1916.jpg",
   logov1,
   mainlogoblack,
   mainlogolight,
-  "https://images.pexels.com/photos/16424418/pexels-photo-16424418/free-photo-of-young-girl-in-a-japanese-school-uniform-taking-a-picture-with-a-camera.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://istad.co/resources/img/logo_md.png",
   "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Flag_map_of_Cambodia.svg/1249px-Flag_map_of_Cambodia.svg.png",
- 
-
- 
-
-
 ]
 
 export const images = [

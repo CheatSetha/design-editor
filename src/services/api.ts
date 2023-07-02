@@ -11,7 +11,7 @@ class ApiService {
   base: AxiosInstance
   constructor() {
     this.base = axios.create({
-      baseURL: "https://layerhub-api.up.railway.app/api",
+      baseURL: "http://136.228.158.126:8002/api/v1/",
     })
   }
 
@@ -53,7 +53,7 @@ class ApiService {
   getUploads(): Promise<IUpload[]> {
     return new Promise(async (resolve, reject) => {
       try {
-        const { data } = await this.base.get("/uploads")
+        const { data } = await this.base.get("/files")
         resolve(data.data)
       } catch (err) {
         reject(err)
@@ -254,7 +254,7 @@ class ApiService {
   getFonts(): Promise<IFontFamily[]> {
     return new Promise(async (resolve, reject) => {
       try {
-        const {data} = await axios.get("http://192.168.1.226:8080/api/v1/fonts")
+        const {data} = await axios.get(`${this.base}/fonts`)
         resolve(data.fonts)
         
       } catch (err) {

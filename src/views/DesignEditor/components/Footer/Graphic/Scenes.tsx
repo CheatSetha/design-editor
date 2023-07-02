@@ -41,7 +41,7 @@ const Scenes = () => {
       },
     }),
   ]
-console.log("frame ",frame);
+
   React.useEffect(() => {
     // check if the current scene is loaded in the editor
     if (editor && scenes && currentScene) {
@@ -74,6 +74,13 @@ console.log("frame ",frame);
   }, [editor])
   const scences = useDesignEditorScenes()
   const { uploads, setUploads } = useContext(AppContext)
+  console.log("upload in scecnes morning", uploads[0]?.height);
+  console.log("upload in scecnes morning", uploads[0]?.width);
+  console.log(frame, "frame");
+  let resizedHeight = uploads[0]?.height || 800
+  let resizedWidth = uploads[0]?.width || 1200
+
+  //get the width and height of image that add to scene and assign to frame
 
 
   React.useEffect(() => {
@@ -83,18 +90,20 @@ console.log("frame ",frame);
         updateCurrentScene(currentScene)
       } else {
         const defaultTemplate = getDefaultTemplate({
-          width: 1200,
-          height: 800,
+          // width: 1200,
+          // height: 1200,
           // set width and height to the current frame width and height base on width and height of added images
-          // width: frame.width,
-          // height: frame.height,
+          width: frame?.width,
+          height: frame?.height,
+          // width: resizedWidth,
+          // height: resizedHeight,
         })
         setCurrentDesign({
           id: nanoid(),
           frame: defaultTemplate.frame,
           metadata: {},
           name: "Untitled Design",
-          preview: " ",
+          preview:" ",
           scenes: [],
           type: "PRESENTATION",
         })

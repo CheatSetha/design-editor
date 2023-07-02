@@ -53,6 +53,8 @@ const Graphic = () => {
   const makePreview = React.useCallback(async () => {
     if (editor) {
       template = editor.scene.exportToJSON()
+      // preview only scene [0]
+
       // console.log(template, "template")
 
       const image = (await editor.renderer.render(template)) as string
@@ -81,6 +83,7 @@ const Graphic = () => {
       <div className="flex justify-center p-2 items-center overflow-auto w-full mt-5"
       >
         {!loading && <img className="w-auto h-[600px] " src={state.image} />}
+
       </div>
     </div>
   )
