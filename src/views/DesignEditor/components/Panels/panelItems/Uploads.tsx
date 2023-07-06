@@ -10,19 +10,11 @@ import { nanoid } from "nanoid"
 import { captureFrame, loadVideoResource } from "~/utils/video"
 import { ILayer } from "@layerhub-io/types"
 import { toBase64 } from "~/utils/data"
-import { getDefaultTemplate } from "~/constants/design-editor"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { DesignEditorContext } from "~/contexts/DesignEditor"
-import { useDispatch, useSelector } from "react-redux"
-import { addUploads } from "~/store/slices/uploadImage/uploadImageSlice"
-import { current } from "@reduxjs/toolkit"
 import useAppContext from "~/hooks/useAppContext"
 import { AppContext } from "~/contexts/AppContext"
-import { resolve } from "path"
-import { add } from "lodash"
-import { url } from "inspector"
-import { selectAllFonts } from "~/store/slices/fonts/selectors"
-import { getFonts } from "~/store/slices/fonts/actions"
+
 
 export default function () {
   const scenes = useDesignEditorScenes()
@@ -32,46 +24,14 @@ export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const { uploads, setUploads } = useContext(AppContext)
-  const {setUploadTemp}= useAppContext()
-const frame = useFrame()
-const [desirdedFrame, setDesiredFrame] = useState({
-  width: 0,
-  height: 0,
-})
+  const { setUploadTemp } = useAppContext()
+  const [loading, setLoading] = useState(false)
+  const frame = useFrame()
+  const [desirdedFrame, setDesiredFrame] = useState({
+    width: 0,
+    height: 0,
+  })
 
-  // const handleDropFiles = async (files: FileList) => {
-  //   const uploadPromises = Array.from(files).map(async (file) => {
-  //     const isVideo = file.type.includes("video")
-  //     const base64 = (await toBase64(file)) as strin
-
-  //     let preview = base64
-
-  //     if (isVideo) {
-  //       const video = await loadVideoResource(base64)
-  //       const frame = await captureFrame(video)
-  //       preview = frame
-  //     }
-
-  //     const type = isVideo ? "StaticVideo" : "StaticImage"
-
-  //     const upload = {
-  //       id: nanoid(),
-  //       src: base64,
-  //       preview: preview,
-  //       type: type,
-  //     }
-
-  //     return upload
-  //   })
-  //   const newUploads = await Promise.all(uploadPromises)
-  //   setUploads([...uploads, ...newUploads])
-  // }
-
-  // test
-  /**
-   * This code creates a new Promise called imagePromise and sets its resolve function as the onload event of the Image element. It then uses await to wait for the imagePromise to resolve before continuing with the rest of the code.
-   * @param files
-   */
 
   const handleDropFiles = async (files: FileList) => {
     const uploadPromises = Array.from(files).map(async (file) => {
@@ -115,48 +75,85 @@ const [desirdedFrame, setDesiredFrame] = useState({
     const newUploads = await Promise.all(uploadPromises)
     setUploads([...uploads, ...newUploads])
   }
-  console.log(uploads, "uploads")
+
 
   // test
 
   // @ts-ignore
   const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
-    const formData = new FormData()
+    const imageTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/bmp',
+      'image/tiff',
+      'image/webp',
+      'image/svg+xml',
+      'image/vnd.microsoft.icon',
+      'image/x-icon',
+      'image/vnd.wap.wbmp',
+      'image/avif',
+      'image/apng',
+      'image/jxr',
+      'image/heif',
+      'image/heic',
+      'image/heif-sequence',
+      'image/heic-sequence',
+      'image/heif-image-sequence',
+      'image/heic-image-sequence',
+    ];
+    const validFiles: File[] = [];
+    const invalidFiles: File[] = [];
+  
     Array.from(files).forEach((file) => {
-      formData.append("files", file)
-    })
-
+      if (imageTypes.includes(file.type)) {
+        validFiles.push(file);
+      } else {
+        invalidFiles.push(file);
+      }
+    });
+  
+    if (invalidFiles.length > 0) {
+      alert(`The following files are not images and will be removed: ${invalidFiles.map((file) => file.name).join(', ')}`);
+    }
+  
+    const formData = new FormData();
+    validFiles.forEach((file) => {
+      formData.append("files", file);
+    });
+  
     try {
+      setLoading(true);
       const response = await fetch(`http://136.228.158.126:8002/api/v1/files/upload-folder`, {
         method: "POST",
         body: formData,
-      })
-
+      });
+  
       if (!response.ok) {
-        throw new Error("Failed to upload files")
+        throw new Error("Failed to upload files");
       }
+  
+      const data = await response.json();
+    
 
-      const data = await response.json()
-      // uploaded to server
-      console.log(data.data, "data");
-      setUploadTemp(data.data)
-      const base64 = (await toBase64(files[0])) as string
-      console.log(base64, "base64");
-      let preview = base64
-      let width = 0
-      let height = 0
-      const image = new Image()
+      setUploadTemp(data.data);
+      const base64 = (await toBase64(validFiles[0])) as string;
+      
+      let preview = base64;
+      let width = 0;
+      let height = 0;
+      const image = new Image();
       const imagePromise = new Promise((resolve) => {
         image.onload = () => {
-          width = image.width
-          height = image.height
+          width = image.width;
+          height = image.height;
           // @ts-ignore
-          resolve()
-        }
-      })
-      image.src = base64
-      await imagePromise
-      const type = "StaticImage"
+          resolve();
+        };
+      });
+      image.src = base64;
+      await imagePromise;
+      const type = "StaticImage";
       const upload = {
         id: nanoid(),
         src: base64,
@@ -164,51 +161,48 @@ const [desirdedFrame, setDesiredFrame] = useState({
         type: type,
         width: width,
         height: height,
-      }
+      };
       console.log(upload, "upload");
-      setUploads([...uploads, upload])
-      addImageToCanvas(upload)
-      return [upload]
+      setLoading(false);
+      setUploads([...uploads, upload]);
+      addImageToCanvas2(upload);
+      return [upload];
     } catch (error) {
-      console.error(error)
-      throw error
+      console.error(error);
+      throw error;
     }
-  }
+  };
 
+  // const newUploads = await Promise.all(
+  //   data.data.url.map(async (filename: string) => {
+  //     const image = new Image()
+  //     const imagePromise = new Promise((resolve) => {
+  //       image.onload = () => {
+  //         // @ts-ignore
+  //         resolve()
+  //       }
+  //     })
+  //     image.src = filename
+  //     await imagePromise
+  //     return {
+  //       id: nanoid(),
+  //       src: filename,
+  //       preview: filename,
+  //       type: "StaticImage",
+  //       width: image.width,
+  //       height: image.height,
+  //     }
+  //   })
+  // )
 
-
-      // const newUploads = await Promise.all(
-      //   data.data.url.map(async (filename: string) => {
-      //     const image = new Image()
-      //     const imagePromise = new Promise((resolve) => {
-      //       image.onload = () => {
-      //         // @ts-ignore
-      //         resolve()
-      //       }
-      //     })
-      //     image.src = filename
-      //     await imagePromise
-      //     return {
-      //       id: nanoid(),
-      //       src: filename,
-      //       preview: filename,
-      //       type: "StaticImage",
-      //       width: image.width,
-      //       height: image.height,
-      //     }
-      //   })
-      // )
-    
-      // setUploads([...uploads, ...newUploads])
-      // return newUploads
+  // setUploads([...uploads, ...newUploads])
+  // return newUploads
   //   } catch (error) {
   //     console.error(error)
   //     throw error
   //   }
   // }
 
-
- 
   // end of test
 
   const handleInputFileRefClick = () => {
@@ -225,6 +219,7 @@ const [desirdedFrame, setDesiredFrame] = useState({
     handleDropFiles(e.target.files!)
   }
   const handleFolderInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     uploadMultipleImages(e.target.files!)
   }
   // test upload folder with api
@@ -240,29 +235,25 @@ const [desirdedFrame, setDesiredFrame] = useState({
   // }
 
   // test code it's work but ....
-  const addImageToCanvas = (props: Partial<ILayer>) => {
+  const addImageToCanvas2 = (props: Partial<ILayer>) => {
     editor.objects.add(props)
     editor.frame.resize({
       width: props.width || 0,
       height: props.height || 0,
     })
-    
   }
-
-  
-  
-
-
+  const addImageToCanvas = (props: Partial<ILayer>) => {
+    editor.objects.add(props)
+  }
 
   React.useEffect(() => {
     const scene = scenes[0].layers.length
-    if(uploads.length > 0 ){
-      if(scene === 1){
+    if (uploads.length > 0) {
+      if (scene === 1) {
         addImageToCanvas(uploads[0])
+      }
     }
-  }
-
-  },[scenes])
+  }, [scenes])
 
   const dropImages = async () => {
     if (!currentScene) {
@@ -328,7 +319,7 @@ const [desirdedFrame, setDesiredFrame] = useState({
         </Block>
         <Scrollable>
           <Block padding={"0 1.5rem"}>
-            <Button
+            {/* <Button
               onClick={handleInputFileRefClick}
               size={SIZE.compact}
               overrides={{
@@ -340,21 +331,7 @@ const [desirdedFrame, setDesiredFrame] = useState({
               }}
             >
               Select a batch of images
-            </Button>
-            <Button
-              onClick={handleInputSingleFileRefClick}
-              size={SIZE.compact}
-              overrides={{
-                Root: {
-                  style: {
-                    width: "100%",
-                    marginTop: "0.5rem",
-                  },
-                },
-              }}
-            >
-              Select an image
-            </Button>
+            </Button> */}
             <Button
               onClick={handleInputFolderFileRefClick}
               size={SIZE.compact}
@@ -368,6 +345,20 @@ const [desirdedFrame, setDesiredFrame] = useState({
               }}
             >
               Upload photos
+            </Button>
+            <Button
+              onClick={handleInputSingleFileRefClick}
+              size={SIZE.compact}
+              overrides={{
+                Root: {
+                  style: {
+                    width: "100%",
+                    marginTop: "0.5rem",
+                  },
+                },
+              }}
+            >
+              Add Logo
             </Button>
 
             <input
@@ -411,7 +402,6 @@ const [desirdedFrame, setDesiredFrame] = useState({
               }}
             >
               {uploads.map((upload) => (
-               
                 <div
                   key={upload.id}
                   style={{

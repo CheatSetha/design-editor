@@ -187,7 +187,7 @@ const Scenes = () => {
                 }
               />
             ))}
-            <div
+            {/* <div
               style={{
                 background: "#ffffff",
                 padding: "1rem 1rem 1rem 0.5rem",
@@ -207,7 +207,7 @@ const Scenes = () => {
               >
                 <Add size={20} />
               </div>
-            </div>
+            </div> */}
           </SortableContext>
           <DragOverlay>
             {draggedScene ? (

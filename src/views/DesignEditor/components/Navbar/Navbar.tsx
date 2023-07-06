@@ -32,17 +32,17 @@ const Navbar = () => {
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
   const editorType = useEditorType()
   const editor = useEditor()
-  const {uploadTemp}=useAppContext()
+  const { uploadTemp } = useAppContext()
   const inputFileRef = React.useRef<HTMLInputElement>(null)
   const scences = useDesignEditorScenes()
   const frame = useFrame()
+ 
 
+  const [loading, setLoading] = useState(false)
 
-  const [loading,setLoading]= useState(false)
-
-
-console.log(uploadTemp,"uploadTemp");
-console.log(frame,"frame");
+  console.log(uploadTemp, "uploadTemp")
+  console.log(frame, "frame")
+  console.log(editorType, "editorType in navbar")
 
   // handle template upload to server
   const handleUpload = async (): Promise<void> => {
@@ -50,11 +50,9 @@ console.log(frame,"frame");
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
     // the current scene is updated with the current scene's layers
-   
- 
 
     const updatedScenes = scenes.map((scn) => {
-      console.log(scn, "scn");
+      console.log(scn, "scn")
       if (scn.id === currentScene.id) {
         return {
           id: currentScene.id,
@@ -80,10 +78,10 @@ console.log(frame,"frame");
         preview: "",
       }
 
-
       let template = graphicTemplate
       const data = {
         editorJson: template,
+        qualityPhoto: "HIGH",
         createdBy: 32, // add createdBy property
         folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
@@ -111,12 +109,12 @@ console.log(frame,"frame");
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
     // the current scene is updated with the current scene's layers
- 
+
     addScene()
 
     const updatedScenes = scenes.map((scn) => {
       if (scn.id === currentScene.id) {
-        console.log(scn, "scn");
+        console.log(scn, "scn")
         return {
           id: currentScene.id,
           layers: currentScene.layers,
@@ -129,7 +127,6 @@ console.log(frame,"frame");
         name: scn.name,
       }
     })
-
 
     if (currentDesign) {
       const graphicTemplate: IDesign = {
@@ -146,9 +143,8 @@ console.log(frame,"frame");
       console.log("NO CURRENT DESIGN")
     }
   }
-console.log(currentDesign.frame,"currentDesign.frame");
-console.log(scences[0]?.frame,"scences[0]?.frame");
-;
+  console.log(currentDesign.frame, "currentDesign.frame")
+  console.log(scences[0]?.frame, "scences[0]?.frame")
   const parsePresentationJSON = () => {
     const currentScene = editor.scene.exportToJSON()
 
@@ -242,8 +238,6 @@ console.log(scences[0]?.frame,"scences[0]?.frame");
     }
   }
 
-
-
   const { uploads, setUploads } = useContext(AppContext)
 
   const addScene = React.useCallback(async () => {
@@ -271,7 +265,6 @@ console.log(scences[0]?.frame,"scences[0]?.frame");
     // remove all element in upload array
     setUploads([])
   }, [])
-
 
   const loadGraphicTemplate = async (payload: IDesign) => {
     const scenes = []
@@ -431,6 +424,7 @@ console.log(scences[0]?.frame,"scences[0]?.frame");
             Export
           </Button>
           <Button
+     
             size="compact"
             onClick={handleUpload}
             kind={KIND.tertiary}
@@ -438,11 +432,13 @@ console.log(scences[0]?.frame,"scences[0]?.frame");
               StartEnhancer: {
                 style: {
                   marginRight: "4px",
+                  
                 },
               },
             }}
+            style={{ display: editorType === 'PRESENTATION' ? 'none' : 'block' }}
           >
-            Download
+            Download 
           </Button>
           <Button
             size="compact"

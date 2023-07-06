@@ -99,7 +99,7 @@ console.log('upload context', uploads);
         < Block className="w-full h-screen flex gap-5 flex-wrap">
           {
              slides.map((page, index) => (
-              <img className="w-64" src={page.preview} alt="preview imiage" key={index} />
+              <img className="h-screen" src={page.preview} alt="preview imiage" key={index} />
             
               ))
           }
