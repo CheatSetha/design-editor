@@ -34,15 +34,14 @@ const Navbar = () => {
   const editor = useEditor()
   const { uploadTemp } = useAppContext()
   const inputFileRef = React.useRef<HTMLInputElement>(null)
+  const inputExelRef = React.useRef<HTMLInputElement>(null)
   const scences = useDesignEditorScenes()
   const frame = useFrame()
- 
-
   const [loading, setLoading] = useState(false)
 
-  console.log(uploadTemp, "uploadTemp")
-  console.log(frame, "frame")
-  console.log(editorType, "editorType in navbar")
+  // console.log(uploadTemp, "uploadTemp")
+  // console.log(frame, "frame")
+  // console.log(editorType, "editorType in navbar")
 
   // handle template upload to server
   const handleUpload = async (): Promise<void> => {
@@ -104,17 +103,50 @@ const Navbar = () => {
       console.log("NO CURRENT DESIGN")
     }
   }
+  // const parseGraphicJSON = () => {
+  //   const currentScene = editor.scene.exportToJSON()
 
-  const parseGraphicJSON = () => {
+  //   const updatedScenes = scenes.map((scn) => {
+  //     if (scn.id === currentScene.id) {
+  //       return {
+  //         id: currentScene.id,
+  //         layers: currentScene.layers,
+  //         name: currentScene.name,
+  //       }
+  //     }
+  //     return {
+  //       id: scn.id,
+  //       layers: scn.layers,
+  //       name: scn.name,
+  //     }
+  //   })
+
+  //   if (currentDesign) {
+  //     const graphicTemplate: IDesign = {
+  //       id: currentDesign.id,
+  //       type: "GRAPHIC",
+  //       name: currentDesign.name,
+  //       frame: frame,
+  //       scenes: updatedScenes,
+  //       metadata: {},
+  //       preview: "",
+  //     }
+  //     makeDownload(graphicTemplate)
+  //   } else {
+  //     console.log("NO CURRENT DESIGN")
+  //   }
+  // }
+
+  // test export to excell
+  const handleExportToExcell = async (): Promise<void> => {
+    setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
     // the current scene is updated with the current scene's layers
 
-    addScene()
-
     const updatedScenes = scenes.map((scn) => {
+      console.log(scn, "scn")
       if (scn.id === currentScene.id) {
-        console.log(scn, "scn")
         return {
           id: currentScene.id,
           layers: currentScene.layers,
@@ -138,6 +170,86 @@ const Navbar = () => {
         metadata: {},
         preview: "",
       }
+
+      let template = graphicTemplate
+      const data = {
+        editorJson: template,
+        qualityPhoto: "HIGH",
+        createdBy: 19, // add createdBy property
+        // folderName: uploadTemp.folderName, // add folderName property
+        // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
+      }
+      const dataFeature = {
+        sample: template,
+        name: "certificate",
+
+        // createdBy: 135, // add createdBy property
+      }
+      const reposeInsertFeature = await fetch("http://136.228.158.126:8002/api/v1/features", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFeature),
+      })
+      const resultInsertFeature = await reposeInsertFeature.json()
+      console.log(resultInsertFeature?.data?.id, "resultInsertFeature")
+      let idFeature = resultInsertFeature?.data?.id
+      localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
+
+      console.log(idFeature, "idFeature");
+       
+      const response = await fetch("http://136.228.158.126:8002/api/v1/certificates/export", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+      const result = await response.json()
+      setLoading(false)
+      console.log(result, "result when export to excell")
+      // if success, redirect to download url
+      if (result.code === 200) {
+        window.location.href = result.data.downloadUrl
+      }
+    } else {
+      console.log("NO CURRENT DESIGN")
+    }
+  }
+
+  const parseGraphicJSON = () => {
+    const currentScene = editor.scene.exportToJSON()
+    // udpatedScenes is an array of scenes that are updated
+    // the current scene is updated with the current scene's layers
+
+    const updatedScenes = scenes.map((scn) => {
+      console.log(scn, "scn")
+      if (scn.id === currentScene.id) {
+        return {
+          id: currentScene.id,
+          layers: currentScene.layers,
+          name: currentScene.name,
+        }
+      }
+      return {
+        id: scn.id,
+        layers: scn.layers,
+        name: scn.name,
+      }
+    })
+
+    if (currentDesign) {
+      const graphicTemplate: IDesign = {
+        id: currentDesign.id,
+        type: "GRAPHIC",
+        name: currentDesign.name,
+        frame: currentDesign.frame,
+        scenes: updatedScenes,
+        metadata: {},
+        preview: "",
+      }
+
       makeDownload(graphicTemplate)
     } else {
       console.log("NO CURRENT DESIGN")
@@ -216,17 +328,73 @@ const Navbar = () => {
   }
 
   const makeDownload = (data: Object) => {
-    addScene()
+
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
     const a = document.createElement("a")
     a.href = dataStr
     a.download = "template.json"
     a.click()
   }
+  // ================| when api is ready, use this function |======================== //
+  const makeDownloadCertificate= async (data: Object)=>{
+    const raw =JSON.stringify({
+      editorJson: data,
+      qualityPhoto: "HIGH",
+      createdBy: 31, // add createdBy property
+    })
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: raw,
+      redirect: 'follow'
+    };
+
+    try{
+      // @ts-ignore
+      const res = await fetch("http://136.228.158.126:8002/api/v1/certificates/generate-certificate/PDF", requestOptions)
+      const result = await res.json()
+      console.log(result, "result")
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+  // test code not work i change the process
+  // const makeDownload = async (data: Object) => {
+  //   const dataMain = {
+  //     editorJson: data,
+  //     qualityPhoto: "HIGH",
+  //     createdBy: 135, // add createdBy property
+  //   }
+  //   try {
+  //     const response = await fetch("http://136.228.158.126:8002/api/v1/certificates/export", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(dataMain),
+  //     })
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to upload template")
+  //     }
+
+  //     alert("Template uploaded successfully")
+  //     console.log(response, "response data")
+
+  //     const downloadLink = document.createElement("a")
+  //     console.log(response.formData.donwloadUrl, "response data")
+  //     // @ts-ignore
+  //     downloadLink.href = response?.data?.downloadUrl
+  //     downloadLink.download = "template.json"
+  //     downloadLink.click()
+  //   } catch (error) {
+  //     console.error(error)
+  //     throw error
+  //   }
+  // }
 
   const makeDownloadTemplate = async () => {
-    addScene()
-
     if (editor) {
       if (editorType === "GRAPHIC") {
         return parseGraphicJSON()
@@ -323,7 +491,6 @@ const Navbar = () => {
         duration: scn.duration,
       }
       const loadedScene = await loadVideoEditorAssets(design)
-
       const preview = (await editor.renderer.render(loadedScene)) as string
       await loadTemplateFonts(loadedScene)
       scenes.push({ ...loadedScene, preview })
@@ -352,6 +519,42 @@ const Navbar = () => {
   const handleInputFileRefClick = () => {
     inputFileRef.current?.click()
   }
+  const handleInputExelRefClick = () => {
+    inputExelRef.current?.click()
+  }
+  const handleExcelInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    const id = localStorage.getItem("idFeature")
+    if (!files) {
+      return;
+    }
+  
+    const formData = new FormData();
+  
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type.startsWith("image/")) {
+        formData.append("fileImage", file);
+      } else if (file.type === "application/vnd.ms-excel" || 
+      file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      file.type === "text/csv") {
+        formData.append("fileExcel", file);
+      }
+    }
+  
+    const response = await fetch(`http://136.228.158.126:8002/api/v1/certificates/${id}/import-excel`, {
+      method: "POST",
+      body: formData,
+    });
+  
+    const result = await response.json();
+    const design = result?.data
+    // generate each scence to scences in editor
+    handleImportTemplate(design)
+    console.log(result?.data, "result.data");
+    console.log(design, "design");
+  };
+  
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0]
@@ -360,12 +563,13 @@ const Navbar = () => {
       reader.onload = (res) => {
         const result = res.target!.result as string
         const design = JSON.parse(result)
+        // console.log(result, "result");
+        // console.log(design, "design");
         handleImportTemplate(design)
       }
       reader.onerror = (err) => {
         console.log(err)
       }
-
       reader.readAsText(file)
     }
   }
@@ -394,6 +598,16 @@ const Navbar = () => {
             ref={inputFileRef}
             style={{ display: "none" }}
           />
+          {/* for upload excell and list of image at the same time */}
+           <input
+            multiple={true}
+            onChange={handleExcelInput}
+            type="file"
+            id="file"
+            ref={inputExelRef}
+            style={{ display: "none" }}
+            
+          />
           <Button
             size="compact"
             onClick={handleInputFileRefClick}
@@ -408,10 +622,25 @@ const Navbar = () => {
           >
             Import
           </Button>
+          <Button
+            size="compact"
+            onClick={handleInputExelRefClick}
+            kind={KIND.tertiary}
+            overrides={{
+              StartEnhancer: {
+                style: {
+                  marginRight: "4px",
+                },
+              },
+            }}
+          >
+            Import exell
+          </Button>
 
           <Button
             size="compact"
-            onClick={makeDownloadTemplate}
+            // onClick={makeDownloadTemplate}
+            onClick={handleExportToExcell}
             kind={KIND.tertiary}
             overrides={{
               StartEnhancer: {
@@ -423,8 +652,8 @@ const Navbar = () => {
           >
             Export
           </Button>
+          {/* dowload template watermark */}
           <Button
-     
             size="compact"
             onClick={handleUpload}
             kind={KIND.tertiary}
@@ -432,13 +661,28 @@ const Navbar = () => {
               StartEnhancer: {
                 style: {
                   marginRight: "4px",
-                  
                 },
               },
             }}
-            style={{ display: editorType === 'PRESENTATION' ? 'none' : 'block' }}
+            style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
           >
-            Download 
+            Download
+          </Button>
+          {/* dowload template certificate*/}
+          <Button
+            size="compact"
+            onClick={makeDownloadTemplate}
+            kind={KIND.tertiary}
+            overrides={{
+              StartEnhancer: {
+                style: {
+                  marginRight: "4px",
+                },
+              },
+            }}
+            style={{ display: editorType === "GRAPHIC" ? "none" : "block" }}
+          >
+            Download
           </Button>
           <Button
             size="compact"
