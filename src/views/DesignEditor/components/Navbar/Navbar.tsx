@@ -625,6 +625,7 @@ const Navbar = () => {
             Import
           </Button>
           <Button
+             style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
             size="compact"
             onClick={handleInputExelRefClick}
             kind={KIND.tertiary}
@@ -634,6 +635,7 @@ const Navbar = () => {
                   marginRight: "4px",
                 },
               },
+              
             }}
           >
             Import exell
@@ -641,8 +643,8 @@ const Navbar = () => {
 
           <Button
             size="compact"
-            // onClick={makeDownloadTemplate}
-            onClick={handleExportToExcell}
+            onClick={makeDownloadTemplate}
+            // onClick={handleExportToExcell}
             kind={KIND.tertiary}
             overrides={{
               StartEnhancer: {
