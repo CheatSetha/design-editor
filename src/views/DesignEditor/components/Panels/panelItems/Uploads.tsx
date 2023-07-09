@@ -124,7 +124,8 @@ export default function () {
   
     try {
       setLoading(true);
-      const response = await fetch(`http://136.228.158.126:8002/api/v1/files/upload-folder`, {
+      const response = await fetch(`https://photostad-api.istad.co/api/v1/files/upload-folder`, {
+      
         method: "POST",
         body: formData,
       });

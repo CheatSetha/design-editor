@@ -85,7 +85,7 @@ const Navbar = () => {
         folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
-      const response = await fetch("http://136.228.158.126:8002/api/v1/watermarks/generate-watermark", {
+      const response = await fetch("https://photostad-api.istad.co/api/v1/watermarks/generate-watermark", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -185,7 +185,7 @@ const Navbar = () => {
 
         // createdBy: 135, // add createdBy property
       }
-      const reposeInsertFeature = await fetch("http://136.228.158.126:8002/api/v1/features", {
+      const reposeInsertFeature = await fetch("https://photostad-api.istad.co/api/v1/features", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -199,7 +199,7 @@ const Navbar = () => {
 
       console.log(idFeature, "idFeature");
        
-      const response = await fetch("http://136.228.158.126:8002/api/v1/certificates/export", {
+      const response = await fetch("https://photostad-api.istad.co/api/v1/certificates/export", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -251,6 +251,7 @@ const Navbar = () => {
       }
 
       makeDownload(graphicTemplate)
+      // makeDownloadCertificate(graphicTemplate)
     } else {
       console.log("NO CURRENT DESIGN")
     }
@@ -287,7 +288,8 @@ const Navbar = () => {
         metadata: {},
         preview: "",
       }
-      makeDownload(presentationTemplate)
+      // makeDownload(presentationTemplate)
+      makeDownloadCertificate(presentationTemplate)
     } else {
       console.log("NO CURRENT DESIGN")
     }
@@ -351,7 +353,7 @@ const Navbar = () => {
 
     try{
       // @ts-ignore
-      const res = await fetch("http://136.228.158.126:8002/api/v1/certificates/generate-certificate/PDF", requestOptions)
+      const res = await fetch("https://photostad-api.istad.co/api/v1/certificates/generate-certificate/PDF", requestOptions)
       const result = await res.json()
       console.log(result, "result")
     }
@@ -367,7 +369,7 @@ const Navbar = () => {
   //     createdBy: 135, // add createdBy property
   //   }
   //   try {
-  //     const response = await fetch("http://136.228.158.126:8002/api/v1/certificates/export", {
+  //     const response = await fetch("https://photostad-api.istad.co/api/v1/certificates/export", {
   //       method: "POST",
   //       headers: {
   //         "Content-Type": "application/json",
@@ -542,7 +544,7 @@ const Navbar = () => {
       }
     }
   
-    const response = await fetch(`http://136.228.158.126:8002/api/v1/certificates/${id}/import-excel`, {
+    const response = await fetch(`https://photostad-api.istad.co/api/v1/certificates/${id}/import-excel`, {
       method: "POST",
       body: formData,
     });

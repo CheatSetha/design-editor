@@ -11,7 +11,7 @@ class ApiService {
   base: AxiosInstance
   constructor() {
     this.base = axios.create({
-      baseURL: "http://136.228.158.126:8002/api/v1/",
+      baseURL: "https://photostad-api.istad.co/api/v1",
     })
   }
 

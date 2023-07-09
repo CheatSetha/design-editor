@@ -121,7 +121,7 @@ const PreviewALl = () => {
         folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
-      const response = await fetch("http://136.228.158.126:8002/api/v1/watermarks/generate-watermark", {
+      const response = await fetch("https://photostad-api.istad.co/api/v1/watermarks/generate-watermark", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -191,7 +191,7 @@ const PreviewALl = () => {
     setCurrentIndex(currentIndex)
     template2 = editor.scene.exportToJSON()
     const oldPreview = template2.layers[1]?.preview
-    const newPreview = listSample[currentIndex]
+    const newPreview = listOfurl[currentIndex]
     //replace oldPreview with another image
     template2.layers[1].preview = newPreview
     template2.layers[1].src = newPreview
