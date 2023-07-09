@@ -625,7 +625,7 @@ const Navbar = () => {
             Import
           </Button>
           <Button
-             style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
+             style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
             size="compact"
             onClick={handleInputExelRefClick}
             kind={KIND.tertiary}
