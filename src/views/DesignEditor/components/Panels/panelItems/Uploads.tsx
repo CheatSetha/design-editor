@@ -14,7 +14,7 @@ import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { DesignEditorContext } from "~/contexts/DesignEditor"
 import useAppContext from "~/hooks/useAppContext"
 import { AppContext } from "~/contexts/AppContext"
-
+import loadinggif from "~/assets/loading/loading.gif"
 
 export default function () {
   const scenes = useDesignEditorScenes()
@@ -24,13 +24,11 @@ export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const { uploads, setUploads } = useContext(AppContext)
+  const [isUploading, setIsUploading]= useState(false)
   const { setUploadTemp } = useAppContext()
   const [loading, setLoading] = useState(false)
   const frame = useFrame()
-  const [desirdedFrame, setDesiredFrame] = useState({
-    width: 0,
-    height: 0,
-  })
+
 
 
   const handleDropFiles = async (files: FileList) => {
@@ -81,6 +79,7 @@ export default function () {
 
   // @ts-ignore
   const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
+    setIsUploading(true)
     const imageTypes = [
       'image/jpeg',
       'image/png',
@@ -125,39 +124,54 @@ export default function () {
     try {
       setLoading(true);
       const response = await fetch(`https://photostad-api.istad.co/api/v1/files/upload-folder`, {
-      
         method: "POST",
         body: formData,
       });
   
       if (!response.ok) {
         throw new Error("Failed to upload files");
+        
       }
   
       const data = await response.json();
-    
+      setIsUploading(false)
 
       setUploadTemp(data.data);
-      const base64 = (await toBase64(validFiles[0])) as string;
+      console.log(data?.data?.url[0], "data uploaded");
+      // const base64 = (await toBase64(validFiles[0])) as string;
       
-      let preview = base64;
+      let preview = data?.data?.url[0];
       let width = 0;
       let height = 0;
+      const maxWidth = 3000
       const image = new Image();
       const imagePromise = new Promise((resolve) => {
         image.onload = () => {
           width = image.width;
           height = image.height;
+          // if(image.width > maxWidth){
+          //   const ratio = image.width / image.height
+          //   const newWidth = maxWidth
+          //   const newHeight = newWidth / ratio
+          //   width = newWidth
+          //   height = newHeight
+          // }else{
+          //   width = image.width;
+          //   height = image.height;
+          // }
           // @ts-ignore
           resolve();
         };
       });
-      image.src = base64;
+
+      
+
+      image.src = data?.data?.url[0];
       await imagePromise;
       const type = "StaticImage";
       const upload = {
         id: nanoid(),
-        src: base64,
+        src: data?.data?.url[0],
         preview: preview,
         type: type,
         width: width,
@@ -169,7 +183,7 @@ export default function () {
       addImageToCanvas2(upload);
       return [upload];
     } catch (error) {
-      console.error(error);
+      console.error(error); 
       throw error;
     }
   };
@@ -236,12 +250,35 @@ export default function () {
   // }
 
   // test code it's work but ....
-  const addImageToCanvas2 = (props: Partial<ILayer>) => {
+  // const addImageToCanvas2 = (props: Partial<ILayer>) => {
+  //   editor.objects.add(props)
+  //   editor.frame.resize({
+  //     width: props.width || 0,
+  //     height: props.height || 0,
+  //   })
+  // }
+    const addImageToCanvas2 = (props: Partial<ILayer>) => {
+      const maxWidth = 3000
     editor.objects.add(props)
-    editor.frame.resize({
-      width: props.width || 0,
-      height: props.height || 0,
-    })
+      // @ts-ignore
+    if (props?.width > maxWidth) {
+      // @ts-ignore
+      const ratio = props?.width / props?.height
+      const newWidth = maxWidth
+      const newHeight = newWidth / ratio
+      editor.frame.resize({
+        width: newWidth,
+        height: newHeight,
+      })
+
+    }else{
+      editor.frame.resize({
+        width: props.width || 0,
+        height: props.height || 0,
+      })
+    }
+
+   
   }
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
@@ -299,6 +336,14 @@ export default function () {
   }
   const { setScenes, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
     React.useContext(DesignEditorContext)
+
+    if(isUploading){
+      return (
+       <div className="w-full h-screen absolute z-50 flex justify-center items-center bg-slate-300 bg-opacity-50">
+        <img className="w-[400px]" src={loadinggif} alt="loading" />
+       </div>
+      )
+    }
 
   return (
     <DropZone handleDropFiles={handleDropFiles}>
@@ -388,7 +433,7 @@ export default function () {
               id="file"
               ref={inputFileFolderRef}
               style={{ display: "none" }}
-              webkitdirectory="true"
+             
               mozdirectory="true"
               directory="true"
               multiple

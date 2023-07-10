@@ -85,6 +85,7 @@ const Navbar = () => {
         folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
+      
       const response = await fetch("https://photostad-api.istad.co/api/v1/watermarks/generate-watermark", {
         method: "POST",
         headers: {
@@ -103,42 +104,13 @@ const Navbar = () => {
       console.log("NO CURRENT DESIGN")
     }
   }
-  // const parseGraphicJSON = () => {
-  //   const currentScene = editor.scene.exportToJSON()
 
-  //   const updatedScenes = scenes.map((scn) => {
-  //     if (scn.id === currentScene.id) {
-  //       return {
-  //         id: currentScene.id,
-  //         layers: currentScene.layers,
-  //         name: currentScene.name,
-  //       }
-  //     }
-  //     return {
-  //       id: scn.id,
-  //       layers: scn.layers,
-  //       name: scn.name,
-  //     }
-  //   })
 
-  //   if (currentDesign) {
-  //     const graphicTemplate: IDesign = {
-  //       id: currentDesign.id,
-  //       type: "GRAPHIC",
-  //       name: currentDesign.name,
-  //       frame: frame,
-  //       scenes: updatedScenes,
-  //       metadata: {},
-  //       preview: "",
-  //     }
-  //     makeDownload(graphicTemplate)
-  //   } else {
-  //     console.log("NO CURRENT DESIGN")
-  //   }
-  // }
-
+  
   // test export to excell
   const handleExportToExcell = async (): Promise<void> => {
+
+
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
@@ -195,7 +167,7 @@ const Navbar = () => {
       const resultInsertFeature = await reposeInsertFeature.json()
       console.log(resultInsertFeature?.data?.id, "resultInsertFeature")
       let idFeature = resultInsertFeature?.data?.id
-      localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
+      localStorage.setItem("idFeature", idFeature?.toString()) //set idFeature to localstorage
 
       console.log(idFeature, "idFeature");
        
@@ -612,6 +584,7 @@ const Navbar = () => {
           />
           <Button
             size="compact"
+            style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
             onClick={handleInputFileRefClick}
             kind={KIND.tertiary}
             overrides={{
@@ -638,13 +611,30 @@ const Navbar = () => {
               
             }}
           >
-            Import exell
+            Import excel
           </Button>
 
           <Button
+           style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
             size="compact"
             onClick={makeDownloadTemplate}
             // onClick={handleExportToExcell}
+            kind={KIND.tertiary}
+            overrides={{
+              StartEnhancer: {
+                style: {
+                  marginRight: "4px",
+                },
+              },
+            }}
+          >
+            Export
+          </Button>
+          <Button
+          style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
+            size="compact"
+            // onClick={makeDownloadTemplate}
+            onClick={handleExportToExcell}
             kind={KIND.tertiary}
             overrides={{
               StartEnhancer: {

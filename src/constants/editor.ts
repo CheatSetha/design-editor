@@ -191,7 +191,7 @@ export const SAMPLE_TEMPLATES = [
       },
     ],
     frame: {
-      width: 1200,
+      width: 1200, 
       height: 1200,
     },
     metadata: {
