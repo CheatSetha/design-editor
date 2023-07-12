@@ -18,6 +18,9 @@ import { AppContext } from "~/contexts/AppContext"
 import { add, template } from "lodash"
 import useAppContext from "~/hooks/useAppContext"
 import { nanoid } from "nanoid"
+import { Link } from "react-router-dom"
+import PreviewModal from "./components/PreviewModal"
+import PreviewALl from "../Preview/TestPreview"
 
 const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   height: "64px",
@@ -38,12 +41,20 @@ const Navbar = () => {
   const scences = useDesignEditorScenes()
   const frame = useFrame()
   const [loading, setLoading] = useState(false)
+  const [quality, setQuality] = useState("HIGH")
+  const [donwloadType, setDonwloadType] = useState("PDF") //PDF AND ZIP
+  const [isePreviewOpen, setIsPreviewOpen] = useState(false)
 
-  // console.log(uploadTemp, "uploadTemp")
-  // console.log(frame, "frame")
-  // console.log(editorType, "editorType in navbar")
+  const handleOpenPreview= ()=>{
+    setIsPreviewOpen(true)
+  }
+  const handleClosePreview= ()=>{
+    setIsPreviewOpen(false)
+  }
 
-  // handle template upload to server
+ 
+
+
   const handleUpload = async (): Promise<void> => {
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
@@ -59,6 +70,7 @@ const Navbar = () => {
           name: currentScene.name,
         }
       }
+
       return {
         id: scn.id,
         layers: scn.layers,
@@ -80,12 +92,11 @@ const Navbar = () => {
       let template = graphicTemplate
       const data = {
         editorJson: template,
-        qualityPhoto: "HIGH",
+        qualityPhoto: quality,
         createdBy: 32, // add createdBy property
         folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
-      
       const response = await fetch("https://photostad-api.istad.co/api/v1/watermarks/generate-watermark", {
         method: "POST",
         headers: {
@@ -106,11 +117,8 @@ const Navbar = () => {
   }
 
 
-  
   // test export to excell
   const handleExportToExcell = async (): Promise<void> => {
-
-
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
@@ -167,10 +175,10 @@ const Navbar = () => {
       const resultInsertFeature = await reposeInsertFeature.json()
       console.log(resultInsertFeature?.data?.id, "resultInsertFeature")
       let idFeature = resultInsertFeature?.data?.id
-      localStorage.setItem("idFeature", idFeature?.toString()) //set idFeature to localstorage
+      localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
 
-      console.log(idFeature, "idFeature");
-       
+      console.log(idFeature, "idFeature")
+
       const response = await fetch("https://photostad-api.istad.co/api/v1/certificates/export", {
         method: "POST",
         headers: {
@@ -228,8 +236,7 @@ const Navbar = () => {
       console.log("NO CURRENT DESIGN")
     }
   }
-  console.log(currentDesign.frame, "currentDesign.frame")
-  console.log(scences[0]?.frame, "scences[0]?.frame")
+
   const parsePresentationJSON = () => {
     const currentScene = editor.scene.exportToJSON()
 
@@ -302,7 +309,6 @@ const Navbar = () => {
   }
 
   const makeDownload = (data: Object) => {
-
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
     const a = document.createElement("a")
     a.href = dataStr
@@ -310,26 +316,28 @@ const Navbar = () => {
     a.click()
   }
   // ================| when api is ready, use this function |======================== //
-  const makeDownloadCertificate= async (data: Object)=>{
-    const raw =JSON.stringify({
+  const makeDownloadCertificate = async (data: Object) => {
+    const raw = JSON.stringify({
       editorJson: data,
       qualityPhoto: "HIGH",
       createdBy: 31, // add createdBy property
     })
     const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: raw,
-      redirect: 'follow'
-    };
+      redirect: "follow",
+    }
 
-    try{
+    try {
       // @ts-ignore
-      const res = await fetch("https://photostad-api.istad.co/api/v1/certificates/generate-certificate/PDF", requestOptions)
+      const res = await fetch(
+        `https://photostad-api.istad.co/api/v1/certificates/generate-certificate/${donwloadType}`,
+        requestOptions
+      )
       const result = await res.json()
       console.log(result, "result")
-    }
-    catch(error){
+    } catch (error) {
       console.log(error)
     }
   }
@@ -497,38 +505,39 @@ const Navbar = () => {
     inputExelRef.current?.click()
   }
   const handleExcelInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
+    const files = event.target.files
     const id = localStorage.getItem("idFeature")
     if (!files) {
-      return;
+      return
     }
-  
-    const formData = new FormData();
-  
+
+    const formData = new FormData()
+
     for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+      const file = files[i]
       if (file.type.startsWith("image/")) {
-        formData.append("fileImage", file);
-      } else if (file.type === "application/vnd.ms-excel" || 
-      file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-      file.type === "text/csv") {
-        formData.append("fileExcel", file);
+        formData.append("fileImage", file)
+      } else if (
+        file.type === "application/vnd.ms-excel" ||
+        file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        file.type === "text/csv"
+      ) {
+        formData.append("fileExcel", file)
       }
     }
-  
+
     const response = await fetch(`https://photostad-api.istad.co/api/v1/certificates/${id}/import-excel`, {
       method: "POST",
       body: formData,
-    });
-  
-    const result = await response.json();
+    })
+
+    const result = await response.json()
     const design = result?.data
     // generate each scence to scences in editor
     handleImportTemplate(design)
-    console.log(result?.data, "result.data");
-    console.log(design, "design");
-  };
-  
+    console.log(result?.data, "result.data")
+    console.log(design, "design")
+  }
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0]
@@ -548,17 +557,25 @@ const Navbar = () => {
     }
   }
 
-  useEffect(() => {
-    addScene()
-  }, [scences])
+  // useEffect(() => {
+  //   addScene()
+  // }, [scences])
+
+  const hanleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value, "e.target.value")
+    alert(e.target.value)
+    setQuality(e.target.value)
+  }
+  const hanldeSelectTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value, "e.target.value")
+    setDonwloadType(e.target.value)
+  }
 
   return (
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
       <Container>
-        {/* logo section */}
-        {/* <div style={{ color: "#ffffff" }}> */}
-        {/* <Logo size={36} /> */}
+
         <img src={logo} alt="logo" style={{ width: "100px" }} />
 
         {/* </div> */}
@@ -573,18 +590,17 @@ const Navbar = () => {
             style={{ display: "none" }}
           />
           {/* for upload excell and list of image at the same time */}
-           <input
+          <input
             multiple={true}
             onChange={handleExcelInput}
             type="file"
             id="file"
             ref={inputExelRef}
             style={{ display: "none" }}
-            
           />
           <Button
-            size="compact"
             style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
+            size="compact"
             onClick={handleInputFileRefClick}
             kind={KIND.tertiary}
             overrides={{
@@ -598,7 +614,8 @@ const Navbar = () => {
             Import
           </Button>
           <Button
-             style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
+            className="whitespace-nowrap"
+            style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
             size="compact"
             onClick={handleInputExelRefClick}
             kind={KIND.tertiary}
@@ -608,14 +625,13 @@ const Navbar = () => {
                   marginRight: "4px",
                 },
               },
-              
             }}
           >
-            Import excel
+            Import exell
           </Button>
 
           <Button
-           style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
+            style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
             size="compact"
             onClick={makeDownloadTemplate}
             // onClick={handleExportToExcell}
@@ -631,7 +647,7 @@ const Navbar = () => {
             Export
           </Button>
           <Button
-          style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
+            style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
             size="compact"
             // onClick={makeDownloadTemplate}
             onClick={handleExportToExcell}
@@ -647,7 +663,7 @@ const Navbar = () => {
             Export
           </Button>
           {/* dowload template watermark */}
-          <Button
+          {/* <Button
             size="compact"
             onClick={handleUpload}
             kind={KIND.tertiary}
@@ -661,7 +677,98 @@ const Navbar = () => {
             style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
           >
             Download
-          </Button>
+          </Button> */}
+
+       
+
+
+          <div className={`${isePreviewOpen?' ':'hidden'} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
+            {/* <PreviewModal isClose={()=>setIsPreviewOpen(false)} /> */}
+            <PreviewALl close={handleClosePreview}/>
+          </div>
+   
+
+       
+          <div>
+            <label  className="text-white text-[14px] cursor-pointer" htmlFor="modal-2">
+              Download
+            </label>
+
+            <input className="modal-state" id="modal-2" type="checkbox" />
+            <div className="modal w-screen">
+              <label className="modal-overlay" htmlFor="modal-2"></label>
+              <div className="modal-content flex flex-col gap-5 max-w-sm">
+                <label htmlFor="modal-2" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                  ✕
+                </label>
+                <div className="space-y-2">
+                  <h2 className="text-xl my-2 text-center">Download Setting</h2>
+                  {editorType === "GRAPHIC" ? (
+                    <>
+                      <p className="text-sm mt-2">Quality</p>
+                      <select value={quality} onChange={hanleSelectChange} className="select">
+                        <option className="text-[14px]" disabled>
+                          Select Quality
+                        </option>
+                        <option className="text-[14px]" value={"SMALL"}>
+                          small
+                        </option>
+                        <option className="text-[14px]" value={"MEDIUM"}>
+                          medium
+                        </option>
+                        <option className="text-[14px]" value={"HIGH"}>
+                          high
+                        </option>
+                      </select>
+                      <div className="space-y-2">
+                   
+                          <label htmlFor="modal-2"  onClick={handleOpenPreview} className="btn btn-outline-primary border-black w-full hover:bg-black text-black hover:text-white">
+                            Preview
+                          </label>
+            
+
+                        <label onClick={handleUpload} className="btn bg-black text-white btn-block" htmlFor="modal-2">
+                          Donwload
+                        </label>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm mt-2">Format</p>
+                      <select  value={donwloadType} onChange={hanldeSelectTypeChange} className="select w-[100%] ">
+                        <option className="text-[14px]" disabled>
+                          Select Format
+                        </option>
+                        <option className="text-[14px]" value={"PDF"}>
+                          PDF
+                        </option>
+                        <option className="text-[14px]" value={"ZIP"}>
+                          ZIP
+                        </option>
+                      </select>
+
+                      <label
+                        onClick={() => setDisplayPreview(true)}
+                        className="btn btn-outline-primary border-black w-[95%] hover:bg-black text-black hover:text-white"
+                        htmlFor="modal-2"
+                      >
+                        Preview
+                      </label>
+                      <label
+                        onClick={makeDownloadTemplate}
+                        className="btn bg-black text-white w-[95%] "
+                        htmlFor="modal-2"
+                      >
+                        Donwload
+                      </label>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* end of modal */}
+
           {/* dowload template certificate*/}
           <Button
             size="compact"

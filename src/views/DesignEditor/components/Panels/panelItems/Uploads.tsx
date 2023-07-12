@@ -250,36 +250,36 @@ export default function () {
   // }
 
   // test code it's work but ....
-  // const addImageToCanvas2 = (props: Partial<ILayer>) => {
-  //   editor.objects.add(props)
-  //   editor.frame.resize({
-  //     width: props.width || 0,
-  //     height: props.height || 0,
-  //   })
-  // }
-    const addImageToCanvas2 = (props: Partial<ILayer>) => {
-      const maxWidth = 3000
+  const addImageToCanvas2 = (props: Partial<ILayer>) => {
     editor.objects.add(props)
-      // @ts-ignore
-    if (props?.width > maxWidth) {
-      // @ts-ignore
-      const ratio = props?.width / props?.height
-      const newWidth = maxWidth
-      const newHeight = newWidth / ratio
-      editor.frame.resize({
-        width: newWidth,
-        height: newHeight,
-      })
+    editor.frame.resize({
+      width: props.width || 0,
+      height: props.height || 0,
+    })
+  }
+  //   const addImageToCanvas2 = (props: Partial<ILayer>) => {
+  //     const maxWidth = 3000
+  //   editor.objects.add(props)
+  //     // @ts-ignore
+  //   if (props?.width > maxWidth) {
+  //     // @ts-ignore
+  //     const ratio = props?.width / props?.height
+  //     const newWidth = maxWidth
+  //     const newHeight = newWidth / ratio
+  //     editor.frame.resize({
+  //       width: newWidth,
+  //       height: newHeight,
+  //     })
 
-    }else{
-      editor.frame.resize({
-        width: props.width || 0,
-        height: props.height || 0,
-      })
-    }
+  //   }else{
+  //     editor.frame.resize({
+  //       width: props.width || 0,
+  //       height: props.height || 0,
+  //     })
+  //   }
 
    
-  }
+  // }
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
   }
