@@ -721,12 +721,9 @@ const Navbar = () => {
                         </option>
                       </select>
                       <div className="space-y-2">
-                   
                           <label htmlFor="modal-2"  onClick={handleOpenPreview} className="btn btn-outline-primary border-black w-full hover:bg-black text-black hover:text-white">
                             Preview
                           </label>
-            
-
                         <label onClick={handleUpload} className="btn bg-black text-white btn-block" htmlFor="modal-2">
                           Donwload
                         </label>

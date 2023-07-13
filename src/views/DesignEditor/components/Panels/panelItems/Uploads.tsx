@@ -29,53 +29,103 @@ export default function () {
   const [loading, setLoading] = useState(false)
   const frame = useFrame()
 
-
-
   const handleDropFiles = async (files: FileList) => {
-    const uploadPromises = Array.from(files).map(async (file) => {
-      const isVideo = file.type.includes("video")
-      const base64 = (await toBase64(file)) as string
-      let preview = base64
-      let width = 0
-      let height = 0
-
-      if (!isVideo) {
-        const image = new Image()
-        const imagePromise = new Promise((resolve) => {
-          image.onload = () => {
-            width = image.width
-            height = image.height
-            // @ts-ignore
-            resolve()
-          }
-        })
-        image.src = base64
-        await imagePromise
+    setIsUploading(true)
+    const imageTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/bmp',
+      'image/tiff',
+      'image/webp',
+      'image/svg+xml',
+      'image/vnd.microsoft.icon',
+      'image/x-icon',
+      'image/vnd.wap.wbmp',
+      'image/avif',
+      'image/apng',
+      'image/jxr',
+      'image/heif',
+      'image/heic',
+      'image/heif-sequence',
+      'image/heic-sequence',
+      'image/heif-image-sequence',
+      'image/heic-image-sequence',
+    ];
+    const validFiles: File[] = [];
+    const invalidFiles: File[] = [];
+  
+    Array.from(files).forEach((file) => {
+      if (imageTypes.includes(file.type)) {
+        validFiles.push(file);
       } else {
-        const video = await loadVideoResource(base64)
-        const frame = await captureFrame(video)
-        preview = frame
+        invalidFiles.push(file);
       }
+    });
+  
+    if (invalidFiles.length > 0) {
+      alert(`The following files are not images and will be removed: ${invalidFiles.map((file) => file.name).join(', ')}`);
+    }
+  
+    const formData = new FormData();
+    validFiles.forEach((file) => {
+      formData.append("files", file);
+    });
+  
+    try {
+      setLoading(true);
+      const response = await fetch(`https://photostad-api.istad.co/api/v1/files/upload-folder`, {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to upload files");
+        
+      }
+  
+      const data = await response.json();
+      setIsUploading(false)
 
-      const type = isVideo ? "StaticVideo" : "StaticImage"
+      setUploadTemp(data.data);
+      console.log(data?.data?.url[0], "data uploaded");
+      // const base64 = (await toBase64(validFiles[0])) as string;
+      
+      let preview = data?.data?.url[0];
+      let width = 0;
+      let height = 0;
+      const maxWidth = 3000
+      const image = new Image();
+      const imagePromise = new Promise((resolve) => {
+        image.onload = () => {
+          width = image.width;
+          height = image.height;
+          // @ts-ignore
+          resolve();
+        };
+      });
 
+      image.src = data?.data?.url[0];
+      await imagePromise;
+      const type = "StaticImage";
       const upload = {
         id: nanoid(),
-        src: base64,
+        src: data?.data?.url[0],
         preview: preview,
         type: type,
         width: width,
         height: height,
-      }
-
-      return upload
-    })
-    const newUploads = await Promise.all(uploadPromises)
-    setUploads([...uploads, ...newUploads])
+      };
+      console.log(upload, "upload");
+      setLoading(false);
+      setUploads([...uploads, upload]);
+      addImageToCanvas2(upload);
+      return [upload];
+    } catch (error) {
+      console.error(error); 
+      throw error;
+    }
   }
-
-
-  // test
 
   // @ts-ignore
   const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
@@ -188,37 +238,6 @@ export default function () {
     }
   };
 
-  // const newUploads = await Promise.all(
-  //   data.data.url.map(async (filename: string) => {
-  //     const image = new Image()
-  //     const imagePromise = new Promise((resolve) => {
-  //       image.onload = () => {
-  //         // @ts-ignore
-  //         resolve()
-  //       }
-  //     })
-  //     image.src = filename
-  //     await imagePromise
-  //     return {
-  //       id: nanoid(),
-  //       src: filename,
-  //       preview: filename,
-  //       type: "StaticImage",
-  //       width: image.width,
-  //       height: image.height,
-  //     }
-  //   })
-  // )
-
-  // setUploads([...uploads, ...newUploads])
-  // return newUploads
-  //   } catch (error) {
-  //     console.error(error)
-  //     throw error
-  //   }
-  // }
-
-  // end of test
 
   const handleInputFileRefClick = () => {
     inputFileRef.current?.click()
@@ -237,19 +256,7 @@ export default function () {
 
     uploadMultipleImages(e.target.files!)
   }
-  // test upload folder with api
 
-  // const handleUploadFolderInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   handleUploadFolder(e)
-  // }
-
-  // original code
-  // const addImageToCanvas = (props: Partial<ILayer>) => {
-  //   props.preview=""
-  //   editor.objects.add(props)
-  // }
-
-  // test code it's work but ....
   const addImageToCanvas2 = (props: Partial<ILayer>) => {
     editor.objects.add(props)
     editor.frame.resize({
@@ -339,7 +346,7 @@ export default function () {
 
     if(isUploading){
       return (
-       <div className="w-full h-screen absolute z-50 flex justify-center items-center bg-slate-300 bg-opacity-50">
+       <div className="w-full h-screen absolute z-50 flex justify-center items-center bg-white ">
         <img className="w-[400px]" src={loadinggif} alt="loading" />
        </div>
       )
