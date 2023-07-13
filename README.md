@@ -1,13 +1,7 @@
 # Design Editor
 
-If you are worrying about something like a designer tool, such as graphic editor, presentation editor, video editor, etc. Layerhub is a perfect choice for you.  
-Try demo here [react-design-editor.up.railway.app/](https://react-design-editor.up.railway.app/)
+If you are worrying about something like watermarking your photo and creating certificate that take too long time switch to PHOTOSTAD  is a perfect choice for you.  
 
-<p>
-    <a href="https://discord.gg/7jxnh8rHDV">
-        <img src="https://discordapp.com/api/guilds/1001450881448951838/widget.png?style=banner2" alt="Discord Banner 2"/>
-    </a>
-</p>
 
 ## Screenshots
 
@@ -47,10 +41,6 @@ App should be running now.
 
 Feel free to contribute by opening issues with any questions, bug reports or feature requests.
 
-## Get in touch
 
-You can reach us at contact@layerhub.io
 
-## License
 
-[MIT](LICENSE)
