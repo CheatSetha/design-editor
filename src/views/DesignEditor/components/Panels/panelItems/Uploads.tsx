@@ -17,6 +17,7 @@ import { AppContext } from "~/contexts/AppContext"
 import loadinggif from "~/assets/loading/loading.gif"
 import api from "~/services/api"
 import { add } from "lodash"
+import useEditorType from "~/hooks/useEditorType"
 
 export default function () {
   const scenes = useDesignEditorScenes()
@@ -24,6 +25,7 @@ export default function () {
   const inputFileSingleRef = React.useRef<HTMLInputElement>(null)
   const inputFileFolderRef = React.useRef<HTMLInputElement>(null)
   const inputLogoRef = React.useRef<HTMLInputElement>(null)
+  const inputTemplateRef = React.useRef<HTMLInputElement>(null)
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const { uploads, setUploads } = useContext(AppContext)
@@ -31,6 +33,7 @@ export default function () {
   const { setUploadTemp } = useAppContext()
   const [loading, setLoading] = useState(false)
   const frame = useFrame()
+  const editorType = useEditorType()
 
   const handleDropFiles = async (files: FileList) => {
     setIsUploading(true)
@@ -274,12 +277,68 @@ export default function () {
     console.log("error", error)
   }
 }
+// handle upload template
+const handleUploadTemplate = async (files: FileList) => {
+  const formdata = new FormData()
+  formdata.append("file", files[0])
+  var requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow'
+  };
+  try{
+    const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
+    const data = await res.json()
+    console.log(data?.data?.url, "data")
+    const url = data?.data?.url
+
+    const image = new Image();
+    image.src = url;
+    let preview = url
+    let width = 0
+    let height = 0
+    const imagePromise = new Promise((resolve) => {
+      image.onload = () => {
+        width = image.width
+        height = image.height
+        // if(image.width > maxWidth){
+        //   const ratio = image.width / image.height
+        //   const newWidth = maxWidth
+        //   const newHeight = newWidth / ratio
+        //   width = newWidth
+        //   height = newHeight
+        // }else{
+        //   width = image.width;
+        //   height = image.height;
+        // }
+        // @ts-ignore
+        resolve()
+      }
+    })
+    await imagePromise
+    const type = "StaticImage"
+    const upload = {
+      id: nanoid(),
+      src:preview,
+      preview: preview,
+      type: type,
+      width: width,
+      height: height,
+    }
+    setUploads([...uploads, upload])
+    addImageToCanvas2(upload)
+
+  }
+  catch(error){
+    console.log("error", error)
+  }
+}
 
   const handleInputFileRefClick = () => {
     inputFileRef.current?.click()
   }
   const handleInputSingleFileRefClick = () => {
-    inputFileSingleRef.current?.click()
+    inputTemplateRef.current?.click()
   }
   const handleInputFolderFileRefClick = () => {
     inputFileFolderRef.current?.click()
@@ -290,6 +349,9 @@ export default function () {
 
   const handleInputLogoFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleUploadLogo(e.target.files!)
+  }
+  const handleInputTemplateFile = (e: React.ChangeEvent<HTMLInputElement>)=>{
+    handleUploadTemplate(e.target.files!)
   }
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -428,6 +490,22 @@ export default function () {
             >
               Upload photos
             </Button>
+            {/* upload certificate template */}
+            <Button
+              onClick={handleInputSingleFileRefClick}
+              style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
+              size={SIZE.compact}
+              overrides={{
+                Root: {
+                  style: {
+                    width: "100%",
+                    marginTop: "0.5rem",
+                  },
+                },
+              }}
+            >
+              Upload Template
+            </Button>
             <Button
               // onClick={handleInputSingleFileRefClick}
               onClick={handleInputLogoRefClick}
@@ -448,6 +526,15 @@ export default function () {
               type="file"
               id="file"
               ref={inputLogoRef}
+              style={{ display: "none" }}
+              multiple
+            />
+            <input
+            // back soon
+              onChange={handleInputTemplateFile}
+              type="file"
+              id="file"
+              ref={inputTemplateRef}
               style={{ display: "none" }}
               multiple
             />

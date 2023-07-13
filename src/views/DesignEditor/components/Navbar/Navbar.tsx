@@ -199,6 +199,7 @@ const Navbar = () => {
   }
 
   const parseGraphicJSON = () => {
+    setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
     // the current scene is updated with the current scene's layers
@@ -235,9 +236,11 @@ const Navbar = () => {
     } else {
       console.log("NO CURRENT DESIGN")
     }
+    setLoading(false)
   }
 
   const parsePresentationJSON = () => {
+    setLoading(true)
     const currentScene = editor.scene.exportToJSON()
 
     const updatedScenes = scenes.map((scn) => {
@@ -272,41 +275,9 @@ const Navbar = () => {
     } else {
       console.log("NO CURRENT DESIGN")
     }
+    setLoading(false)
   }
 
-  const parseVideoJSON = () => {
-    const currentScene = editor.scene.exportToJSON()
-    const updatedScenes = scenes.map((scn) => {
-      if (scn.id === currentScene.id) {
-        return {
-          id: scn.id,
-          duration: scn.duration,
-          layers: currentScene.layers,
-          name: currentScene.name ? currentScene.name : "",
-        }
-      }
-      return {
-        id: scn.id,
-        duration: scn.duration,
-        layers: scn.layers,
-        name: scn.name ? scn.name : "",
-      }
-    })
-    if (currentDesign) {
-      const videoTemplate: IDesign = {
-        id: currentDesign.id,
-        type: "VIDEO",
-        name: currentDesign.name,
-        frame: currentDesign.frame,
-        scenes: updatedScenes,
-        metadata: {},
-        preview: "",
-      }
-      makeDownload(videoTemplate)
-    } else {
-      console.log("NO CURRENT DESIGN")
-    }
-  }
 
   const makeDownload = (data: Object) => {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
@@ -336,45 +307,16 @@ const Navbar = () => {
         requestOptions
       )
       const result = await res.json()
-      console.log(result, "result")
+      const url = result?.data?.downloadUrl
+          const downloadLink = document.createElement("a")
+      // @ts-ignore
+      downloadLink.href = url
+      downloadLink.download = "MyCertificate"
+      downloadLink.click()
     } catch (error) {
       console.log(error)
     }
   }
-  // test code not work i change the process
-  // const makeDownload = async (data: Object) => {
-  //   const dataMain = {
-  //     editorJson: data,
-  //     qualityPhoto: "HIGH",
-  //     createdBy: 135, // add createdBy property
-  //   }
-  //   try {
-  //     const response = await fetch("https://photostad-api.istad.co/api/v1/certificates/export", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataMain),
-  //     })
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to upload template")
-  //     }
-
-  //     alert("Template uploaded successfully")
-  //     console.log(response, "response data")
-
-  //     const downloadLink = document.createElement("a")
-  //     console.log(response.formData.donwloadUrl, "response data")
-  //     // @ts-ignore
-  //     downloadLink.href = response?.data?.downloadUrl
-  //     downloadLink.download = "template.json"
-  //     downloadLink.click()
-  //   } catch (error) {
-  //     console.error(error)
-  //     throw error
-  //   }
-  // }
 
   const makeDownloadTemplate = async () => {
     if (editor) {
@@ -487,9 +429,7 @@ const Navbar = () => {
         template = await loadGraphicTemplate(data)
       } else if (data.type === "PRESENTATION") {
         template = await loadPresentationTemplate(data)
-      } else if (data.type === "VIDEO") {
-        template = await loadVideoTemplate(data)
-      }
+      } 
       //   @ts-ignore
       setScenes(template.scenes)
       //   @ts-ignore
@@ -767,7 +707,7 @@ const Navbar = () => {
           {/* end of modal */}
 
           {/* dowload template certificate*/}
-          <Button
+          {/* <Button
             size="compact"
             onClick={makeDownloadTemplate}
             kind={KIND.tertiary}
@@ -781,7 +721,7 @@ const Navbar = () => {
             style={{ display: editorType === "GRAPHIC" ? "none" : "block" }}
           >
             Download
-          </Button>
+          </Button> */}
           <Button
             size="compact"
             onClick={() => setDisplayPreview(true)}
