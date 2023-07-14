@@ -2,7 +2,7 @@ import React from "react"
 import { Button, SIZE } from "baseui/button"
 import { textComponents } from "~/constants/editor"
 import { useStyletron } from "styletron-react"
-import { Canvas, useEditor } from "@layerhub-io/react"
+import { useEditor } from "@layerhub-io/react"
 import { FontItem } from "~/interfaces/common"
 import { loadFonts } from "~/utils/fonts"
 import { ILayer, IStaticText } from "@layerhub-io/types"
@@ -35,16 +35,14 @@ export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const components = useSelector(selectPublicComponents) 
-  // const google_font_api_key = "AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o"
+  
   const addObject = async () => {
     if (editor) {
       const font: FontItem = {
-        name: "opensans",
+        name: "OpenSans-Regular",
         url: "https://fonts.gstatic.com/s/opensans/v27/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjZ0C4nY1M2xLER.ttf",
-       
       }
-     const fontData =  await loadFonts([font])
-     console.log(fontData);
+      await loadFonts([font])
       const options = {
         id: nanoid(),
         type: "StaticText",
@@ -58,11 +56,7 @@ export default function () {
         fill: "#333333",
         metadata: {},
       }
-      console.log(font);
-      // editor.objects.add(options)
-      console.log(editor.objects.add(options));
-
-      
+      editor.objects.add(options)
     }
   }
   const addComponent = async (component: any) => {
@@ -169,7 +163,6 @@ export default function () {
         <Block>Text</Block>
 
         <Block onClick={() => setIsSidebarOpen(false)} $style={{ cursor: "pointer", display: "flex" }}>
-    
           <AngleDoubleLeft size={18} />
         </Block>
       </Block>
@@ -203,7 +196,7 @@ export default function () {
                 onClick={makeAddComponent}
                 key={component.id}
                 component={component}
-              /> 
+              />
             ))}
           </Block>
         </Block>
@@ -241,8 +234,7 @@ function TextComponentItem({
       })}
     >
       <img
-      // src="https://qph.cf2.quoracdn.net/main-qimg-85358e42b2ef861faabc96fdd3f669aa-lq"
-         src={component.preview}
+        src={component.preview}
         className={css({
           width: "100%",
           height: "100%",
@@ -250,7 +242,7 @@ function TextComponentItem({
           pointerEvents: "none",
           verticalAlign: "middle",
         })}
-      /> 
+      />
     </div>
   )
 }

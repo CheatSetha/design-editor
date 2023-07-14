@@ -13,12 +13,14 @@ const Presentation = () => {
   const scenes = useDesignEditorScenes()
   const editor = useEditor()
   const uploads = useDesignEditorUpload()
-  const [loading, setLoading] = React.useState(true)
+  const [loading, setLoading] = React.useState(false)
   const [images , setImages]= useState<{id:string,preview:string}[]>([])
 console.log('upload context', uploads);
   const loadSlides = React.useCallback(
+
     async (scenes: IScene[]) => {
-      console.log("scenes index 0", scenes[0]);
+      setLoading(false)
+      // console.log("scenes index 0", scenes[0]);
       const slides = []
       for (const scene of scenes) {
         const preview = (await editor.renderer.render(scene)) as string
@@ -28,13 +30,17 @@ console.log('upload context', uploads);
           preview,
         })
       }
+
       setSlides(slides)
-      setLoading(false)
+
+      
     },
     [editor]
   )
   const loadImages = React.useCallback(
+
     async () => {
+      setLoading(true)
       const images = []
       for (const img of uploads) {
         const preview = img.preview
@@ -88,22 +94,22 @@ console.log('upload context', uploads);
         {loading ? (
           <Loading /> 
         ) : (
-          // <Carousel showIndicators={false} showThumbs={false} useKeyboardArrows={true} showStatus={false}>
-          //   {slides.map((page, index) => (
-          //     <img width="auto" height="100%" key={index} src={page.preview} />
-          //   ))}
-          // </Carousel>
+          <Carousel showIndicators={false} showThumbs={false} useKeyboardArrows={true} showStatus={false}>
+            {slides.map((page, index) => (
+              <img width="auto" height="100%" key={index} src={page.preview} />
+            ))}
+          </Carousel>
 
 
 
-        < Block className="w-full h-screen flex gap-5 flex-wrap">
-          {
-             slides.map((page, index) => (
-              <img className="h-screen" src={page.preview} alt="preview imiage" key={index} />
+        // < Block className="w-full h-screen flex gap-5 flex-wrap">
+        //   {
+        //      slides.map((page, index) => (
+        //       <img className="h-screen" src={page.preview} alt="preview imiage" key={index} />
             
-              ))
-          }
-           </Block>
+        //       ))
+        //   }
+        //    </Block>
 
         )}
       </Block>

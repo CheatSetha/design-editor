@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import Search from "~/components/Icons/Search"
 import { Input, SIZE } from "baseui/input"
 import useAppContext from "~/hooks/useAppContext"
@@ -15,54 +15,42 @@ import { useAppDispatch } from "~/store/store"
 import { queryFonts } from "~/store/slices/fonts/actions"
 import InfiniteScrolling from "~/components/InfiniteScrolling"
 import { useDebounce } from "use-debounce"
-import LazyLoadImage from "~/components/LazyLoadImage/LazyLoadImage"
-import { use } from "i18next"
-import { SAMPLE_FONTS } from "~/constants/editor"
-import { SAMPLE_TEMPLATES } from "~/constants/editor"
+
 export default function () {
   const [hasMore, setHasMore] = React.useState(true)
   const [pageNumber, setPageNumber] = React.useState(1)
   const [query, setQuery] = React.useState("")
   const { setActiveSubMenu } = useAppContext()
-  // const fonts = useSelector(selectFonts)
+  const fonts = useSelector(selectFonts)
   const [commonFonts, setCommonFonts] = React.useState<any[]>([])
   const [searchQuery] = useDebounce(query, 250)
   const [css] = useStyletron()
   const editor = useEditor()
   const dispath = useAppDispatch()
 
-  const fonts = SAMPLE_FONTS
-  console.log(fonts.length + " b sl o")
-
   React.useEffect(() => {
     const grouped = groupBy(fonts, "family")
-    // console.log(grouped);
     const standardFonts = Object.keys(grouped).map((key) => {
       const familyFonts = grouped[key]
-      console.log(familyFonts + "family fonts")
-      const standardFont = familyFonts.find((familyFont) => familyFont.postscript_name.includes("-Regular"))
+      const standardFont = familyFonts.find((familyFont) => familyFont.postScriptName.includes("-Regular"))
       if (standardFont) {
         return standardFont
       }
       return familyFonts[familyFonts.length - 1]
     })
-    // @ts-ignore
     setCommonFonts(standardFonts)
   }, [fonts])
-  // @ts-ignore
-
-  // get font from google font api and add to common fo
 
   const handleFontFamilyChange = async (x: any) => {
     if (editor) {
       const font = {
-        name: x.postscript_name,
+        name: x.postScriptName,
         url: x.url,
       }
       await loadFonts([font])
 
       editor.objects.update({
-        fontFamily: x.postscript_name,
+        fontFamily: x.postScriptName,
         fontURL: font.url,
       })
     }
@@ -126,8 +114,7 @@ export default function () {
             },
           }}
           clearable
-          // onChange={(e) => setQuery((e.target as any).value)}
-          onChange={(e) => setQuery(e.currentTarget.value)}
+          onChange={(e) => setQuery((e.target as any).value)}
           placeholder="Search font"
           size={SIZE.compact}
           startEnhancer={<Search size={16} />}
@@ -136,37 +123,8 @@ export default function () {
 
       <Scrollable>
         <Block $style={{ padding: "0 1.5rem", display: "grid", gap: "0.2rem" }}>
-          <InfiniteScrolling  hasMore={hasMore}>
+          <InfiniteScrolling fetchData={fetchData} hasMore={hasMore}>
             <Block $style={{ display: "grid" }}>
-              {/* {commonFonts.map((font, index) => {
-                return (
-                  <div
-                    key={index}
-                    onClick={() => handleFontFamilyChange(font)}
-                    className={css({
-                      height: "40px",
-                      display: "flex",
-                      alignItems: "center",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                      ":hover": {
-                        backgroundColor: "rgb(245,246,247)",
-                      },
-                    })}
-                    // id={font.id}
-                  >
-                    <LazyLoadImage
-                      src={font.url}
-                      alt={font.family}
-                      width={40}
-                      height={40}
-                      style={{ marginRight: "0.5rem" }}
-                    />
-                    <Block $style={{ marginRight: "0.5rem" }}>{font.family}</Block>
-                  </div>
-                )
-              })} */}
-
               {commonFonts.map((font, index) => {
                 return (
                   <div
@@ -184,9 +142,8 @@ export default function () {
                     })}
                     id={font.id}
                   >
-                    {/* <img src={font.preview} />
-                    <LazyLoadImage url={font.preview} /> */}
-                    <Block $style={{ marginRight: "0.5rem" }}>{font.family}</Block>
+                    <img src={font.preview} />
+                    {/* <LazyLoadImage url={font.preview} /> */}
                   </div>
                 )
               })}

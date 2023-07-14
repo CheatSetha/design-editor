@@ -43,8 +43,7 @@ interface StyleOptions {
 }
 
 const initialOptions: TextState = {
-  // family: "CoreLang",
-  family: "OpenSans-Regular",
+  family: "Archivo Narrow",
   bold: false,
   italic: false,
   underline: false,
@@ -52,9 +51,116 @@ const initialOptions: TextState = {
   styleOptions: {
     hasBold: true,
     hasItalic: true,
-    options: [],
+    options: [
+      {
+          "id": "font_sZ3EhsHe_mENZvzofoHijvDu",
+          "family": "Archivo Narrow",
+          "fullName": "Archivo Narrow Medium",
+          "postScriptName": "ArchivoNarrow-Medium",
+          "preview": "https://ik.imagekit.io/lh/fonts/v2/2NGBWTGMrtfxILZr3tvi23dq.png",
+          "style": "ArchivoNarrow-Medium",
+          "url": "https://fonts.gstatic.com/s/archivonarrow/v18/tss5ApVBdCYD5Q7hcxTE1ArZ0Zz8oY2KRmwvKhhvHlGKpHOtFCQ76Q.ttf",
+          "category": "sans-serif",
+          "createdAt": "2023-06-24T10:32:09.883576",
+          "updatedAt": "2023-06-24T10:32:09.883576",
+          "userId": 1
+      },
+      {
+          "id": "font_CUArBC_zifAz5ml9UtEMQ3lJ",
+          "family": "Archivo Narrow",
+          "fullName": "Archivo Narrow SemiBold",
+          "postScriptName": "ArchivoNarrow-SemiBold",
+          "preview": "https://ik.imagekit.io/lh/fonts/v2/_cyRK3cQEpzRAj6LLZIFtNpu.png",
+          "style": "ArchivoNarrow-SemiBold",
+          "url": "https://fonts.gstatic.com/s/archivonarrow/v18/tss5ApVBdCYD5Q7hcxTE1ArZ0Zz8oY2KRmwvKhhv8laKpHOtFCQ76Q.ttf",
+          "category": "sans-serif",
+          "createdAt": "2023-06-24T10:32:09.883576",
+          "updatedAt": "2023-06-24T10:32:09.883576",
+          "userId": 1
+      },
+      {
+          "id": "font_USf7VATmurww5guiFQtcLAXb",
+          "family": "Archivo Narrow",
+          "fullName": "Archivo Narrow Bold",
+          "postScriptName": "ArchivoNarrow-Bold",
+          "preview": "https://ik.imagekit.io/lh/fonts/v2/H_tcB6Y7Q44ZuX11s5IiGr0l.png",
+          "style": "ArchivoNarrow-Bold",
+          "url": "https://fonts.gstatic.com/s/archivonarrow/v18/tss5ApVBdCYD5Q7hcxTE1ArZ0Zz8oY2KRmwvKhhvy1aKpHOtFCQ76Q.ttf",
+          "category": "sans-serif",
+          "createdAt": "2023-06-24T10:32:09.883576",
+          "updatedAt": "2023-06-24T10:32:09.883576",
+          "userId": 1
+      },
+      {
+          "id": "font_4t33XqGrdbwCswBjsrwE3z_b",
+          "family": "Archivo Narrow",
+          "fullName": "Archivo Narrow Regular",
+          "postScriptName": "ArchivoNarrow-Regular",
+          "preview": "https://ik.imagekit.io/lh/fonts/v2/2485kzQO2wVWJsMckh7yYDSY.png",
+          "style": "ArchivoNarrow-Regular",
+          "url": "https://fonts.gstatic.com/s/archivonarrow/v18/tss5ApVBdCYD5Q7hcxTE1ArZ0Zz8oY2KRmwvKhhvLFGKpHOtFCQ76Q.ttf",
+          "category": "sans-serif",
+          "createdAt": "2023-06-24T10:32:09.883576",
+          "updatedAt": "2023-06-24T10:32:09.883576",
+          "userId": 1
+      },
+      {
+          "id": "font_VgzUBAEBcJkgjBJZruvMKRqe",
+          "family": "Archivo Narrow",
+          "fullName": "Archivo Narrow Italic",
+          "postScriptName": "ArchivoNarrow-Italic",
+          "preview": "https://ik.imagekit.io/lh/fonts/v2/fPWkfoPcQDyJ8dPPmzfxh6Nq.png",
+          "style": "ArchivoNarrow-Italic",
+          "url": "https://fonts.gstatic.com/s/archivonarrow/v18/tss7ApVBdCYD5Q7hcxTE1ArZ0bb1k3JSLwe1hB965BJi53mpNiEr6T6Y.ttf",
+          "category": "sans-serif",
+          "createdAt": "2023-06-24T10:32:09.883576",
+          "updatedAt": "2023-06-24T10:32:09.883576",
+          "userId": 1
+      },
+      {
+          "id": "font_8pDqlEhsJBqDEmRxqEncdPFg",
+          "family": "Archivo Narrow",
+          "fullName": "Archivo Narrow Medium Italic",
+          "postScriptName": "ArchivoNarrow-MediumItalic",
+          "preview": "https://ik.imagekit.io/lh/fonts/v2/mRj4ygFpe75Fwrf_4uIgp3Qd.png",
+          "style": "ArchivoNarrow-MediumItalic",
+          "url": "https://fonts.gstatic.com/s/archivonarrow/v18/tss7ApVBdCYD5Q7hcxTE1ArZ0bb1k3JSLwe1hB965BJQ53mpNiEr6T6Y.ttf",
+          "category": "sans-serif",
+          "createdAt": "2023-06-24T10:32:09.883576",
+          "updatedAt": "2023-06-24T10:32:09.883576",
+          "userId": 1
+      },
+      {
+          "id": "font_zv5PYJnUGCcmWzDUfZyx5qtJ",
+          "family": "Archivo Narrow",
+          "fullName": "Archivo Narrow SemiBold Italic",
+          "postScriptName": "ArchivoNarrow-SemiBoldItalic",
+          "preview": "https://ik.imagekit.io/lh/fonts/v2/wyyJmjVHEfkxx7mvZReU_JUC.png",
+          "style": "ArchivoNarrow-SemiBoldItalic",
+          "url": "https://fonts.gstatic.com/s/archivonarrow/v18/tss7ApVBdCYD5Q7hcxTE1ArZ0bb1k3JSLwe1hB965BK84HmpNiEr6T6Y.ttf",
+          "category": "sans-serif",
+          "createdAt": "2023-06-24T10:32:09.883576",
+          "updatedAt": "2023-06-24T10:32:09.883576",
+          "userId": 1
+      },
+      {
+          "id": "font_IFzMug5VwDVFuKXoMi6DHhhv",
+          "family": "Archivo Narrow",
+          "fullName": "Archivo Narrow Bold Italic",
+          "postScriptName": "ArchivoNarrow-BoldItalic",
+          "preview": "https://ik.imagekit.io/lh/fonts/v2/6kq__T90kyQRWAsHlH_uvlqR.png",
+          "style": "ArchivoNarrow-BoldItalic",
+          "url": "https://fonts.gstatic.com/s/archivonarrow/v18/tss7ApVBdCYD5Q7hcxTE1ArZ0bb1k3JSLwe1hB965BKF4HmpNiEr6T6Y.ttf",
+          "category": "sans-serif",
+          "createdAt": "2023-06-24T10:32:09.883576",
+          "updatedAt": "2023-06-24T10:32:09.883576",
+          "userId": 1
+      }
+  ],
   },
 }
+
+
 export default function () {
   const [state, setState] = React.useState<TextState>(initialOptions)
   const activeObject = useActiveObject() as Required<IStaticText>
@@ -62,12 +168,7 @@ export default function () {
   const editor = useEditor()
   const fonts = useSelector(selectAllFonts)
 
-  // React.useEffect(() => {
-  //   if (activeObject && activeObject.type === "StaticText") {
-  //     const textProperties = getTextProperties(activeObject, fonts)
-  //     setState({ ...state, ...textProperties })
-  //   }
-  // }, [activeObject])
+ 
 
   React.useEffect(() => {
     let watcher = async () => {
@@ -86,111 +187,69 @@ export default function () {
     }
   }, [editor, activeObject])
 
-  // what i fixed haha. make your own way hehe
-  const handleBold = React.useCallback(() => {
-    if (!state.bold) {
-      editor.objects.update({
-        // @ts-ignore
-        fontWeight: "bold",
-      })
-
-      setState({ ...state, bold: true })
-    }
-    if (state.bold) {
-      editor.objects.update({
-        // @ts-ignore
-        fontWeight: "normal",
-      })
-      setState({ ...state, bold: false })
-    }
-  }, [editor, state])
-
-  // handle italic
-  const handleItalic = React.useCallback(() => {
-    if (!state.italic) {
-      editor.objects.update({
-        // @ts-ignore
-        fontStyle: "italic",
-      })
-      setState({ ...state, italic: true })
-    }
-    if (state.italic) {
-      editor.objects.update({
-        // @ts-ignore
-        fontStyle: "normal",
-      })
-      setState({ ...state, italic: false })
-    }
-  }, [editor, state])
   const makeBold = React.useCallback(async () => {
-    // state.bold means the text is bold
-   
-    console.log(state.styleOptions + " options")
+    console.log("state ", state)
 
     if (state.bold) {
-      let desiredFont = SAMPLE_FONTS.find((font) => font.family === state.family)
-console.log(desiredFont + " desired font");
+
+      let desiredFont
+
       if (state.italic) {
+        console.log("setha fake ..............." )
+
         // look for regular italic
-        const wantedFont = groupBy(SAMPLE_FONTS, "family")
-       
-        state.styleOptions.options = wantedFont[state.family]
         desiredFont = state.styleOptions.options.find((option) => {
-          console.log(wantedFont + " test");
-          const postScriptNames = option.post_script_name.split("-")
+          const postScriptNames = option.postScriptName.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^Italic$/)
         })
-       
-
       } else {
+
         // look for  regular
-        desiredFont = state.styleOptions.options.find((option) => {
-          console.log(option + " option")
-          const postScriptNames = option.post_script_name.split("-")
+          desiredFont = state.styleOptions.options.find((option) => {
+          const postScriptNames = option.postScriptName.split("-")
+          console.log("postScriptNames", postScriptNames)
           return postScriptNames[postScriptNames.length - 1].match(/^Regular$/)
         })
       }
 
       const font = {
-        // name: desiredFont.post_script_name,
-        // @ts-ignore
-        name: desiredFont.postscript_name,
-         // @ts-ignore
+        name: desiredFont.postScriptName,
         url: desiredFont.url,
       }
       await loadFonts([font])
 
       editor.objects.update({
-        // @ts-ignore
-        fontFamily: desiredFont.post_script_name,
+        fontFamily: desiredFont.postScriptName,
         fontURL: font.url,
       })
       setState({ ...state, bold: false })
     } else {
       let desiredFont
       if (state.italic) {
+
         // look for bold italic
         desiredFont = state.styleOptions.options.find((option) => {
-          const postScriptNames = option.post_script_name.split("-")
+          const postScriptNames = option.postScriptName.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^BoldItalic$/)
         })
       } else {
         // look for bold
-        desiredFont = state.styleOptions.options.find((option) => {
-          const postScriptNames = option.post_script_name.split("-")
-          return postScriptNames[postScriptNames.length - 1].match(/^Bold$/)
+        console.log("setha ..............." )
+          desiredFont = state.styleOptions.options.find((option) => {
+            const postScriptNames = option.postScriptName.split("-")
+            console.log("postScriptNames", postScriptNames)
+            return postScriptNames[postScriptNames.length -1 ].match(/^Bold$/)
         })
       }
-
+console.log(desiredFont, "desiredFont");
       const font = {
-        // name: desiredFont.post_script_name,
-        name: desiredFont.postscript_name,
+        name: desiredFont.postScriptName,
         url: desiredFont.url,
       }
       await loadFonts([font])
 
       editor.objects.update({
-        fontFamily: desiredFont.post_script_name,
+        fontFamily: desiredFont.postScriptName,
         fontURL: font.url,
       })
       setState({ ...state, bold: true })
@@ -203,26 +262,25 @@ console.log(desiredFont + " desired font");
       if (state.bold) {
         // Search bold regular
         desiredFont = state.styleOptions.options.find((option) => {
-          const postScriptNames = option.post_script_name.split("-")
+          const postScriptNames = option.postScriptName.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^Bold$/)
         })
       } else {
         // Search regular
         desiredFont = state.styleOptions.options.find((option) => {
-          const postScriptNames = option.post_script_name.split("-")
+          const postScriptNames = option.postScriptName.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^Regular$/)
         })
       }
 
       const font = {
-        // name: desiredFont.post_script_name,
-        name: desiredFont.postscript_name,
+        name: desiredFont.postScriptName,
         url: desiredFont.url,
       }
       await loadFonts([font])
 
       editor.objects.update({
-        fontFamily: desiredFont.post_script_name,
+        fontFamily: desiredFont.postScriptName,
         fontURL: font.url,
       })
       setState({ ...state, italic: false })
@@ -232,26 +290,25 @@ console.log(desiredFont + " desired font");
       if (state.bold) {
         // search italic bold
         desiredFont = state.styleOptions.options.find((option) => {
-          const postScriptNames = option.post_script_name.split("-")
+          const postScriptNames = option.postScriptName.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^BoldItalic$/)
         })
       } else {
         // search regular italic
         desiredFont = state.styleOptions.options.find((option) => {
-          const postScriptNames = option.post_script_name.split("-")
+          const postScriptNames = option.postScriptName.split("-")
           return postScriptNames[postScriptNames.length - 1].match(/^Italic$/)
         })
       }
 
       const font = {
-        // name: desiredFont.post_script_name,
-        name: desiredFont.postscript_name,
+        name: desiredFont.postScriptName,
         url: desiredFont.url,
       }
       await loadFonts([font])
 
       editor.objects.update({
-        fontFamily: desiredFont.post_script_name,
+        fontFamily: desiredFont.postScriptName,
         fontURL: font.url,
       })
       setState({ ...state, italic: true })
@@ -259,6 +316,7 @@ console.log(desiredFont + " desired font");
   }, [editor, state])
 
   const makeUnderline = React.useCallback(() => {
+
     editor.objects.update({
       underline: !state.underline,
     })
@@ -321,8 +379,8 @@ console.log(desiredFont + " desired font");
             <Button
               style={{ ...(!state.italic && { color: "rgb(169,169,169)" }) }}
               disabled={!state.styleOptions.hasItalic}
-              // onClick={makeItalic}
-              onClick={handleItalic}
+              onClick={makeItalic}
+              // onClick={handleItalic}
               size={SIZE.mini}
               kind={KIND.tertiary}
             >

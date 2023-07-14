@@ -254,15 +254,13 @@ class ApiService {
   getFonts(): Promise<IFontFamily[]> {
     return new Promise(async (resolve, reject) => {
       try {
-        const {data} = await axios.get(`${this.base}/fonts`)
+        const { data } = await this.base.get("/fonts")
         resolve(data.fonts)
-        
       } catch (err) {
         reject(err)
       }
     })
   }
-  
   //const apiKey = 'AIzaSyAKvAOODvO0m13nhsSAm9IEmSvxXPEnb8o';
   //   const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`;
 

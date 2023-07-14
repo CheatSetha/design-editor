@@ -45,14 +45,12 @@ const Navbar = () => {
   const [donwloadType, setDonwloadType] = useState("PDF") //PDF AND ZIP
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
 
-  const handleOpenPreview= ()=>{
+  const handleOpenPreview = () => {
     setIsPreviewOpen(true)
   }
-  const handleClosePreview= ()=>{
+  const handleClosePreview = () => {
     setIsPreviewOpen(false)
   }
-
- 
 
 
   const handleUpload = async (): Promise<void> => {
@@ -117,7 +115,6 @@ const Navbar = () => {
   }
 
 
-  // test export to excell
   const handleExportToExcell = async (): Promise<void> => {
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
@@ -172,8 +169,10 @@ const Navbar = () => {
         },
         body: JSON.stringify(dataFeature),
       })
+
       const resultInsertFeature = await reposeInsertFeature.json()
       console.log(resultInsertFeature?.data?.id, "resultInsertFeature")
+      console.log(resultInsertFeature, "resultInsertFeature");
       let idFeature = resultInsertFeature?.data?.id
       localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
 
@@ -197,6 +196,7 @@ const Navbar = () => {
       console.log("NO CURRENT DESIGN")
     }
   }
+
 
   const parseGraphicJSON = () => {
     setLoading(true)
@@ -231,17 +231,18 @@ const Navbar = () => {
         preview: "",
       }
 
-      makeDownload(graphicTemplate)
-      // makeDownloadCertificate(graphicTemplate)
+      makeDownloadCertificate(graphicTemplate)
     } else {
       console.log("NO CURRENT DESIGN")
     }
     setLoading(false)
   }
 
+
   const parsePresentationJSON = () => {
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
+
 
     const updatedScenes = scenes.map((scn) => {
       if (scn.id === currentScene.id) {
@@ -271,23 +272,30 @@ const Navbar = () => {
         preview: "",
       }
       // makeDownload(presentationTemplate)
+
       makeDownloadCertificate(presentationTemplate)
     } else {
       console.log("NO CURRENT DESIGN")
     }
     setLoading(false)
   }
-
-
   const makeDownload = (data: Object) => {
+    setLoading(true)
+    if (loading) {
+      alert("loading")
+    }
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
     const a = document.createElement("a")
     a.href = dataStr
     a.download = "template.json"
     a.click()
+    setLoading(false)
   }
-  // ================| when api is ready, use this function |======================== //
+
   const makeDownloadCertificate = async (data: Object) => {
+    if(loading === false){
+      setLoading(true)
+    }
     const raw = JSON.stringify({
       editorJson: data,
       qualityPhoto: "HIGH",
@@ -308,7 +316,8 @@ const Navbar = () => {
       )
       const result = await res.json()
       const url = result?.data?.downloadUrl
-          const downloadLink = document.createElement("a")
+      setLoading(false)
+      const downloadLink = document.createElement("a")
       // @ts-ignore
       downloadLink.href = url
       downloadLink.download = "MyCertificate"
@@ -318,14 +327,14 @@ const Navbar = () => {
     }
   }
 
+
   const makeDownloadTemplate = async () => {
     if (editor) {
+     
       if (editorType === "GRAPHIC") {
         return parseGraphicJSON()
       } else if (editorType === "PRESENTATION") {
         return parsePresentationJSON()
-      } else {
-        return parseVideoJSON()
       }
     }
   }
@@ -401,27 +410,6 @@ const Navbar = () => {
     return { scenes, design }
   }
 
-  const loadVideoTemplate = async (payload: IDesign) => {
-    const scenes = []
-    const { scenes: scns, ...design } = payload
-
-    for (const scn of scns) {
-      const design: IScene = {
-        name: "Awesome template",
-        frame: payload.frame,
-        id: scn.id,
-        layers: scn.layers,
-        metadata: {},
-        duration: scn.duration,
-      }
-      const loadedScene = await loadVideoEditorAssets(design)
-      const preview = (await editor.renderer.render(loadedScene)) as string
-      await loadTemplateFonts(loadedScene)
-      scenes.push({ ...loadedScene, preview })
-    }
-    return { scenes, design }
-  }
-
   const handleImportTemplate = React.useCallback(
     async (data: any) => {
       let template
@@ -429,7 +417,7 @@ const Navbar = () => {
         template = await loadGraphicTemplate(data)
       } else if (data.type === "PRESENTATION") {
         template = await loadPresentationTemplate(data)
-      } 
+      }
       //   @ts-ignore
       setScenes(template.scenes)
       //   @ts-ignore
@@ -444,6 +432,7 @@ const Navbar = () => {
   const handleInputExelRefClick = () => {
     inputExelRef.current?.click()
   }
+
   const handleExcelInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     const id = localStorage.getItem("idFeature")
@@ -497,15 +486,13 @@ const Navbar = () => {
     }
   }
 
-  // useEffect(() => {
-  //   addScene()
-  // }, [scences])
-
+  // select type or formart
   const hanleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value, "e.target.value")
     alert(e.target.value)
     setQuality(e.target.value)
   }
+
   const hanldeSelectTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value, "e.target.value")
     setDonwloadType(e.target.value)
@@ -515,10 +502,8 @@ const Navbar = () => {
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
       <Container>
-
         <img src={logo} alt="logo" style={{ width: "100px" }} />
 
-        {/* </div> */}
         <DesignTitle />
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
           <input
@@ -567,7 +552,7 @@ const Navbar = () => {
               },
             }}
           >
-            Import exell
+            Import excel
           </Button>
 
           <Button
@@ -586,6 +571,7 @@ const Navbar = () => {
           >
             Export
           </Button>
+
           <Button
             style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
             size="compact"
@@ -618,19 +604,12 @@ const Navbar = () => {
           >
             Download
           </Button> */}
-
-       
-
-
-          <div className={`${isePreviewOpen?' ':'hidden'} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
-            {/* <PreviewModal isClose={()=>setIsPreviewOpen(false)} /> */}
-            <PreviewALl close={handleClosePreview}/>
+          <div className={`${isePreviewOpen ? " " : "hidden"} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
+ 
+            <PreviewALl close={handleClosePreview} />
           </div>
-   
-
-       
           <div>
-            <label  className="text-white text-[14px] cursor-pointer" htmlFor="modal-2">
+            <label className="text-white text-[14px] cursor-pointer" htmlFor="modal-2">
               Download
             </label>
 
@@ -661,9 +640,13 @@ const Navbar = () => {
                         </option>
                       </select>
                       <div className="space-y-2">
-                          <label htmlFor="modal-2"  onClick={handleOpenPreview} className="btn btn-outline-primary border-black w-full hover:bg-black text-black hover:text-white">
-                            Preview
-                          </label>
+                        <label
+                          htmlFor="modal-2"
+                          onClick={handleOpenPreview}
+                          className="btn btn-outline-primary border-black w-full hover:bg-black text-black hover:text-white"
+                        >
+                          Preview
+                        </label>
                         <label onClick={handleUpload} className="btn bg-black text-white btn-block" htmlFor="modal-2">
                           Donwload
                         </label>
@@ -672,7 +655,7 @@ const Navbar = () => {
                   ) : (
                     <>
                       <p className="text-sm mt-2">Format</p>
-                      <select  value={donwloadType} onChange={hanldeSelectTypeChange} className="select w-[100%] ">
+                      <select value={donwloadType} onChange={hanldeSelectTypeChange} className="select w-[100%] ">
                         <option className="text-[14px]" disabled>
                           Select Format
                         </option>
@@ -705,7 +688,6 @@ const Navbar = () => {
             </div>
           </div>
           {/* end of modal */}
-
           {/* dowload template certificate*/}
           {/* <Button
             size="compact"

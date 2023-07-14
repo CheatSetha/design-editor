@@ -394,14 +394,14 @@ const handleUploadTemplate = async (files: FileList) => {
     editor.objects.add(props)
   }
 
-  React.useEffect(() => {
-    const scene = scenes[0].layers.length
-    if (uploads.length > 0) {
-      if (scene === 1) {
-        addImageToCanvas(uploads[0])
-      }
-    }
-  }, [scenes])
+  // React.useEffect(() => {
+  //   const scene = scenes[0].layers.length
+  //   if (uploads.length > 0) {
+  //     if (scene === 1) {
+  //       addImageToCanvas(uploads[0])
+  //     }
+  //   }
+  // }, [scenes])
 
   const dropImages = async () => {
     if (!currentScene) {
@@ -519,7 +519,8 @@ const handleUploadTemplate = async (files: FileList) => {
                 },
               }}
             >
-              Add Logo
+              {editorType==='PRESENTATION' ?  "Upload placeholder":"Upload Logo" }
+         
             </Button>
             <input
               onChange={handleInputLogoFile}
