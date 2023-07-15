@@ -12,10 +12,11 @@ import { IDesign } from "~/interfaces/DesignEditor"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
 
 interface props {
-  close: () => void
+  close: () => void,
+  load: () => void
 }
 
-const PreviewALl = ({close}:props) => {
+const PreviewALl = ({close, load}:props) => {
   const editor = useEditor()
   const [loading, setLoading] = React.useState(true)
   const { uploadTemp } = useAppContext()
@@ -191,6 +192,7 @@ const PreviewALl = ({close}:props) => {
       </div>
     )
   }
+  
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
   const frame = useFrame()
   return (

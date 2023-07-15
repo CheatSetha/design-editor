@@ -390,6 +390,7 @@ const Navbar = () => {
   }
 
   const loadPresentationTemplate = async (payload: IDesign) => {
+
     const scenes = []
     const { scenes: scns, ...design } = payload
 
@@ -406,11 +407,13 @@ const Navbar = () => {
       const preview = (await editor.renderer.render(loadedScene)) as string
       await loadTemplateFonts(loadedScene)
       scenes.push({ ...loadedScene, preview })
+   
     }
     return { scenes, design }
   }
 
   const handleImportTemplate = React.useCallback(
+
     async (data: any) => {
       let template
       if (data.type === "GRAPHIC") {
@@ -424,6 +427,8 @@ const Navbar = () => {
       setCurrentDesign(template.design)
     },
     [editor]
+  
+
   )
 
   const handleInputFileRefClick = () => {
@@ -434,6 +439,7 @@ const Navbar = () => {
   }
 
   const handleExcelInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true)
     const files = event.target.files
     const id = localStorage.getItem("idFeature")
     if (!files) {
@@ -463,7 +469,9 @@ const Navbar = () => {
     const result = await response.json()
     const design = result?.data
     // generate each scence to scences in editor
+   
     handleImportTemplate(design)
+    setLoading(false)
     console.log(result?.data, "result.data")
     console.log(design, "design")
   }
