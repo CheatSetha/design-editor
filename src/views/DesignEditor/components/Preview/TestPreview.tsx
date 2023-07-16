@@ -13,14 +13,15 @@ import useDesignEditorContext from "~/hooks/useDesignEditorContext"
 
 interface props {
   close: () => void,
-  load: () => void
+
 }
 
-const PreviewALl = ({close, load}:props) => {
+const PreviewALl = ({close}:props) => {
   const editor = useEditor()
   const [loading, setLoading] = React.useState(true)
   const { uploadTemp } = useAppContext()
   const listOfurl = uploadTemp?.url
+  console.log(listOfurl, "listOfurl");
 
  
 
@@ -32,6 +33,17 @@ const PreviewALl = ({close, load}:props) => {
 
   const [state, setState] = React.useState({ image: "" })
   console.log(state, "state")
+
+  const dataURItoBlob = (dataURI: string): Blob => {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  };
   // const makePreview = React.useCallback(async () => {
   //   if (editor) {
   //     template = editor.scene.exportToJSON()
@@ -168,15 +180,23 @@ const PreviewALl = ({close, load}:props) => {
     //replace oldPreview with another image
     template2.layers[1].preview = newPreview
     template2.layers[1].src = newPreview
-    console.log(template2, "template in preview")
-    // the problem is here
+   console.log(template2.layers[1].preview,"setha");
+    
+    // image return as base64
     const image = (await editor.renderer.render(template2)) as string
+  
+   
+
     setState({ image })
+
+    // test 
+    
+  
   }
 
   useEffect(()=>{
-      makePreview2(0)
-  },[])
+      makePreview2(currentIndex)
+  },[currentIndex])
 
   if (listOfurl === undefined) {
     return (
@@ -208,12 +228,12 @@ const PreviewALl = ({close, load}:props) => {
           <div className="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-4">
             <h2 className="font-bold text-white dark:text-white">Preview</h2>
           </div>
-          <button
+          {/* <button
             onClick={handleUpload}
             className=" px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700  rounded-[16px] dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
           >
             Download
-          </button>
+          </button> */}
         </nav>
         <div className="flex ">
           <div className="bg-slate-100">

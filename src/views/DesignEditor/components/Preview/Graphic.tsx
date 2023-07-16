@@ -69,7 +69,8 @@ const Graphic = () => {
       // //replace oldPreview with another image
       // template.layers[1].preview = newPreview;
       // template.layers[1].src = newPreview;
-      // console.log(template, "template")
+      console.log(template, "template")
+
       const image = (await editor.renderer.render(template)) as string
 
       setState({ image })

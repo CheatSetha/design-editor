@@ -21,6 +21,8 @@ import { nanoid } from "nanoid"
 import { Link } from "react-router-dom"
 import PreviewModal from "./components/PreviewModal"
 import PreviewALl from "../Preview/TestPreview"
+import loadinggif from "~/assets/loading/loading.gif"
+import api from "~/services/api"
 
 const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   height: "64px",
@@ -30,6 +32,7 @@ const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   gridTemplateColumns: "380px 1fr 380px",
   alignItems: "center",
 }))
+const BASE_URL = "https://photostad-api.istad.co/api/v1/"
 
 const Navbar = () => {
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
@@ -60,7 +63,6 @@ const Navbar = () => {
     // the current scene is updated with the current scene's layers
 
     const updatedScenes = scenes.map((scn) => {
-      console.log(scn, "scn")
       if (scn.id === currentScene.id) {
         return {
           id: currentScene.id,
@@ -243,8 +245,6 @@ const Navbar = () => {
   const parsePresentationJSON = () => {
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
-
-
     const updatedScenes = scenes.map((scn) => {
       if (scn.id === currentScene.id) {
         return {
@@ -281,22 +281,82 @@ const Navbar = () => {
     setLoading(false)
   }
   const makeDownload = (data: Object) => {
-    setLoading(true)
-    if (loading) {
-      alert("loading")
-    }
+    
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
     const a = document.createElement("a")
     a.href = dataStr
     a.download = "template.json"
     a.click()
-    setLoading(false)
+
+  }
+
+
+  const handleDownloadCertificate = async () => {
+    setLoading(true)
+
+    const currentScene = editor.scene.exportToJSON()
+    const updatedScenes = scenes.map((scn) => {
+      if (scn.id === currentScene.id) {
+        return {
+          id: currentScene.id,
+          duration: 5000,
+          layers: currentScene.layers,
+          name: currentScene.name,
+        }
+      }
+      return {
+        id: scn.id,
+        duration: 5000,
+        layers: scn.layers,
+        name: scn.name,
+      }
+    })
+    if(currentScene){
+      const presentationTemplate: IDesign = {
+        id: currentDesign.id,
+        type: "PRESENTATION",
+        name: currentDesign.name,
+        frame: currentDesign.frame,
+        scenes: updatedScenes,
+        metadata: {},
+        preview: "",
+      }
+
+      const raw = JSON.stringify({
+        editorJson: presentationTemplate,
+        qualityPhoto: "HIGH",
+        createdBy: 31, // add createdBy property
+      })
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: raw,
+      }
+      try{
+        const res = await fetch(`${BASE_URL}certificates/generate-certificate/${donwloadType}`, requestOptions)
+        const result = await res.json()
+        const url = result?.data?.downloadUrl
+        setTimeout(()=>{
+          setLoading(false)
+        },2000)
+        // route donwlod url if success
+        if (result.code === 200) {
+          window.location.href = url
+        }
+  
+      }
+      catch(error){
+        console.log(error)
+      }
+    }else{
+      console.log("NO CURRENT DESIGN")
+    }
+
+ 
   }
 
   const makeDownloadCertificate = async (data: Object) => {
-    if(loading === false){
-      setLoading(true)
-    }
+    
     const raw = JSON.stringify({
       editorJson: data,
       qualityPhoto: "HIGH",
@@ -328,7 +388,7 @@ const Navbar = () => {
     }
   }
 
-
+// for donwload certificate
   const makeDownloadTemplate = async () => {
     if (editor) {
      
@@ -428,8 +488,6 @@ const Navbar = () => {
       setCurrentDesign(template.design)
     },
     [editor]
-  
-
   )
 
   const handleInputFileRefClick = () => {
@@ -507,10 +565,12 @@ const Navbar = () => {
     setDonwloadType(e.target.value)
   }
 
+
+
   return (
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
-      <Container>
+      <Container className="z-50">
         <img src={logo} alt="logo" style={{ width: "100px" }} />
 
         <DesignTitle />
@@ -598,7 +658,7 @@ const Navbar = () => {
             Export
           </Button>
           {/* dowload template watermark */}
-          <Button
+          {/* <Button
             size="compact"
             onClick={handleUpload}
             kind={KIND.tertiary}
@@ -612,13 +672,13 @@ const Navbar = () => {
             style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
           >
             Download
-          </Button>
-          {/* <div className={`${isePreviewOpen ? " " : "hidden"} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
+          </Button> */}
+          <div className={`${isePreviewOpen ? " " : "hidden"} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
  
-            <PreviewALl close={handleClosePreview} />
-          </div> */}
+            <PreviewALl  close={handleClosePreview} />
+          </div>
           <div>
-            <label className="text-white text-[14px] cursor-pointer" htmlFor="modal-2">
+            <label className="text-white text-[14px] cursor-pointer p-3 hover:bg-[#333333] rounded-lg py-2.5" htmlFor="modal-2">
               Download
             </label>
 
@@ -684,7 +744,8 @@ const Navbar = () => {
                         Preview
                       </label>
                       <label
-                        onClick={makeDownloadTemplate}
+                        // onClick={makeDownloadTemplate}
+                        onClick={handleDownloadCertificate}
                         className="btn bg-black text-white w-full "
                         htmlFor="modal-2"
                       >
@@ -713,23 +774,21 @@ const Navbar = () => {
           >
             Download
           </Button> */}
-          <Button
-            size="compact"
+          <button
+          className="py-2.5 p-3 rounded-lg btn hover:bg-[#333333] text-white"
             onClick={() => setDisplayPreview(true)}
-            kind={KIND.tertiary}
-            overrides={{
-              StartEnhancer: {
-                style: {
-                  marginRight: "4px",
-                },
-              },
-            }}
+           
           >
-            <Play size={24} /> preview
-          </Button>
+            <Play size={24}  /> preview
+          </button>
         </Block>
       </Container>
-      {loading && <div className="loader"></div>}
+      {/* {loading && <div className="loader"></div>} */}
+      {loading && (
+         <div className="w-full h-screen absolute z-30 flex  items-center bg-white  left-[85px] ">
+         <img className="w-[400px] mx-auto  " src={loadinggif} alt="loading" />
+       </div>
+      )}
     </ThemeProvider>
   )
 }

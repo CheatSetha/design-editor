@@ -9,7 +9,6 @@ import useSetIsSidebarOpen from "~/hooks/useSetIsSidebarOpen"
 import { nanoid } from "nanoid"
 import { captureFrame, loadVideoResource } from "~/utils/video"
 import { ILayer } from "@layerhub-io/types"
-import { toBase64 } from "~/utils/data"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { DesignEditorContext } from "~/contexts/DesignEditor"
 import useAppContext from "~/hooks/useAppContext"
@@ -96,7 +95,6 @@ export default function () {
 
       setUploadTemp(data.data)
       console.log(data?.data?.url[0], "data uploaded")
-      // const base64 = (await toBase64(validFiles[0])) as string;
 
       let preview = data?.data?.url[0]
       let width = 0
@@ -196,7 +194,6 @@ export default function () {
 
       setUploadTemp(data.data)
       console.log(data?.data?.url[0], "data uploaded")
-      // const base64 = (await toBase64(validFiles[0])) as string;
 
       let preview = data?.data?.url[0]
       let width = 0
