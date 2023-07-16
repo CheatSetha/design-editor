@@ -3,6 +3,9 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  rippleui: {
+		removeThemes: ["dark", "light", "whateverTheme"],
+	},
   theme: {
     extend: {},
   },

@@ -230,8 +230,9 @@ const Navbar = () => {
         metadata: {},
         preview: "",
       }
+      makeDownload(graphicTemplate)
 
-      makeDownloadCertificate(graphicTemplate)
+      // makeDownloadCertificate(graphicTemplate)
     } else {
       console.log("NO CURRENT DESIGN")
     }
@@ -597,7 +598,7 @@ const Navbar = () => {
             Export
           </Button>
           {/* dowload template watermark */}
-          {/* <Button
+          <Button
             size="compact"
             onClick={handleUpload}
             kind={KIND.tertiary}
@@ -611,11 +612,11 @@ const Navbar = () => {
             style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
           >
             Download
-          </Button> */}
-          <div className={`${isePreviewOpen ? " " : "hidden"} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
+          </Button>
+          {/* <div className={`${isePreviewOpen ? " " : "hidden"} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
  
             <PreviewALl close={handleClosePreview} />
-          </div>
+          </div> */}
           <div>
             <label className="text-white text-[14px] cursor-pointer" htmlFor="modal-2">
               Download
@@ -624,7 +625,7 @@ const Navbar = () => {
             <input className="modal-state" id="modal-2" type="checkbox" />
             <div className="modal w-screen">
               <label className="modal-overlay" htmlFor="modal-2"></label>
-              <div className="modal-content flex flex-col gap-5 max-w-sm">
+              <div className="modal-content flex flex-col bg-white gap-5 max-w-sm">
                 <label htmlFor="modal-2" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                   ✕
                 </label>
@@ -633,7 +634,7 @@ const Navbar = () => {
                   {editorType === "GRAPHIC" ? (
                     <>
                       <p className="text-sm mt-2">Quality</p>
-                      <select value={quality} onChange={hanleSelectChange} className="select">
+                      <select value={quality} onChange={hanleSelectChange} className="select w-full">
                         <option className="text-[14px]" disabled>
                           Select Quality
                         </option>
@@ -647,7 +648,7 @@ const Navbar = () => {
                           high
                         </option>
                       </select>
-                      <div className="space-y-2">
+                      <div className="space-y-2 w-full">
                         <label
                           htmlFor="modal-2"
                           onClick={handleOpenPreview}
@@ -663,28 +664,28 @@ const Navbar = () => {
                   ) : (
                     <>
                       <p className="text-sm mt-2">Format</p>
-                      <select value={donwloadType} onChange={hanldeSelectTypeChange} className="select w-[100%] ">
-                        <option className="text-[14px]" disabled>
+                      <select id="select-type" value={donwloadType} onChange={hanldeSelectTypeChange} className="select w-full ">
+                        <option className="text-[14px] w-full" disabled>
                           Select Format
                         </option>
-                        <option className="text-[14px]" value={"PDF"}>
+                        <option className="text-[14px] w-full" value={"PDF"}>
                           PDF
                         </option>
-                        <option className="text-[14px]" value={"ZIP"}>
+                        <option className="text-[14px] w-full" value={"ZIP"}>
                           ZIP
                         </option>
                       </select>
 
                       <label
                         onClick={() => setDisplayPreview(true)}
-                        className="btn btn-outline-primary border-black w-[95%] hover:bg-black text-black hover:text-white"
+                        className="btn btn-outline-primary border-black w-full hover:bg-black text-black hover:text-white"
                         htmlFor="modal-2"
                       >
                         Preview
                       </label>
                       <label
                         onClick={makeDownloadTemplate}
-                        className="btn bg-black text-white w-[95%] "
+                        className="btn bg-black text-white w-full "
                         htmlFor="modal-2"
                       >
                         Donwload

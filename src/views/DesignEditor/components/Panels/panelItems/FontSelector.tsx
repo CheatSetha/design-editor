@@ -28,6 +28,8 @@ export default function () {
   const editor = useEditor()
   const dispath = useAppDispatch()
 
+  console.log(query,"query font");
+
   React.useEffect(() => {
     const grouped = groupBy(fonts, "family")
     const standardFonts = Object.keys(grouped).map((key) => {
