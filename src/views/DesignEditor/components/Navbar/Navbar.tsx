@@ -371,10 +371,7 @@ const Navbar = () => {
 
     try {
       // @ts-ignore
-      const res = await fetch(
-        `https://photostad-api.istad.co/api/v1/certificates/generate-certificate/${donwloadType}`,
-        requestOptions
-      )
+      const res = await fetch(`https://photostad-api.istad.co/api/v1/certificates/generate-certificate/${donwloadType}`,requestOptions)
       const result = await res.json()
       const url = result?.data?.downloadUrl
       setLoading(false)
@@ -570,7 +567,7 @@ const Navbar = () => {
   return (
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
-      <Container className="z-50">
+      <Container className="z-40">
         <img src={logo} alt="logo" style={{ width: "100px" }} />
 
         <DesignTitle />
