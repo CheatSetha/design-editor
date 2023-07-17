@@ -34,142 +34,18 @@ const PreviewALl = ({close}:props) => {
   const [state, setState] = React.useState({ image: "" })
   console.log(state, "state")
 
-  const dataURItoBlob = (dataURI: string): Blob => {
+
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const dataURItoBlob = (dataURI: string, contentType: string): Blob => {
     const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
     const ab = new ArrayBuffer(byteString.length);
     const ia = new Uint8Array(ab);
     for (let i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
     }
-    return new Blob([ab], { type: mimeString });
+    return new Blob([ab], { type: contentType });
   };
-  // const makePreview = React.useCallback(async () => {
-  //   if (editor) {
-  //     template = editor.scene.exportToJSON()
-  //     const image = (await editor.renderer.render(template)) as string
-  //     setState({ image })
-  //     setLoading(false)
-  //   }
-  // }, [editor])
-
-  // React.useEffect(() => {
-  //   makePreview()
-  // }, [editor])
-
-  // const testPreviewsv2 = useCallback(async()=>{
-  //   for(let i = 0; i< listOfurl.length;i++){
-  //     // const {src,id,width,height} = listOfurl[i]
-  //     const template = editor.scene.exportToJSON()
-  //     const previewImg = JSON.parse(JSON.stringify(template))
-  //     console.log("preview image ",previewImg)
-  //     previewImg.id = i
-  //     previewImg.layers[1].preview = listOfurl[i]
-  //     previewImg.layers[1].src = listOfurl[i]
-  //     previewImg.layers[1].id = i
-  //     previewImg.layers[1].left = 0
-  //     previewImg.layers[1].top = 0
-  //     previewImg.preview = ""
-  //     scences.push(previewImg)
-  //     console.log("all scenes v2 ", scences)
-  //     console.log(previewImg,"previewImg")
-
-  //   }
-
-  // },[])
-
-  // useEffect(()=>{
-  //   if(scences.length <= listOfurl.length){
-  //     testPreviewsv2()
-  //   }
-  // },[])
-   // handle template upload to server
-   const handleUpload = async (): Promise<void> => {
-    setLoading(true)
-    const currentScene = editor.scene.exportToJSON()
-    // udpatedScenes is an array of scenes that are updated
-    // the current scene is updated with the current scene's layers
-
-    const updatedScenes = scenes.map((scn) => {
-      console.log(scn, "scn")
-      if (scn.id === currentScene.id) {
-        return {
-          id: currentScene.id,
-          layers: currentScene.layers,
-          name: currentScene.name,
-        }
-      }
-      return {
-        id: scn.id,
-        layers: scn.layers,
-        name: scn.name,
-      }
-    })
-
-    if (currentDesign) {
-      const graphicTemplate: IDesign = {
-        id: currentDesign.id,
-        type: "GRAPHIC",
-        name: currentDesign.name,
-        frame: frame,
-        scenes: updatedScenes,
-        metadata: {},
-        preview: "",
-      }
-
-      let template = graphicTemplate
-      const data = {
-        editorJson: template,
-        qualityPhoto: "HIGH",
-        createdBy: 32, // add createdBy property
-        folderName: uploadTemp.folderName, // add folderName property
-        // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
-      }
-      const response = await fetch("https://photostad-api.istad.co/api/v1/watermarks/generate-watermark", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-      const result = await response.json()
-      setLoading(false)
-      console.log(result, "result")
-      // if success, redirect to download url
-      if (result.code === 200) {
-        window.location.href = result.data.downloadUrl
-      }
-    } else {
-      console.log("NO CURRENT DESIGN")
-    }
-  }
-
-  const addScene = React.useCallback(async () => {
-    for (let i = 0; i < uploads.length; i++) {
-      const { src, id, width, height } = uploads[i]
-      const template = editor.scene.exportToJSON()
-      const previewImg = JSON.parse(JSON.stringify(template))
-      console.log(template, "template")
-      console.log("previewImg", previewImg)
-
-      previewImg.id = id
-      previewImg.layers[1].preview = src
-      previewImg.layers[1].src = src
-      previewImg.layers[1].id = id
-      previewImg.layers[1].left = 0
-      previewImg.layers[1].top = 0
-      previewImg.preview = ""
-
-      scences.push(previewImg)
-      console.log("all scenes ", scences)
-    }
-    // scences.splice(0, 1)
-
-    // remove all element in upload array
-    setUploads([])
-  }, [])
-
-  const [currentIndex, setCurrentIndex] = useState(0)
 
   let template2: any
   const makePreview2 = async (currentIndex: number) => {
@@ -184,10 +60,16 @@ const PreviewALl = ({close}:props) => {
     
     // image return as base64
     const image = (await editor.renderer.render(template2)) as string
-  
+    
    
 
     setState({ image })
+    // slice content type from image
+    const contentType =  image.slice(image.indexOf(":") + 1, image.indexOf(";"))
+    console.log(contentType,"contentType");
+    const blob = dataURItoBlob(image, contentType)
+    const imgUrl = URL.createObjectURL(blob)
+    console.log(imgUrl);
 
     // test 
     

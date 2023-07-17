@@ -66,7 +66,7 @@ const SceneItem = ({ isCurrentScene, scene, preview, index, changePage }: Props)
           border: isCurrentScene ? "2px solid #7158e2" : "2px solid rgba(0,0,0,.15)",
         }}
       >
-        <img style={{ maxWidth: "90px", maxHeight: "80px", display: "flex" }} src={preview} />
+        <img style={{ maxWidth: "50px", maxHeight: "40px", display: "flex" }} src={preview} />
         <Block
           $style={{
             position: "absolute",

@@ -170,6 +170,7 @@ const Scenes = () => {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
     >
+      <div className="overflow-auto w-full">
       <Block $style={{ padding: "0.25rem 0.75rem", background: "#ffffff" }}>
         <div className={css({ display: "flex", alignItems: "center" })}>
           {contextMenuTimelineRequest.visible && <SceneContextMenu />}
@@ -223,6 +224,7 @@ const Scenes = () => {
           </DragOverlay>
         </div>
       </Block>
+      </div>
     </DndContext>
   )
 }

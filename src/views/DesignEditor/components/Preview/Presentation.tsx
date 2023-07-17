@@ -23,7 +23,9 @@ console.log('upload context', uploads);
       // console.log("scenes index 0", scenes[0]);
       const slides = []
       for (const scene of scenes) {
+
         const preview = (await editor.renderer.render(scene)) as string
+      
         slides.push({
           
           id: scene.id,

@@ -88,7 +88,7 @@ export default function () {
         <div style={{ padding: "0 1.5rem" }}>
           <div style={{ display: "grid", gap: "0.5rem", gridTemplateColumns: "1fr 1fr" }}>
             {designs
-              // .filter((d) => d.type === editorType)
+              .filter((d) => d.type === editorType)
               .map((design, index) => {
                 return (
                   <ImageItem
