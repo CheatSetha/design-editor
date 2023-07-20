@@ -154,7 +154,7 @@ const Navbar = () => {
       const data = {
         editorJson: template,
         qualityPhoto: "HIGH",
-        createdBy: 19, // add createdBy property
+        createdBy: 24, // add createdBy property
         // folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
