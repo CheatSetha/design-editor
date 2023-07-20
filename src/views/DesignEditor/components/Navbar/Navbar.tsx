@@ -325,7 +325,7 @@ const Navbar = () => {
       const raw = JSON.stringify({
         editorJson: presentationTemplate,
         qualityPhoto: "HIGH",
-        createdBy: 31, // add createdBy property
+        createdBy: 24, // add createdBy property
       })
       const requestOptions = {
         method: "POST",
