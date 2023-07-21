@@ -47,6 +47,7 @@ const Navbar = () => {
   const [quality, setQuality] = useState("HIGH")
   const [donwloadType, setDonwloadType] = useState("PDF") //PDF AND ZIP
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
+  const {currentUser, setCurrentUser}= useAppContext()
 
   const handleOpenPreview = () => {
     setIsPreviewOpen(true)
@@ -93,7 +94,8 @@ const Navbar = () => {
       const data = {
         editorJson: template,
         qualityPhoto: quality,
-        createdBy: 32, // add createdBy property
+        // createdBy: 32, // add createdBy property
+        createdBy: currentUser?.data?.id,
         folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
@@ -154,7 +156,8 @@ const Navbar = () => {
       const data = {
         editorJson: template,
         qualityPhoto: "HIGH",
-        createdBy: 24, // add createdBy property
+        // createdBy: 24, // add createdBy property
+        createdBy: currentUser?.data?.id
         // folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
@@ -325,7 +328,8 @@ const Navbar = () => {
       const raw = JSON.stringify({
         editorJson: presentationTemplate,
         qualityPhoto: "HIGH",
-        createdBy: 24, // add createdBy property
+        // createdBy: 24, // add createdBy property
+        createdBy: currentUser?.data?.id
       })
       const requestOptions = {
         method: "POST",
@@ -360,7 +364,8 @@ const Navbar = () => {
     const raw = JSON.stringify({
       editorJson: data,
       qualityPhoto: "HIGH",
-      createdBy: 31, // add createdBy property
+      // createdBy: 31, // add createdBy property
+      createdBy: currentUser?.data?.id
     })
     const requestOptions = {
       method: "POST",
@@ -567,7 +572,7 @@ const Navbar = () => {
   return (
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
-      <Container className="z-40">
+      <Container className="z-200">
         <img src={logo} alt="logo" style={{ width: "100px" }} />
 
         <DesignTitle />

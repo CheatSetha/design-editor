@@ -19,6 +19,8 @@ const useAppContext = () => {
     setCurrentTemplate,
     uploadTemp,
     setUploadTemp,
+    currentUser,
+    setCurrentUser
 
   } = useContext(AppContext)
   return {
@@ -38,6 +40,8 @@ const useAppContext = () => {
     setCurrentTemplate,
     uploadTemp,
     setUploadTemp,
+    currentUser,
+    setCurrentUser
    
    
   }

@@ -413,14 +413,14 @@ console.log(desiredFont, "desiredFont");
           <Block width={"1px"} height={"24px"} backgroundColor="rgb(213,213,213)" margin={"0 4px"} />
 
           <TextSpacing />
-          <Block width={"1px"} height={"24px"} backgroundColor="rgb(213,213,213)" margin={"0 4px"} />
-          <Button onClick={() => setActiveSubMenu("TextEffects")} size={SIZE.compact} kind={KIND.tertiary}>
+          {/* <Block width={"1px"} height={"24px"} backgroundColor="rgb(213,213,213)" margin={"0 4px"} /> */}
+          {/* <Button onClick={() => setActiveSubMenu("TextEffects")} size={SIZE.compact} kind={KIND.tertiary}>
             Effects
-          </Button>
-          <Block width={"1px"} height={"24px"} backgroundColor="rgb(213,213,213)" margin={"0 4px"} />
-          <Button size={SIZE.compact} kind={KIND.tertiary}>
+          </Button> */}
+          {/* <Block width={"1px"} height={"24px"} backgroundColor="rgb(213,213,213)" margin={"0 4px"} /> */}
+          {/* <Button size={SIZE.compact} kind={KIND.tertiary}>
             Animate
-          </Button>
+          </Button> */}
         </Block>
       </Block>
       <Common />

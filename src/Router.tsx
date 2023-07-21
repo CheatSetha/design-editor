@@ -13,7 +13,7 @@ const Router = () => {
       <Routes>
         <Route path="/manage" element={<Dashboard />} />
         <Route path="/" element={<DesignEditor />} />
-        <Route path="/previewall" element={<PreviewALl />} />
+        {/* <Route path="/previewall" element={<PreviewALl />} /> */}
         <Route path="/watermark" element={<DesignEditorWatermak />} />
         <Route path="/generatecertificate" element={<DesignEditorCertificate/>} />
 

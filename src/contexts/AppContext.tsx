@@ -19,6 +19,8 @@ interface IAppContext {
   setCurrentTemplate: any
   uploadTemp: any
   setUploadTemp: any
+  currentUser: any
+  setCurrentUser: any
 
 
 }
@@ -40,6 +42,8 @@ export const AppContext = createContext<IAppContext>({
   setCurrentTemplate: {},
   uploadTemp: {},
   setUploadTemp: {},
+  currentUser: {},
+  setCurrentUser: {},
  
  
 })
@@ -53,6 +57,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null)
   const [currentTemplate, setCurrentTemplate] = useState(null)
   const [uploadTemp, setUploadTemp] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null)
 
 
   const context = {
@@ -72,6 +77,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setCurrentTemplate,
     uploadTemp,
     setUploadTemp,
+    currentUser,
+    setCurrentUser,
    
     
     

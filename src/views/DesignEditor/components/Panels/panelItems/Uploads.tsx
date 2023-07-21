@@ -132,9 +132,14 @@ export default function () {
     }
   }
 
+  const [blob, setBlob] = useState<" " | null>(null)
+  console.log(blob, "blob");
   // @ts-ignore
   const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
     setIsUploading(true)
+
+
+
     const imageTypes = [
       "image/jpeg",
       "image/png",
@@ -204,17 +209,6 @@ export default function () {
         image.onload = () => {
           width = image.width
           height = image.height
-          // if(image.width > maxWidth){
-          //   const ratio = image.width / image.height
-          //   const newWidth = maxWidth
-          //   const newHeight = newWidth / ratio
-          //   width = newWidth
-          //   height = newHeight
-          // }else{
-          //   width = image.width;
-          //   height = image.height;
-          // }
-          // @ts-ignore
           resolve()
         }
       })
@@ -356,6 +350,8 @@ const handleUploadTemplate = async (files: FileList) => {
   }
   const handleFolderInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     uploadMultipleImages(e.target.files!)
+    // @ts-ignore
+    // setBlob(URL.createObjectURL(e.target.files[0]))
   }
 
   const addImageToCanvas2 = (props: Partial<ILayer>) => {

@@ -10,6 +10,7 @@ import useAppContext from "~/hooks/useAppContext"
 import { set } from "lodash"
 import { IDesign } from "~/interfaces/DesignEditor"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
+import { resolve } from "path"
 
 interface props {
   close: () => void,
@@ -37,20 +38,17 @@ const PreviewALl = ({close}:props) => {
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  const dataURItoBlob = (dataURI: string, contentType: string): Blob => {
-    const byteString = atob(dataURI.split(',')[1]);
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: contentType });
-  };
 
+
+  
   let template2: any
+ 
+ 
   const makePreview2 = async (currentIndex: number) => {
+
     setCurrentIndex(currentIndex)
     template2 = editor.scene.exportToJSON()
+    console.log(template2,'template2');
     const oldPreview = template2.layers[1]?.preview
     const newPreview = listOfurl[currentIndex]
     //replace oldPreview with another image
@@ -60,20 +58,14 @@ const PreviewALl = ({close}:props) => {
     
     // image return as base64
     const image = (await editor.renderer.render(template2)) as string
-    
+   
+    // alert(url)
    
 
     setState({ image })
     // slice content type from image
-    const contentType =  image.slice(image.indexOf(":") + 1, image.indexOf(";"))
-    console.log(contentType,"contentType");
-    const blob = dataURItoBlob(image, contentType)
-    const imgUrl = URL.createObjectURL(blob)
-    console.log(imgUrl);
-
-    // test 
-    
   
+    // test  
   }
 
   useEffect(()=>{
@@ -125,7 +117,8 @@ const PreviewALl = ({close}:props) => {
                 <img  className={`${i === currentIndex? 'block':'hidden'} w-5 h-5 z-50 -mb-[50px] ml-[75px]`} src="https://cdn-icons-png.flaticon.com/512/992/992481.png" alt="" />
         
                  <img
-                 onClick={() => makePreview2(i)}
+                 onClick={(e) => makePreview2(i)}
+                
                  className={`w-full  cursor-pointer rounded-[16px] ${
                    i === currentIndex ? "border-2 mt-3 border-blue-500" : ""
                  } ${i === listOfurl.length - 1 ? "mb-16" : ""}`}
