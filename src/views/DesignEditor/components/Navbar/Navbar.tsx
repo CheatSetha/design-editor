@@ -191,8 +191,12 @@ const Navbar = () => {
         body: JSON.stringify(data),
       })
       const result = await response.json()
+      const uuid = result?.data?.uuid
+      // set uuit to localstorage
+      localStorage.setItem("uuid", uuid.toString())
       setLoading(false)
       console.log(result, "result when export to excell")
+      console.log(uuid, "uuid");
       // if success, redirect to download url
       if (result.code === 200) {
         window.location.href = result.data.downloadUrl
@@ -296,7 +300,7 @@ const Navbar = () => {
 
   const handleDownloadCertificate = async () => {
     setLoading(true)
-
+    const uuid = localStorage.getItem("uuid")
     const currentScene = editor.scene.exportToJSON()
     const updatedScenes = scenes.map((scn) => {
       if (scn.id === currentScene.id) {
@@ -337,7 +341,7 @@ const Navbar = () => {
         body: raw,
       }
       try{
-        const res = await fetch(`${BASE_URL}certificates/generate-certificate/${donwloadType}`, requestOptions)
+        const res = await fetch(`${BASE_URL}certificates/generate-certificate/${donwloadType}/${uuid}`, requestOptions)
         const result = await res.json()
         const url = result?.data?.downloadUrl
         setTimeout(()=>{
@@ -594,7 +598,7 @@ const Navbar = () => {
             ref={inputExelRef}
             style={{ display: "none" }}
           />
-          <Button
+          {/* <Button
             style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
             size="compact"
             onClick={handleInputFileRefClick}
@@ -608,7 +612,7 @@ const Navbar = () => {
             }}
           >
             Import
-          </Button>
+          </Button> */}
           <Button
             className="whitespace-nowrap"
             style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
@@ -623,10 +627,10 @@ const Navbar = () => {
               },
             }}
           >
-            Import excel
+            Import 
           </Button>
 
-          <Button
+          {/* <Button
             style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
             size="compact"
             onClick={makeDownloadTemplate}
@@ -641,7 +645,7 @@ const Navbar = () => {
             }}
           >
             Export
-          </Button>
+          </Button> */}
 
           <Button
             style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
@@ -681,7 +685,7 @@ const Navbar = () => {
           </div>
           <div>
             <label className="text-white text-[14px] cursor-pointer p-3 hover:bg-[#333333] rounded-lg py-2.5" htmlFor="modal-2">
-              Download
+              Next
             </label>
 
             <input className="modal-state" id="modal-2" type="checkbox" />
@@ -725,9 +729,10 @@ const Navbar = () => {
                     </>
                   ) : (
                     <>
-                      <p className="text-sm mt-2">Format</p>
-                      <select id="select-type" value={donwloadType} onChange={hanldeSelectTypeChange} className="select w-full ">
-                        <option className="text-[14px] w-full" disabled>
+                      <p className="text-sm mt-2 ">Format</p>
+                    <div className="w-full p-0 m-0">
+                    <select id="select-type" value={donwloadType} onChange={hanldeSelectTypeChange} className="select w-full ">
+                        <option className="text-[14px] w-full " disabled>
                           Select Format
                         </option>
                         <option className="text-[14px] w-full" value={"PDF"}>
@@ -737,6 +742,7 @@ const Navbar = () => {
                           ZIP
                         </option>
                       </select>
+                    </div>
 
                       <label
                         onClick={() => setDisplayPreview(true)}
