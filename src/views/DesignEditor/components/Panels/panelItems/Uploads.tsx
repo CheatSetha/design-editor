@@ -132,11 +132,15 @@ export default function () {
     }
   }
 
-  const [blob, setBlob] = useState<" " | null>(null)
-  console.log(blob, "blob");
+  
   // @ts-ignore
   const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
     setIsUploading(true)
+    // test compresss  with compress js
+
+    
+
+
 
 
 
