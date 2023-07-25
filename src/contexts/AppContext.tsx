@@ -21,6 +21,8 @@ interface IAppContext {
   setUploadTemp: any
   currentUser: any
   setCurrentUser: any
+  blobList: any
+  setBlobList: any
 
 
 }
@@ -44,6 +46,8 @@ export const AppContext = createContext<IAppContext>({
   setUploadTemp: {},
   currentUser: {},
   setCurrentUser: {},
+  blobList: {},
+  setBlobList: {},
  
  
 })
@@ -58,6 +62,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentTemplate, setCurrentTemplate] = useState(null)
   const [uploadTemp, setUploadTemp] = useState(null)
   const [currentUser, setCurrentUser] = useState(null)
+  const [blobList, setBlobList] = useState(null)
 
 
   const context = {
@@ -79,6 +84,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setUploadTemp,
     currentUser,
     setCurrentUser,
+    blobList,
+    setBlobList,
    
     
     

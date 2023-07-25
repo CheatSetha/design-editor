@@ -20,7 +20,9 @@ const useAppContext = () => {
     uploadTemp,
     setUploadTemp,
     currentUser,
-    setCurrentUser
+    setCurrentUser,
+    blobList,
+    setBlobList,
 
   } = useContext(AppContext)
   return {
@@ -41,7 +43,9 @@ const useAppContext = () => {
     uploadTemp,
     setUploadTemp,
     currentUser,
-    setCurrentUser
+    setCurrentUser,
+    blobList,
+    setBlobList
    
    
   }

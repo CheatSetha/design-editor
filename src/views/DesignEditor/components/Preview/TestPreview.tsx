@@ -11,21 +11,18 @@ import { set } from "lodash"
 import { IDesign } from "~/interfaces/DesignEditor"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
 import { resolve } from "path"
+import { compressBase64ToBlobURL } from "~/utils/data"
 
 interface props {
-  close: () => void,
-
+  close: () => void
 }
 
-const PreviewALl = ({close}:props) => {
+const PreviewALl = ({ close }: props) => {
   const editor = useEditor()
   const [loading, setLoading] = React.useState(true)
-  const { uploadTemp } = useAppContext()
+  const { uploadTemp, blobList } = useAppContext()
   const listOfurl = uploadTemp?.url
-  console.log(listOfurl, "listOfurl");
-
- 
-
+  console.log(listOfurl, "listOfurl")
 
   //+++++++++++++++ test code ++++++++++++++++++++++++//
   const scences = useDesignEditorScenes()
@@ -35,58 +32,56 @@ const PreviewALl = ({close}:props) => {
   const [state, setState] = React.useState({ image: "" })
   console.log(state, "state")
 
-
   const [currentIndex, setCurrentIndex] = useState(0)
 
-
-
-  
   let template2: any
- 
- 
-  const makePreview2 = async (currentIndex: number) => {
 
+  const makePreview2 = async (currentIndex: number) => {
     setCurrentIndex(currentIndex)
     template2 = editor.scene.exportToJSON()
-    console.log(template2,'template2');
+    console.log(template2, "template2")
     const oldPreview = template2.layers[1]?.preview
-    const newPreview = listOfurl[currentIndex]
+    // const newPreview = listOfurl[currentIndex]
+    const newPreview = blobList[currentIndex]
     //replace oldPreview with another image
     template2.layers[1].preview = newPreview
     template2.layers[1].src = newPreview
-   console.log(template2.layers[1].preview,"setha");
-    
+    console.log(template2.layers[1].preview, "setha")
+
     // image return as base64
     const image = (await editor.renderer.render(template2)) as string
-   
+
     // alert(url)
-   
 
-    setState({ image })
+    // test decode base64 to image
+    const bloburl = await compressBase64ToBlobURL(image)
+    console.log(bloburl, "bloburl after convert")
+    setState({ image: bloburl })
+
     // slice content type from image
-  
-    // test  
+
+    // test
   }
 
-  useEffect(()=>{
-      makePreview2(currentIndex)
-  },[currentIndex])
+  useEffect(() => {
+    makePreview2(currentIndex)
+  }, [currentIndex])
 
-  if (listOfurl === undefined) {
-    return (
-      <div className="w-full h-screen flex-col flex justify-center items-center text-5xl text-green-800">
-        <p>There is no Image To Preview</p>
-        <div>
-          <Link to={"/"}>
-            <button className="p-2.5 bg-slate-600 text-white rounded-[16px] mt-3 text-xl font-light px-10">
-              Back To Home Page
-            </button>
-          </Link>
-        </div>
-      </div>
-    )
-  }
-  
+  // if (listOfurl === undefined) {
+  //   return (
+  //     <div className="w-full h-screen flex-col flex justify-center items-center text-5xl text-green-800">
+  //       <p>There is no Image To Preview</p>
+  //       <div>
+  //         <Link to={"/"}>
+  //           <button className="p-2.5 bg-slate-600 text-white rounded-[16px] mt-3 text-xl font-light px-10">
+  //             Back To Home Page
+  //           </button>
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   )
+  // }
+
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
   const frame = useFrame()
   return (
@@ -112,21 +107,25 @@ const PreviewALl = ({close}:props) => {
         <div className="flex ">
           <div className="bg-slate-100">
             <div id="scrollbar" className="overflow-y-scroll  p-5 h-screen w-[150px] flex flex-col gap-4">
-              {listOfurl.map((url: string, i: number) => (
-                <>
-                <img  className={`${i === currentIndex? 'block':'hidden'} w-5 h-5 z-50 -mb-[50px] ml-[75px]`} src="https://cdn-icons-png.flaticon.com/512/992/992481.png" alt="" />
-        
-                 <img
-                 onClick={(e) => makePreview2(i)}
-                
-                 className={`w-full  cursor-pointer rounded-[16px] ${
-                   i === currentIndex ? "border-2 mt-3 border-blue-500" : ""
-                 } ${i === listOfurl.length - 1 ? "mb-16" : ""}`}
-                 key={i}
-                 src={url}
-               />
-               </>
-              ))}
+              {blobList &&
+                blobList.map((url: string, i: number) => (
+                  <>
+                    <img
+                      className={`${i === currentIndex ? "block" : "hidden"} w-5 h-5 z-50 -mb-[50px] ml-[75px]`}
+                      src="https://cdn-icons-png.flaticon.com/512/992/992481.png"
+                      alt=""
+                    />
+
+                    <img
+                      onClick={(e) => makePreview2(i)}
+                      className={`w-full  cursor-pointer rounded-[16px] ${
+                        i === currentIndex ? "border-2 mt-3 border-blue-500" : ""
+                      } ${i === blobList?.length - 1 ? "mb-16" : ""}`}
+                      key={i}
+                      src={url}
+                    />
+                  </>
+                ))}
             </div>
           </div>
 

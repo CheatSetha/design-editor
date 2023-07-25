@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react"
+import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from "react"
 import { Block } from "baseui/block"
 import AngleDoubleLeft from "~/components/Icons/AngleDoubleLeft"
 import Scrollable from "~/components/Scrollable"
@@ -25,6 +25,7 @@ export default function () {
   const inputFileFolderRef = React.useRef<HTMLInputElement>(null)
   const inputLogoRef = React.useRef<HTMLInputElement>(null)
   const inputTemplateRef = React.useRef<HTMLInputElement>(null)
+  const inputCompresseRef = React.useRef<HTMLInputElement>(null)
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const { uploads, setUploads } = useContext(AppContext)
@@ -33,9 +34,146 @@ export default function () {
   const [loading, setLoading] = useState(false)
   const frame = useFrame()
   const editorType = useEditorType()
+  const { blobList, setBlobList } = useAppContext()
+
+  const handleUploadAndCompressImgae = async (files: FileList) => {
+    setLoading(true)
+
+    // compress image
+
+    const imgArray = Array.from(files)
+    let width = 0
+    let height = 0
+    Promise.all(
+      imgArray.map((file) => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = (event) => {
+            const image = new Image()
+            if (event.target) {
+              image.src = event.target.result as string
+              image.onload = () => {
+                const canvas = document.createElement("canvas")
+                const maxImageSize = 1600 // Set the maximum width/height for the compressed image
+                width = image.width
+                height = image.height
+
+                if (width > maxImageSize || height > maxImageSize) {
+                  if (width > height) {
+                    height *= maxImageSize / width
+                    width = maxImageSize
+                  } else {
+                    width *= maxImageSize / height
+                    height = maxImageSize
+                  }
+                }
+
+                canvas.width = width
+                canvas.height = height
+                const ctx = canvas.getContext("2d")
+                console.log(width, height, "width, height")
+
+                if (ctx) {
+                  ctx.drawImage(image, 0, 0, width, height)
+                  canvas.toBlob(
+                    (blob) => {
+                      if (blob) {
+                        const compressedFile = new File([blob], file.name, {
+                          type: file.type,
+                          lastModified: Date.now(),
+                        })
+                        resolve(URL.createObjectURL(compressedFile))
+                      }
+                    },
+                    file.type,
+                    0.5
+                  ) // Adjust the compression quality (0 to 1)
+                }
+              }
+            }
+          }
+          reader.readAsDataURL(file)
+        })
+      })
+    ).then((compressedUrls) => {
+      //got array of compressed urls
+      setBlobList(compressedUrls)
+      console.log(compressedUrls, "compressedUrls")
+      const upload = {
+        id: nanoid(),
+        src: compressedUrls[0],
+        preview: compressedUrls[0],
+        type: "StaticImage",
+        width: width,
+        height: height,
+      }
+      setUploads([...uploads, upload])
+      addImageToCanvas2(upload)
+      setLoading(false)
+    })
+
+    const imageTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/bmp",
+      "image/tiff",
+      "image/webp",
+      "image/svg+xml",
+      "image/vnd.microsoft.icon",
+      "image/x-icon",
+      "image/vnd.wap.wbmp",
+      "image/avif",
+      "image/apng",
+      "image/jxr",
+      "image/heif",
+      "image/heic",
+      "image/heif-sequence",
+      "image/heic-sequence",
+      "image/heif-image-sequence",
+      "image/heic-image-sequence",
+    ]
+    const validFiles: File[] = []
+    const invalidFiles: File[] = []
+    Array.from(files).forEach((file) => {
+      if (imageTypes.includes(file.type)) {
+        validFiles.push(file)
+      } else {
+        invalidFiles.push(file)
+      }
+    })
+
+    if (invalidFiles.length > 0) {
+      alert(
+        `The following files are not images and will be removed: ${invalidFiles.map((file) => file.name).join(", ")}`
+      )
+    }
+    const formData = new FormData()
+    validFiles.forEach((file) => {
+      formData.append("files", file)
+    })
+    try {
+      setLoading(true)
+      const response = await fetch(`https://photostad-api.istad.co/api/v1/files/upload-folder`, {
+        method: "POST",
+        body: formData,
+      })
+      if (!response.ok) {
+        throw new Error("Failed to upload files")
+      }
+      const data = await response.json()
+      alert("upload success")
+      setUploadTemp(data?.data) // we need featur id from this
+      setIsUploading(false)
+    } catch {
+      console.log("error")
+    }
+  }
 
   const handleDropFiles = async (files: FileList) => {
     setIsUploading(true)
+    const listOfFiles = Array.from(files)
+
     const imageTypes = [
       "image/jpeg",
       "image/png",
@@ -73,7 +211,6 @@ export default function () {
         `The following files are not images and will be removed: ${invalidFiles.map((file) => file.name).join(", ")}`
       )
     }
-
     const formData = new FormData()
     validFiles.forEach((file) => {
       formData.append("files", file)
@@ -132,17 +269,9 @@ export default function () {
     }
   }
 
-  
   // @ts-ignore
   const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
     setIsUploading(true)
-    // test compresss  with compress js
-
-    
-
-
-
-
 
     const imageTypes = [
       "image/jpeg",
@@ -252,92 +381,87 @@ export default function () {
     [editor]
   )
 
- // for uploading logo
- const handleUploadLogo = async (files: FileList) => {
-  const formdata = new FormData()
-  formdata.append("file", files[0])
-  var requestOptions = {
-    method: 'POST',
-    body: formdata,
-    redirect: 'follow'
-  };
-  try{
-    const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
-    const data = await res.json()
-    console.log(data?.data?.url, "data")
-    const url = data?.data?.url
-    addObject(url)
-  }
-  catch(error){
-    console.log("error", error)
-  }
-}
-// handle upload template
-const handleUploadTemplate = async (files: FileList) => {
-  const formdata = new FormData()
-  formdata.append("file", files[0])
-  var requestOptions = {
-    method: 'POST',
-    body: formdata,
-    redirect: 'follow'
-  };
-  try{
-    const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
-    const data = await res.json()
-    console.log(data?.data?.url, "data")
-    const url = data?.data?.url
-
-    const image = new Image();
-    image.src = url;
-    let preview = url
-    let width = 0
-    let height = 0
-    const imagePromise = new Promise((resolve) => {
-      image.onload = () => {
-        width = image.width
-        height = image.height
-        // if(image.width > maxWidth){
-        //   const ratio = image.width / image.height
-        //   const newWidth = maxWidth
-        //   const newHeight = newWidth / ratio
-        //   width = newWidth
-        //   height = newHeight
-        // }else{
-        //   width = image.width;
-        //   height = image.height;
-        // }
-        // @ts-ignore
-        resolve()
-      }
-    })
-    await imagePromise
-    const type = "StaticImage"
-    const upload = {
-      id: nanoid(),
-      src:preview,
-      preview: preview,
-      type: type,
-      width: width,
-      height: height,
+  // for uploading logo
+  const handleUploadLogo = async (files: FileList) => {
+    const formdata = new FormData()
+    formdata.append("file", files[0])
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+      redirect: "follow",
     }
-    setUploads([...uploads, upload])
-    addImageToCanvas2(upload)
+    try {
+      const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
+      const data = await res.json()
+      console.log(data?.data?.url, "data")
+      const url = data?.data?.url
+      addObject(url)
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+  // handle upload template
+  const handleUploadTemplate = async (files: FileList) => {
+    const formdata = new FormData()
+    formdata.append("file", files[0])
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+      redirect: "follow",
+    }
+    try {
+      const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
+      const data = await res.json()
+      console.log(data?.data?.url, "data")
+      const url = data?.data?.url
 
+      const image = new Image()
+      image.src = url
+      let preview = url
+      let width = 0
+      let height = 0
+      const imagePromise = new Promise((resolve) => {
+        image.onload = () => {
+          width = image.width
+          height = image.height
+
+          // @ts-ignore
+          resolve()
+        }
+      })
+      await imagePromise
+      const type = "StaticImage"
+      const upload = {
+        id: nanoid(),
+        src: preview,
+        preview: preview,
+        type: type,
+        width: width,
+        height: height,
+      }
+      setUploads([...uploads, upload])
+      addImageToCanvas2(upload)
+    } catch (error) {
+      console.log("error", error)
+    }
   }
-  catch(error){
-    console.log("error", error)
+
+  const handleInputFileCompressRefClick = () => {
+    inputCompresseRef.current?.click()
   }
-}
 
   const handleInputFileRefClick = () => {
     inputFileRef.current?.click()
   }
+
   const handleInputSingleFileRefClick = () => {
     inputTemplateRef.current?.click()
   }
+
   const handleInputFolderFileRefClick = () => {
     inputFileFolderRef.current?.click()
   }
+
   const handleInputLogoRefClick = () => {
     inputLogoRef.current?.click()
   }
@@ -345,17 +469,22 @@ const handleUploadTemplate = async (files: FileList) => {
   const handleInputLogoFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleUploadLogo(e.target.files!)
   }
-  const handleInputTemplateFile = (e: React.ChangeEvent<HTMLInputElement>)=>{
+
+  const handleInputTemplateFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleUploadTemplate(e.target.files!)
   }
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleDropFiles(e.target.files!)
   }
+
   const handleFolderInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     uploadMultipleImages(e.target.files!)
     // @ts-ignore
     // setBlob(URL.createObjectURL(e.target.files[0]))
+  }
+  const handleInputCompressInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleUploadAndCompressImgae(e.target.files!)
   }
 
   const addImageToCanvas2 = (props: Partial<ILayer>) => {
@@ -390,15 +519,6 @@ const handleUploadTemplate = async (files: FileList) => {
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
   }
-
-  // React.useEffect(() => {
-  //   const scene = scenes[0].layers.length
-  //   if (uploads.length > 0) {
-  //     if (scene === 1) {
-  //       addImageToCanvas(uploads[0])
-  //     }
-  //   }
-  // }, [scenes])
 
   const dropImages = async () => {
     if (!currentScene) {
@@ -447,7 +567,7 @@ const handleUploadTemplate = async (files: FileList) => {
 
   if (isUploading) {
     return (
-      <div className="w-full h-screen absolute z-50 flex justify-center items-center bg-white ">
+      <div className="w-full h-screen bg-opacity-30 bg-black fixed  left-0  top-0 z-50 flex justify-center items-center  ">
         <img className="w-[400px]" src={loadinggif} alt="loading" />
       </div>
     )
@@ -466,6 +586,7 @@ const handleUploadTemplate = async (files: FileList) => {
           }}
         >
           <Block>Uploads</Block>
+          {/* <input type="file" accept="image/*" multiple onChange={handleImageChange} /> */}
 
           <Block onClick={() => setIsSidebarOpen(false)} $style={{ cursor: "pointer", display: "flex" }}>
             <AngleDoubleLeft size={18} />
@@ -516,9 +637,24 @@ const handleUploadTemplate = async (files: FileList) => {
                 },
               }}
             >
-              {editorType==='PRESENTATION' ?  "Upload placeholder":"Upload Logo" }
-         
+              {editorType === "PRESENTATION" ? "Upload Placeholder" : "Upload Logo"}
             </Button>
+
+            {/* <Button
+              // onClick={handleInputSingleFileRefClick}
+              onClick={handleInputFileCompressRefClick}
+              size={SIZE.compact}
+              overrides={{
+                Root: {
+                  style: {
+                    width: "100%",
+                    marginTop: "0.5rem",
+                  },
+                },
+              }}
+            >
+              Test Compress
+            </Button> */}
             <input
               onChange={handleInputLogoFile}
               type="file"
@@ -528,7 +664,7 @@ const handleUploadTemplate = async (files: FileList) => {
               multiple
             />
             <input
-            // back soon
+              // back soon
               onChange={handleInputTemplateFile}
               type="file"
               id="file"
@@ -565,6 +701,15 @@ const handleUploadTemplate = async (files: FileList) => {
               style={{ display: "none" }}
               mozdirectory="true"
               directory="true"
+              multiple
+            />
+            <input
+              accept="image/*"
+              onChange={handleInputCompressInputOnChange}
+              type="file"
+              id="file"
+              ref={inputCompresseRef}
+              style={{ display: "none" }}
               multiple
             />
 

@@ -18,7 +18,7 @@ import { AppContext } from "~/contexts/AppContext"
 import { add, template } from "lodash"
 import useAppContext from "~/hooks/useAppContext"
 import { nanoid } from "nanoid"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import PreviewModal from "./components/PreviewModal"
 import PreviewALl from "../Preview/TestPreview"
 import loadinggif from "~/assets/loading/loading.gif"
@@ -32,6 +32,8 @@ const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   gridTemplateColumns: "380px 1fr 380px",
   alignItems: "center",
 }))
+
+
 const BASE_URL = "https://photostad-api.istad.co/api/v1/"
 
 const Navbar = () => {
@@ -47,7 +49,10 @@ const Navbar = () => {
   const [quality, setQuality] = useState("HIGH")
   const [donwloadType, setDonwloadType] = useState("PDF") //PDF AND ZIP
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
-  const {currentUser, setCurrentUser}= useAppContext()
+  const { currentUser, setCurrentUser, blobList, setBlobList } = useAppContext()
+  const navigage = useNavigate()
+
+  // console.log(blobList, "blobList in navbar");
 
   const handleOpenPreview = () => {
     setIsPreviewOpen(true)
@@ -56,8 +61,8 @@ const Navbar = () => {
     setIsPreviewOpen(false)
   }
 
-
   const handleUpload = async (): Promise<void> => {
+
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
@@ -112,12 +117,13 @@ const Navbar = () => {
       // if success, redirect to download url
       if (result.code === 200) {
         window.location.href = result.data.downloadUrl
+  
+        
       }
     } else {
       console.log("NO CURRENT DESIGN")
     }
   }
-
 
   const handleExportToExcell = async (): Promise<void> => {
     setLoading(true)
@@ -157,7 +163,7 @@ const Navbar = () => {
         editorJson: template,
         qualityPhoto: "HIGH",
         // createdBy: 24, // add createdBy property
-        createdBy: currentUser?.data?.id
+        createdBy: currentUser?.data?.id,
         // folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
@@ -177,7 +183,7 @@ const Navbar = () => {
 
       const resultInsertFeature = await reposeInsertFeature.json()
       console.log(resultInsertFeature?.data?.id, "resultInsertFeature")
-      console.log(resultInsertFeature, "resultInsertFeature");
+      console.log(resultInsertFeature, "resultInsertFeature")
       let idFeature = resultInsertFeature?.data?.id
       localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
 
@@ -196,7 +202,7 @@ const Navbar = () => {
       localStorage.setItem("uuid", uuid.toString())
       setLoading(false)
       console.log(result, "result when export to excell")
-      console.log(uuid, "uuid");
+      console.log(uuid, "uuid")
       // if success, redirect to download url
       if (result.code === 200) {
         window.location.href = result.data.downloadUrl
@@ -205,7 +211,6 @@ const Navbar = () => {
       console.log("NO CURRENT DESIGN")
     }
   }
-
 
   const parseGraphicJSON = () => {
     setLoading(true)
@@ -248,7 +253,6 @@ const Navbar = () => {
     setLoading(false)
   }
 
-
   const parsePresentationJSON = () => {
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
@@ -288,15 +292,12 @@ const Navbar = () => {
     setLoading(false)
   }
   const makeDownload = (data: Object) => {
-    
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
     const a = document.createElement("a")
     a.href = dataStr
     a.download = "template.json"
     a.click()
-
   }
-
 
   const handleDownloadCertificate = async () => {
     setLoading(true)
@@ -318,7 +319,7 @@ const Navbar = () => {
         name: scn.name,
       }
     })
-    if(currentScene){
+    if (currentScene) {
       const presentationTemplate: IDesign = {
         id: currentDesign.id,
         type: "PRESENTATION",
@@ -333,43 +334,38 @@ const Navbar = () => {
         editorJson: presentationTemplate,
         qualityPhoto: "HIGH",
         // createdBy: 24, // add createdBy property
-        createdBy: currentUser?.data?.id
+        createdBy: currentUser?.data?.id,
       })
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: raw,
       }
-      try{
+      try {
         const res = await fetch(`${BASE_URL}certificates/generate-certificate/${donwloadType}/${uuid}`, requestOptions)
         const result = await res.json()
         const url = result?.data?.downloadUrl
-        setTimeout(()=>{
+        setTimeout(() => {
           setLoading(false)
-        },2000)
+        }, 2000)
         // route donwlod url if success
         if (result.code === 200) {
           window.location.href = url
         }
-  
-      }
-      catch(error){
+      } catch (error) {
         console.log(error)
       }
-    }else{
+    } else {
       console.log("NO CURRENT DESIGN")
     }
-
- 
   }
 
   const makeDownloadCertificate = async (data: Object) => {
-    
     const raw = JSON.stringify({
       editorJson: data,
       qualityPhoto: "HIGH",
       // createdBy: 31, // add createdBy property
-      createdBy: currentUser?.data?.id
+      createdBy: currentUser?.data?.id,
     })
     const requestOptions = {
       method: "POST",
@@ -380,7 +376,10 @@ const Navbar = () => {
 
     try {
       // @ts-ignore
-      const res = await fetch(`https://photostad-api.istad.co/api/v1/certificates/generate-certificate/${donwloadType}`,requestOptions)
+      const res = await fetch(
+        `https://photostad-api.istad.co/api/v1/certificates/generate-certificate/${donwloadType}`,
+        requestOptions
+      )
       const result = await res.json()
       const url = result?.data?.downloadUrl
       setLoading(false)
@@ -394,10 +393,9 @@ const Navbar = () => {
     }
   }
 
-// for donwload certificate
+  // for donwload certificate
   const makeDownloadTemplate = async () => {
     if (editor) {
-     
       if (editorType === "GRAPHIC") {
         return parseGraphicJSON()
       } else if (editorType === "PRESENTATION") {
@@ -457,7 +455,6 @@ const Navbar = () => {
   }
 
   const loadPresentationTemplate = async (payload: IDesign) => {
-
     const scenes = []
     const { scenes: scns, ...design } = payload
 
@@ -474,13 +471,11 @@ const Navbar = () => {
       const preview = (await editor.renderer.render(loadedScene)) as string
       await loadTemplateFonts(loadedScene)
       scenes.push({ ...loadedScene, preview })
-   
     }
     return { scenes, design }
   }
 
   const handleImportTemplate = React.useCallback(
-
     async (data: any) => {
       let template
       if (data.type === "GRAPHIC") {
@@ -534,7 +529,7 @@ const Navbar = () => {
     const result = await response.json()
     const design = result?.data
     // generate each scence to scences in editor
-   
+
     handleImportTemplate(design)
     setLoading(false)
     console.log(result?.data, "result.data")
@@ -570,8 +565,6 @@ const Navbar = () => {
     console.log(e.target.value, "e.target.value")
     setDonwloadType(e.target.value)
   }
-
-
 
   return (
     // @ts-ignore
@@ -627,7 +620,7 @@ const Navbar = () => {
               },
             }}
           >
-            Import 
+            Import
           </Button>
 
           {/* <Button
@@ -680,12 +673,14 @@ const Navbar = () => {
             Download
           </Button> */}
           <div className={`${isePreviewOpen ? " " : "hidden"} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
- 
-            <PreviewALl  close={handleClosePreview} />
+            <PreviewALl close={handleClosePreview} />
           </div>
           <div>
-            <label className="text-white text-[14px] cursor-pointer p-3 hover:bg-[#333333] rounded-lg py-2.5" htmlFor="modal-2">
-              Next
+            <label
+              className="text-white text-[14px] cursor-pointer p-3 hover:bg-[#333333] rounded-lg py-2.5"
+              htmlFor="modal-2"
+            >
+              Next Step
             </label>
 
             <input className="modal-state" id="modal-2" type="checkbox" />
@@ -730,19 +725,24 @@ const Navbar = () => {
                   ) : (
                     <>
                       <p className="text-sm mt-2 ">Format</p>
-                    <div className="w-full p-0 m-0">
-                    <select id="select-type" value={donwloadType} onChange={hanldeSelectTypeChange} className="select w-full ">
-                        <option className="text-[14px] w-full " disabled>
-                          Select Format
-                        </option>
-                        <option className="text-[14px] w-full" value={"PDF"}>
-                          PDF
-                        </option>
-                        <option className="text-[14px] w-full" value={"ZIP"}>
-                          ZIP
-                        </option>
-                      </select>
-                    </div>
+                      <div className="w-full p-0 m-0">
+                        <select
+                          id="select-type"
+                          value={donwloadType}
+                          onChange={hanldeSelectTypeChange}
+                          className="select w-full "
+                        >
+                          <option className="text-[14px] w-full " disabled>
+                            Select Format
+                          </option>
+                          <option className="text-[14px] w-full" value={"PDF"}>
+                            PDF
+                          </option>
+                          <option className="text-[14px] w-full" value={"ZIP"}>
+                            ZIP
+                          </option>
+                        </select>
+                      </div>
 
                       <label
                         onClick={() => setDisplayPreview(true)}
@@ -783,19 +783,18 @@ const Navbar = () => {
             Download
           </Button> */}
           <button
-          className="py-2.5 p-3 rounded-lg btn hover:bg-[#333333] text-white"
+            className="py-2.5 p-3 rounded-lg btn hover:bg-[#333333] text-white"
             onClick={() => setDisplayPreview(true)}
-           
           >
-            <Play size={24}  /> preview
+            <Play size={24} /> preview
           </button>
         </Block>
       </Container>
       {/* {loading && <div className="loader"></div>} */}
       {loading && (
-         <div className="w-full h-screen absolute z-30 flex  items-center bg-white  left-[85px] ">
-         <img className="w-[400px] mx-auto  " src={loadinggif} alt="loading" />
-       </div>
+        <div className="w-full h-screen bg-opacity-30 bg-black fixed  left-0  top-0 z-50 flex justify-center items-center  ">
+          <img className="w-[400px]" src={loadinggif} alt="loading" />
+        </div>
       )}
     </ThemeProvider>
   )
