@@ -1,8 +1,8 @@
 export const BASE_ITEMS = [
-  {
-    id: "templates",
-    name: "Templates",
-  },
+  // {
+  //   id: "templates",
+  //   name: "Templates",
+  // },
   {
     id: "customize",
     name: "Customize",
