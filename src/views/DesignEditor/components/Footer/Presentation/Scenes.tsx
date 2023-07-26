@@ -170,8 +170,8 @@ const Scenes = () => {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
     >
-      <div className="overflow-auto w-full">
-      <Block $style={{ padding: "0.25rem 0.75rem", background: "#ffffff" }}>
+      <div className=" ">
+      <Block $style={{ padding: "0.25rem 0.75rem", background: "#ffffff", overflow:"auto", width:"1100px" }}>
         <div className={css({ display: "flex", alignItems: "center" })}>
           {contextMenuTimelineRequest.visible && <SceneContextMenu />}
 
@@ -188,27 +188,7 @@ const Scenes = () => {
                 }
               />
             ))}
-            {/* <div
-              style={{
-                background: "#ffffff",
-                padding: "1rem 1rem 1rem 0.5rem",
-              }}
-            >
-              <div
-                onClick={addScene}
-                className={css({
-                  width: "100px",
-                  height: "56px",
-                  background: "rgb(243,244,246)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                })}
-              >
-                <Add size={20} />
-              </div>
-            </div> */}
+        
           </SortableContext>
           <DragOverlay>
             {draggedScene ? (

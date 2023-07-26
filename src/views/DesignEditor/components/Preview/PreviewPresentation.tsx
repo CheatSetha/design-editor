@@ -34,8 +34,6 @@ console.log('upload context', uploads);
       }
 
       setSlides(slides)
-
-      
     },
     [editor]
   )
@@ -93,20 +91,10 @@ console.log('upload context', uploads);
         ) : (
           <Carousel showIndicators={false} showThumbs={false} useKeyboardArrows={true} showStatus={false}>
             {slides.map((page, index) => (
+            
               <img width="auto" height="90%" key={index} src={page.preview} />
             ))}
           </Carousel>
-
-
-
-        // <div className="w-full mt-10 h-screen z-50 flex gap-5 flex-wrap">
-        //   {
-        //      slides.map((page, index) => (
-        //       <img className="h-[60vh]" src={page.preview} alt="preview imiage" key={index} />
-            
-        //       ))
-        //   }
-        //    </div>
 
         )}
       </div>

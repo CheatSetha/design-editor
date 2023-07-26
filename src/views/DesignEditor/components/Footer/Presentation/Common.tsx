@@ -20,17 +20,54 @@ const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
 
 interface Options {
   zoomRatio: number
-  zoomRatioTemp: number
+  zoomRatioTemp: number,
 }
+// handle undo/redo current state or scene
+
+
+
 
 const Common = () => {
+  const editor = useEditor()
   const zoomMin = 10
   const zoomMax = 240
   const [options, setOptions] = React.useState<Options>({
     zoomRatio: 20,
-    zoomRatioTemp: 20,
+    zoomRatioTemp: 20
   })
-  const editor = useEditor()
+
+
+
+  // handle undo
+  const handleUndo = () => {
+    if (editor) {
+      editor.history.undo()
+    }
+  }
+  const handleRedo = () => {
+    if (editor) {
+      editor.history.redo()
+    }
+  }
+ // clear all scene elements
+  const handleReset = () => {
+   // delete all elements
+    if (editor) {
+      editor.objects.clear()
+    }
+  }
+
+  // handl show all history logs when click on history button
+  const handleHistory = () => {
+    if (editor) {
+      editor.history.getStatus()
+      console.log(editor.history.getStatus());
+
+    }
+  }
+
+
+ 
   const zoomRatio: number = useZoomRatio()
 
   React.useEffect(() => {
@@ -44,6 +81,10 @@ const Common = () => {
       }
     }
   }
+
+  React.useEffect(() => {
+    setOptions((prevOptions) => ({ ...prevOptions, zoomRatioTemp: options.zoomRatio }));
+  }, [options.zoomRatio]);
 
   const applyZoomRatio = (type: string, e: any) => {
     const value = e.target.value
@@ -63,17 +104,22 @@ const Common = () => {
       }
     }
   }
+  const handleExpand = () => {
+    if (editor) {
+      editor.zoom.zoomToRatio(1/2)
+    }
+  }
 
   return (
     <Container>
       <div>
         <Button kind={KIND.tertiary} size={SIZE.compact}>
-          <Icons.Layers size={20} />
+          <Icons.Layers size={20} /> 
         </Button>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Button kind={KIND.tertiary} size={SIZE.compact}>
-          <Icons.Expand size={16} />
+        <Button onClick={handleExpand} kind={KIND.tertiary} size={SIZE.compact}>
+          <Icons.Expand size={16} /> 
         </Button>
         <Button kind={KIND.tertiary} size={SIZE.compact} onClick={() => editor.zoom.zoomToFit()}>
           <Icons.Compress size={16} />
@@ -173,16 +219,16 @@ const Common = () => {
         />
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "end" }}>
-        <Button kind={KIND.tertiary} size={SIZE.compact}>
-          <Icons.Refresh size={16} />
+        <Button onClick={handleReset} kind={KIND.tertiary} size={SIZE.compact}>
+          <Icons.Refresh size={16} /> 
         </Button>
-        <Button kind={KIND.tertiary} size={SIZE.compact}>
+        <Button onClick={handleUndo}  kind={KIND.tertiary} size={SIZE.compact}>
           <Icons.Undo size={22} />
         </Button>
-        <Button kind={KIND.tertiary} size={SIZE.compact}>
+        <Button onClick={handleRedo} kind={KIND.tertiary} size={SIZE.compact}>
           <Icons.Redo size={22} />
         </Button>
-        <Button kind={KIND.tertiary} size={SIZE.compact}>
+        <Button onClick={handleHistory} kind={KIND.tertiary} size={SIZE.compact}>
           <Icons.TimePast size={16} />
         </Button>
       </div>

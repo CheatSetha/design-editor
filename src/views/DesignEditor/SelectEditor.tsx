@@ -50,7 +50,7 @@ const SelectEditor = () => {
             }}
           >
             <Images size={34} />
-            <Block>Graphic</Block>
+            <Block>Watermark</Block>
           </Block>
           <Block
             onClick={() => setSelectedEditor("PRESENTATION")}

@@ -30,11 +30,13 @@ export default function () {
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const { uploads, setUploads } = useContext(AppContext)
   const [isUploading, setIsUploading] = useState(false)
-  const { setUploadTemp } = useAppContext()
+  const { uploadTemp, setUploadTemp } = useAppContext()
   const [loading, setLoading] = useState(false)
   const frame = useFrame()
   const editorType = useEditorType()
   const { blobList, setBlobList } = useAppContext()
+
+  console.log(uploadTemp, "uploadTemp")
 
   const handleUploadAndCompressImgae = async (files: FileList) => {
     setLoading(true)
@@ -158,6 +160,7 @@ export default function () {
         method: "POST",
         body: formData,
       })
+
       if (!response.ok) {
         throw new Error("Failed to upload files")
       }
@@ -236,7 +239,8 @@ export default function () {
       let preview = data?.data?.url[0]
       let width = 0
       let height = 0
-      const maxWidth = 3000
+
+      // get image width and height
       const image = new Image()
       const imagePromise = new Promise((resolve) => {
         image.onload = () => {
@@ -265,6 +269,7 @@ export default function () {
       return [upload]
     } catch (error) {
       console.error(error)
+      setLoading(false)
       throw error
     }
   }
@@ -324,6 +329,7 @@ export default function () {
       })
 
       if (!response.ok) {
+        setLoading(false)
         throw new Error("Failed to upload files")
       }
 
@@ -342,6 +348,7 @@ export default function () {
         image.onload = () => {
           width = image.width
           height = image.height
+          // @ts-ignore
           resolve()
         }
       })
@@ -363,7 +370,10 @@ export default function () {
       addImageToCanvas2(upload)
       return [upload]
     } catch (error) {
-      console.error(error)
+      console.error(error, "about loading")
+      setLoading(!loading)
+      // @ts-ignore
+      alert(error?.message)
       throw error
     }
   }
@@ -391,6 +401,7 @@ export default function () {
       redirect: "follow",
     }
     try {
+      // @ts-ignore
       const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
       const data = await res.json()
       console.log(data?.data?.url, "data")
@@ -410,6 +421,7 @@ export default function () {
       redirect: "follow",
     }
     try {
+      // @ts-ignore
       const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
       const data = await res.json()
       console.log(data?.data?.url, "data")
@@ -494,72 +506,9 @@ export default function () {
       height: props.height || 0,
     })
   }
-  //   const addImageToCanvas2 = (props: Partial<ILayer>) => {
-  //     const maxWidth = 3000
-  //   editor.objects.add(props)
-  //     // @ts-ignore
-  //   if (props?.width > maxWidth) {
-  //     // @ts-ignore
-  //     const ratio = props?.width / props?.height
-  //     const newWidth = maxWidth
-  //     const newHeight = newWidth / ratio
-  //     editor.frame.resize({
-  //       width: newWidth,
-  //       height: newHeight,
-  //     })
 
-  //   }else{
-  //     editor.frame.resize({
-  //       width: props.width || 0,
-  //       height: props.height || 0,
-  //     })
-  //   }
-
-  // }
   const addImageToCanvas = (props: Partial<ILayer>) => {
     editor.objects.add(props)
-  }
-
-  const dropImages = async () => {
-    if (!currentScene) {
-      console.log("currentScene is null")
-      return // Handle the case where currentScene is null or undefined
-    }
-    console.log("currentScene is not null")
-    const updatedScenes = scenes.map((scene) => {
-      const updatedScene = { ...scene }
-
-      let images = uploads
-      images.forEach((image) => {
-        const { src, type } = image
-        const newLayer = {
-          id: nanoid(),
-          name: "StaticImage",
-          opacity: 1,
-          type: "StaticImage",
-          scaleX: 1,
-          scaleY: 1,
-          src: src,
-          metadata: {},
-        }
-
-        if (updatedScene.layers.length < 2) {
-          updatedScene.layers.push(newLayer)
-          const updatedTemplate = editor.scene.exportToJSON()
-          const updatedPreview = editor.renderer.render(updatedTemplate)
-          // @ts-ignore
-          updatedScene.preview = updatedPreview
-          setCurrentScene(updatedScene)
-          console.log("updated preview", updatedPreview)
-          images.shift()
-        }
-      })
-
-      console.log(updatedScene, "updatedScene")
-      return updatedScene
-    })
-    console.log("1scence")
-    setScenes(updatedScenes)
   }
 
   const { setScenes, setCurrentScene, currentScene, setCurrentDesign, currentDesign } =
@@ -597,6 +546,12 @@ export default function () {
             <Button
               onClick={handleInputFolderFileRefClick}
               size={SIZE.compact}
+              style={{
+                display:
+                  (uploadTemp && uploadTemp.folderName !== undefined) || editorType === "PRESENTATION"
+                    ? "none"
+                    : "block",
+              }}
               overrides={{
                 Root: {
                   style: {

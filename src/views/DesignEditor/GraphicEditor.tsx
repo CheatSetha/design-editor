@@ -6,6 +6,14 @@ import Toolbox from "./components/Toolbox"
 import EditorContainer from "./components/EditorContainer"
 import ContextMenu from "./components/ContextMenu"
 
+// handler when reload page
+window.addEventListener("beforeunload", (event) => {
+  event.preventDefault()
+  event.returnValue = ""
+  const confirmationMessage = "Are you sure you want to leave this page?"
+  event.returnValue = confirmationMessage
+  return confirmationMessage
+})
 const GraphicEditor = () => {
   return (
     <EditorContainer>

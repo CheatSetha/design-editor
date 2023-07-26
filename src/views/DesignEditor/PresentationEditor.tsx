@@ -5,6 +5,15 @@ import Footer from "./components/Footer"
 import Toolbox from "./components/Toolbox"
 import EditorContainer from "./components/EditorContainer"
 
+
+// handler when reload page
+window.addEventListener("beforeunload", (event) => {
+  event.preventDefault()
+  event.returnValue = ""
+  const confirmationMessage = "Are you sure you want to leave this page?"
+  event.returnValue = confirmationMessage
+  return confirmationMessage
+})
 const PresentationEditor = () => {
   return (
     <EditorContainer>

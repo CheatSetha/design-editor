@@ -41,8 +41,8 @@ const PreviewALl = ({ close }: props) => {
     template2 = editor.scene.exportToJSON()
     console.log(template2, "template2")
     const oldPreview = template2.layers[1]?.preview
-    // const newPreview = listOfurl[currentIndex]
-    const newPreview = blobList[currentIndex]
+    const newPreview = listOfurl[currentIndex]
+    // const newPreview = blobList[currentIndex]
     //replace oldPreview with another image
     template2.layers[1].preview = newPreview
     template2.layers[1].src = newPreview
@@ -50,37 +50,12 @@ const PreviewALl = ({ close }: props) => {
 
     // image return as base64
     const image = (await editor.renderer.render(template2)) as string
-
-    // alert(url)
-
-    // test decode base64 to image
-    const bloburl = await compressBase64ToBlobURL(image)
-    console.log(bloburl, "bloburl after convert")
-    setState({ image: bloburl })
-
-    // slice content type from image
-
-    // test
+    setState({ image })
   }
 
   useEffect(() => {
     makePreview2(currentIndex)
   }, [currentIndex])
-
-  // if (listOfurl === undefined) {
-  //   return (
-  //     <div className="w-full h-screen flex-col flex justify-center items-center text-5xl text-green-800">
-  //       <p>There is no Image To Preview</p>
-  //       <div>
-  //         <Link to={"/"}>
-  //           <button className="p-2.5 bg-slate-600 text-white rounded-[16px] mt-3 text-xl font-light px-10">
-  //             Back To Home Page
-  //           </button>
-  //         </Link>
-  //       </div>
-  //     </div>
-  //   )
-  // }
 
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
   const frame = useFrame()
@@ -97,18 +72,13 @@ const PreviewALl = ({ close }: props) => {
           <div className="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-4">
             <h2 className="font-bold text-white dark:text-white">Preview</h2>
           </div>
-          {/* <button
-            onClick={handleUpload}
-            className=" px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700  rounded-[16px] dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-          >
-            Download
-          </button> */}
+        
         </nav>
         <div className="flex ">
           <div className="bg-slate-100">
             <div id="scrollbar" className="overflow-y-scroll  p-5 h-screen w-[150px] flex flex-col gap-4">
-              {blobList &&
-                blobList.map((url: string, i: number) => (
+              {listOfurl &&
+                listOfurl.map((url: string, i: number) => (
                   <>
                     <img
                       className={`${i === currentIndex ? "block" : "hidden"} w-5 h-5 z-50 -mb-[50px] ml-[75px]`}
@@ -120,7 +90,7 @@ const PreviewALl = ({ close }: props) => {
                       onClick={(e) => makePreview2(i)}
                       className={`w-full  cursor-pointer rounded-[16px] ${
                         i === currentIndex ? "border-2 mt-3 border-blue-500" : ""
-                      } ${i === blobList?.length - 1 ? "mb-16" : ""}`}
+                      } ${i === listOfurl?.length - 1 ? "mb-16" : ""}`}
                       key={i}
                       src={url}
                     />
@@ -130,14 +100,14 @@ const PreviewALl = ({ close }: props) => {
           </div>
 
           {/* preview item */}
-          <div className=" h-screen w-[100vh] mx-auto flex justify-center items-center">
-            <div className="w-screen p-5">
+          <div className=" h-screen w-screen mx-auto flex justify-center items-center">
+            <div className=" p-5">
               <img
                 className={`w-auto h-[600px] object-contain image-transition ${
                   state?.image ? "image-fade-in" : "image-fade-out"
                 }`}
                 src={state?.image}
-                alt="Preview"
+                alt="Preview" 
               />
             </div>
           </div>

@@ -1,9 +1,4 @@
-import logo from "../assets/logo.png";
-import setha from "../assets/setha.png"
-import istad from "../assets/logos/istad.png"
-import logov1 from "../assets/logos/logo.png"
-import mainlogoblack from "../assets/logos/mainlogo-blackv2.png"
-import mainlogolight from "../assets/logos/mainlogov2.png"
+
 export const graphics = [
   {
     left: 0,
@@ -532,35 +527,33 @@ export const graphics = [
 ]
 
 export const vectors = [
-  istad,
-  logov1,
-  mainlogoblack,
-  mainlogolight,
   "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Flag_map_of_Cambodia.svg/1249px-Flag_map_of_Cambodia.svg.png",
+  'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png'
 ]
 
 export const images = [
+
   {
     id: 3493777,
     width: 3000,
     height: 3000,
-    url: "https://www.pexels.com/photo/photo-of-bridge-under-white-clouds-3493777/",
+    url:"https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
     photographer: "Aleksey Kuprikov",
     photographer_url: "https://www.pexels.com/@aleksey-kuprikov-1883853",
     photographer_id: 1883853,
     avg_color: "#6B7874",
     src: {
-      original: "https://images.pexels.com/photos/3493777/pexels-photo-3493777.jpeg",
+      original: "https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
       large2x:
-        "https://images.pexels.com/photos/3493777/pexels-photo-3493777.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      large: "https://images.pexels.com/photos/3493777/pexels-photo-3493777.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
-      medium: "https://images.pexels.com/photos/3493777/pexels-photo-3493777.jpeg?auto=compress&cs=tinysrgb&h=350",
-      small: "https://images.pexels.com/photos/3493777/pexels-photo-3493777.jpeg?auto=compress&cs=tinysrgb&h=130",
+      "https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
+      large: "https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
+      medium: "https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
+      small:"https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
       portrait:
-        "https://images.pexels.com/photos/3493777/pexels-photo-3493777.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800",
+      "https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
       landscape:
-        "https://images.pexels.com/photos/3493777/pexels-photo-3493777.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
-      tiny: "https://images.pexels.com/photos/3493777/pexels-photo-3493777.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280",
+      "https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
+      tiny: "https://cdn.pixabay.com/photo/2017/12/27/21/16/background-3043837_1280.jpg",
     },
     liked: false,
     alt: "Photo of Bridge Under White Clouds",
@@ -569,27 +562,28 @@ export const images = [
     id: 1683492,
     width: 3648,
     height: 3648,
-    url: "https://www.pexels.com/photo/ocean-wave-splashing-on-dock-1683492/",
+    url: 'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
     photographer: "Ricardo Esquivel",
     photographer_url: "https://www.pexels.com/@rickyrecap",
     photographer_id: 722822,
     avg_color: "#8298A9",
     src: {
-      original: "https://images.pexels.com/photos/1683492/pexels-photo-1683492.jpeg",
+      original: 'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
       large2x:
-        "https://images.pexels.com/photos/1683492/pexels-photo-1683492.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      large: "https://images.pexels.com/photos/1683492/pexels-photo-1683492.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
-      medium: "https://images.pexels.com/photos/1683492/pexels-photo-1683492.jpeg?auto=compress&cs=tinysrgb&h=350",
-      small: "https://images.pexels.com/photos/1683492/pexels-photo-1683492.jpeg?auto=compress&cs=tinysrgb&h=130",
+      'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
+      large: 'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
+      medium: 'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
+      small: 'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
       portrait:
-        "https://images.pexels.com/photos/1683492/pexels-photo-1683492.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800",
+      'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
       landscape:
-        "https://images.pexels.com/photos/1683492/pexels-photo-1683492.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
-      tiny: "https://images.pexels.com/photos/1683492/pexels-photo-1683492.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280",
+      'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
+      tiny: 'https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png',
     },
     liked: false,
     alt: "Ocean Wave Splashing on Dock",
   },
+  
   {
     id: 789555,
     width: 3327,

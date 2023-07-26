@@ -45,6 +45,7 @@ const Scenes = () => {
   React.useEffect(() => {
     // check if the current scene is loaded in the editor
     if (editor && scenes && currentScene) {
+      console.log(scences,'scences in footer');
       // if edtor and scenes and currentScene are not null then check if the current scene is loaded in the editor
       // it's meant to check if the current scene is loaded in the editor and
       const isCurrentSceneLoaded = scenes.find((s) => s.id === currentScene?.id)
@@ -55,6 +56,7 @@ const Scenes = () => {
     }
   }, [editor, scenes, currentScene])
   // console.log(currentScene, "currentScene")
+
 
   React.useEffect(() => {
     // watcher is a function that watches for changes in the editor and updates the current preview
@@ -218,7 +220,6 @@ const Scenes = () => {
         >
           <div className={css({ display: "flex", alignItems: "center" })}>
             {contextMenuTimelineRequest.visible && <SceneContextMenu />}
-
             <SortableContext items={scenes} strategy={horizontalListSortingStrategy}>
               {scenes.map((s, i) => (
                 <SceneItem
@@ -228,31 +229,9 @@ const Scenes = () => {
                   index={i}
                   changePage={changePage}
                   preview={currentPreview && s.id === currentScene?.id ? currentPreview : s.preview ? s.preview : ""}
-                />
+                /> 
               ))}
 
-              {/* <div
-                style={{
-                  background: "#ffffff",
-                  padding: "1rem 1rem 1rem 0.5rem",
-                }}
-              >
-        
-                <div
-                  onClick={makeDuplicateScene}
-                  className={css({
-                    width: "100px",
-                    height: "56px",
-                    background: "rgb(243,244,246)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  })}
-                >
-                  <Add size={20} />
-                </div>
-              </div> */}
             </SortableContext>
             <DragOverlay>
               {draggedScene ? (

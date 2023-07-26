@@ -50,7 +50,9 @@ const Navbar = () => {
   const [donwloadType, setDonwloadType] = useState("PDF") //PDF AND ZIP
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
   const { currentUser, setCurrentUser, blobList, setBlobList } = useAppContext()
-  const navigage = useNavigate()
+  
+
+  console.log(currentUser, "currentUser");
 
   // console.log(blobList, "blobList in navbar");
 
@@ -291,6 +293,7 @@ const Navbar = () => {
     }
     setLoading(false)
   }
+  
   const makeDownload = (data: Object) => {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
     const a = document.createElement("a")
@@ -334,7 +337,7 @@ const Navbar = () => {
         editorJson: presentationTemplate,
         qualityPhoto: "HIGH",
         // createdBy: 24, // add createdBy property
-        createdBy: currentUser?.data?.id,
+        createdBy: currentUser?.data?.id || 31,
       })
       const requestOptions = {
         method: "POST",
@@ -365,7 +368,7 @@ const Navbar = () => {
       editorJson: data,
       qualityPhoto: "HIGH",
       // createdBy: 31, // add createdBy property
-      createdBy: currentUser?.data?.id,
+      createdBy: currentUser?.data?.id || 31,
     })
     const requestOptions = {
       method: "POST",
@@ -406,31 +409,7 @@ const Navbar = () => {
 
   const { uploads, setUploads } = useContext(AppContext)
 
-  const addScene = React.useCallback(async () => {
-    for (let i = 0; i < uploads.length; i++) {
-      const { src, id } = uploads[i]
-      const template = editor.scene.exportToJSON()
-      const previewImg = JSON.parse(JSON.stringify(template))
-      console.log(template, "template")
-
-      // Push the modified image object to scenes array
-      previewImg.id = id
-      previewImg.layers[1].preview = src
-      previewImg.layers[1].src = src
-      previewImg.layers[1].id = id
-      previewImg.preview = ""
-      // console.log("image in scene already push", previewImg)
-      // setScenes(image);
-      //remove scence index 0
-
-      scences.push(previewImg)
-      console.log("all scenes ", scences)
-    }
-    // scences.splice(0, 1)
-
-    // remove all element in upload array
-    setUploads([])
-  }, [])
+  
 
   const loadGraphicTemplate = async (payload: IDesign) => {
     const scenes = []
@@ -532,7 +511,7 @@ const Navbar = () => {
 
     handleImportTemplate(design)
     setLoading(false)
-    console.log(result?.data, "result.data")
+    console.log(result?.data?.scenes, "result.data")
     console.log(design, "design")
   }
 
@@ -680,7 +659,7 @@ const Navbar = () => {
               className="text-white text-[14px] cursor-pointer p-3 hover:bg-[#333333] rounded-lg py-2.5"
               htmlFor="modal-2"
             >
-              Next Step
+              Download
             </label>
 
             <input className="modal-state" id="modal-2" type="checkbox" />

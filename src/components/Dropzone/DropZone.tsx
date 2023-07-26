@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
+import Drop from "./components/Drop"
 
 interface Props {
   children: React.ReactNode
@@ -60,7 +61,7 @@ const DropZone = ({ children, handleDropFiles }: Props) => {
   return (
     <div style={{ display: "flex", height: "100%", position: "relative", flex: 1 }} ref={dropRef}>
       {isDragging && (
-        <div
+        <div className="border border-dashed border-gray-400"
           style={{
             backgroundColor: "rgb(246, 246, 246)",
             position: "absolute",
@@ -74,8 +75,9 @@ const DropZone = ({ children, handleDropFiles }: Props) => {
             justifyContent: "center",
           }}
         >
-          Drop files here to upload...
+          <Drop />
         </div>
+        
       )}
       {children}
     </div>
