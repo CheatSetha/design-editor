@@ -8,7 +8,7 @@ import ContextMenu from "./components/ContextMenu"
 import useAppContext from "~/hooks/useAppContext"
 import NotFound from "~/constants/no-found"
 
-
+ 
 const GraphicEditor = () => {
   const { currentUser, setCurrentUser } = useAppContext()
   if(currentUser === null){

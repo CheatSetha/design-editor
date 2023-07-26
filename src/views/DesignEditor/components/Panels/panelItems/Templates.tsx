@@ -7,12 +7,9 @@ import AngleDoubleLeft from "~/components/Icons/AngleDoubleLeft"
 import { useStyletron } from "baseui"
 import useSetIsSidebarOpen from "~/hooks/useSetIsSidebarOpen"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
-// import { useSelector } from "react-redux"
-// import { selectPublicDesigns } from "~/store/slices/designs/selectors"
 import { IDesign } from "~/interfaces/DesignEditor"
 import { IScene } from "@layerhub-io/types"
 import { nanoid } from "nanoid"
-// import api from "~/services/api"
 import useEditorType from "~/hooks/useEditorType"
 import { template } from "~/constants/templates"
 
@@ -20,16 +17,12 @@ export default function () {
   const editor = useEditor()
   const setIsSidebarOpen = useSetIsSidebarOpen()
   const { setCurrentScene, currentScene, setScenes, setCurrentDesign } = useDesignEditorContext()
-  // const designs = useSelector(selectPublicDesigns)
-  //add template
   const [designs, setDesigns] = React.useState(template)
 
   const editorType = useEditorType()
   console.log("type editor",editorType)
   const loadGraphicTemplate = async (payload: IDesign): Promise<{ scenes: IScene[]; design: IDesign }> => {
     const scenes: IScene[] = []
-    // const { scenes: scns, ...design } = payload
-
     const design = payload
     const scns = design.scenes
     console.log("payload",payload);

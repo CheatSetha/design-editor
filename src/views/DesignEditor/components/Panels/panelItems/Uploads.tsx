@@ -17,6 +17,7 @@ import loadinggif from "~/assets/loading/loading.gif"
 import api from "~/services/api"
 import { add } from "lodash"
 import useEditorType from "~/hooks/useEditorType"
+import { BASE_URl } from "~/constants/base-api"
 
 export default function () {
   const scenes = useDesignEditorScenes()
@@ -103,8 +104,8 @@ export default function () {
       console.log(compressedUrls, "compressedUrls")
       const upload = {
         id: nanoid(),
-        src: compressedUrls[0],
-        preview: compressedUrls[0],
+        src: compressedUrls[1],
+        preview: compressedUrls[1],
         type: "StaticImage",
         width: width,
         height: height,
@@ -156,7 +157,7 @@ export default function () {
     })
     try {
       setLoading(true)
-      const response = await fetch(`https://photostad-api.istad.co/api/v1/files/upload-folder`, {
+      const response = await fetch(`${BASE_URl}/files/upload-folder`, {
         method: "POST",
         body: formData,
       })
@@ -221,7 +222,7 @@ export default function () {
 
     try {
       setLoading(true)
-      const response = await fetch(`https://photostad-api.istad.co/api/v1/files/upload-folder`, {
+      const response = await fetch(`${BASE_URl}/files/upload-folder`, {
         method: "POST",
         body: formData,
       })
@@ -323,7 +324,7 @@ export default function () {
 
     try {
       setLoading(true)
-      const response = await fetch(`https://photostad-api.istad.co/api/v1/files/upload-folder`, {
+      const response = await fetch(`${BASE_URl}/files/upload-folder`, {
         method: "POST",
         body: formData,
       })
@@ -402,7 +403,7 @@ export default function () {
     }
     try {
       // @ts-ignore
-      const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
+      const res = await fetch(`${BASE_URl}/files`, requestOptions)
       const data = await res.json()
       console.log(data?.data?.url, "data")
       const url = data?.data?.url
@@ -422,7 +423,7 @@ export default function () {
     }
     try {
       // @ts-ignore
-      const res = await fetch("https://photostad-api.istad.co/api/v1/files", requestOptions)
+      const res = await fetch(`${BASE_URl}/files`, requestOptions)
       const data = await res.json()
       console.log(data?.data?.url, "data")
       const url = data?.data?.url
@@ -561,7 +562,7 @@ export default function () {
                 },
               }}
             >
-              Upload photos
+              Add photos
             </Button>
             {/* upload certificate template */}
             <Button
@@ -592,7 +593,7 @@ export default function () {
                 },
               }}
             >
-              {editorType === "PRESENTATION" ? "Upload Placeholder" : "Upload Logo"}
+              {editorType === "PRESENTATION" ? "Add Placeholder" : "Add Logo"}
             </Button>
 
             {/* <Button
@@ -654,6 +655,7 @@ export default function () {
               id="file"
               ref={inputFileFolderRef}
               style={{ display: "none" }}
+              // @ts-ignore
               mozdirectory="true"
               directory="true"
               multiple

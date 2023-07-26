@@ -127,9 +127,6 @@ const Navbar = () => {
   const handleExportToExcell = async (): Promise<void> => {
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
-    // udpatedScenes is an array of scenes that are updated
-    // the current scene is updated with the current scene's layers
-
     const updatedScenes = scenes.map((scn) => {
       console.log(scn, "scn")
       if (scn.id === currentScene.id) {
@@ -161,10 +158,8 @@ const Navbar = () => {
       const data = {
         editorJson: template,
         qualityPhoto: "HIGH",
-        // createdBy: 24, // add createdBy property
         createdBy: currentUser?.data?.id,
-        // folderName: uploadTemp.folderName, // add folderName property
-        // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
+      
       }
       const dataFeature = {
         sample: template,
@@ -186,7 +181,6 @@ const Navbar = () => {
       let idFeature = resultInsertFeature?.data?.id
       localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
 
-      console.log(idFeature, "idFeature")
     
 
       const response = await fetch(`${BASE_URL}/certificates/export`, {
@@ -496,7 +490,7 @@ const Navbar = () => {
       }
     }
 
-    const response = await fetch(`https://photostad-api.istad.co/api/v1/certificates/${id}/import-excel`, {
+    const response = await fetch(`${BASE_URL}/certificates/${id}/import-excel`, {
       method: "POST",
       body: formData,
     })
@@ -756,19 +750,16 @@ const Navbar = () => {
           >
             Download
           </Button> */}
-          <button
+          {/* <button
             className="py-2.5 p-3 rounded-lg btn hover:bg-[#333333] text-white"
             onClick={() => setDisplayPreview(true)}
           >
             <Play size={24} /> preview
-          </button>
+          </button> */}
         </Block>
       </Container>
-      {/* {loading && <div className="loader"></div>} */}
+
       {loading && (
-        // <div className="w-full h-screen bg-opacity-30 bg-black fixed  left-0  top-0 z-50 flex justify-center items-center  ">
-        //   <img className="w-[400px]" src={loadinggif} alt="loading" />
-        // </div>
         <Loading />
       )}
     </ThemeProvider>
