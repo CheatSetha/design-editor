@@ -8,8 +8,10 @@ import { getPixabayResources } from "./store/slices/resources/actions"
 import { getUploads } from "./store/slices/uploads/actions"
 import { useAppDispatch } from "./store/store"
 
+
 const Container = ({ children }: { children: React.ReactNode }) => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const {currentUser} = useAppContext()
   const { isMobile, setIsMobile } = useAppContext()
   const dispatch = useAppDispatch()
   const updateMediaQuery = (value: number) => {
@@ -21,7 +23,9 @@ const Container = ({ children }: { children: React.ReactNode }) => {
       setIsMobile(false)
     }
   }
+
   useEffect(() => {
+   
     const containerElement = containerRef.current!
     const containerWidth = containerElement.clientWidth
     updateMediaQuery(containerWidth)
@@ -45,6 +49,8 @@ const Container = ({ children }: { children: React.ReactNode }) => {
     dispatch(getPixabayResources())
     dispatch(getPublicDesigns())
   }, [])
+
+ 
 
   return (
     <div

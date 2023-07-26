@@ -70,7 +70,7 @@ export default function () {
                   }
                 }
 
-                canvas.width = width
+                canvas.width = width 
                 canvas.height = height
                 const ctx = canvas.getContext("2d")
                 console.log(width, height, "width, height")

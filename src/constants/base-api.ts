@@ -1,0 +1,1 @@
+export const BASE_URl = 'https://photostad-api.istad.co/api/v1'

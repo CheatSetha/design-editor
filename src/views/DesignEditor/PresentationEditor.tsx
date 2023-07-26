@@ -4,17 +4,15 @@ import Canvas from "./components/Canvas"
 import Footer from "./components/Footer"
 import Toolbox from "./components/Toolbox"
 import EditorContainer from "./components/EditorContainer"
+import NotFound from "~/constants/no-found"
+import useAppContext from "~/hooks/useAppContext"
 
-
-// handler when reload page
-window.addEventListener("beforeunload", (event) => {
-  event.preventDefault()
-  event.returnValue = ""
-  const confirmationMessage = "Are you sure you want to leave this page?"
-  event.returnValue = confirmationMessage
-  return confirmationMessage
-})
 const PresentationEditor = () => {
+  const { currentUser, setCurrentUser } = useAppContext()
+  if (currentUser === null) {
+    return <NotFound />
+  }
+
   return (
     <EditorContainer>
       <Navbar />

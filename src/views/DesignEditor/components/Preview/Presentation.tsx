@@ -93,8 +93,6 @@ const Presentation = () => {
 
   if(isLoading) return <Loading />
 
-  
-
   return (
     <div className="w-full flex">
       <div className="bg-slate-100">

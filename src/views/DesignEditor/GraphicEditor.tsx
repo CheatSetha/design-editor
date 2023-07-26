@@ -5,16 +5,15 @@ import Footer from "./components/Footer"
 import Toolbox from "./components/Toolbox"
 import EditorContainer from "./components/EditorContainer"
 import ContextMenu from "./components/ContextMenu"
+import useAppContext from "~/hooks/useAppContext"
+import NotFound from "~/constants/no-found"
 
-// handler when reload page
-window.addEventListener("beforeunload", (event) => {
-  event.preventDefault()
-  event.returnValue = ""
-  const confirmationMessage = "Are you sure you want to leave this page?"
-  event.returnValue = confirmationMessage
-  return confirmationMessage
-})
+
 const GraphicEditor = () => {
+  const { currentUser, setCurrentUser } = useAppContext()
+  if(currentUser === null){
+    return <NotFound />
+  }
   return (
     <EditorContainer>
       <Navbar />

@@ -10,6 +10,8 @@ import { set } from "lodash"
 import useAppContext from "~/hooks/useAppContext"
 import { useLocation } from "react-router-dom"
 import { useEffect } from "react"
+import { BASE_URl } from "~/constants/base-api"
+import NotFound from "~/constants/no-found"
 
 const DesignEditorCertificate = () => {
   const editorType = useEditorType()
@@ -21,7 +23,7 @@ const DesignEditorCertificate = () => {
 
 // find user with this uuid
   const getUserinfo =  async ()=>{
-    const respone = await fetch(`https://photostad-api.istad.co/api/v1/auth/check-uuid/${uuid}`)
+    const respone = await fetch(`${BASE_URl}/auth/check-uuid/${uuid}`)
     const data = await respone.json()
   
     setCurrentUser(data)
@@ -30,6 +32,9 @@ const DesignEditorCertificate = () => {
   useEffect(()=>{
     getUserinfo()
   },[])
+  if(currentUser === null){
+    return <NotFound />
+  }
 
   
   const { displayPreview, setDisplayPreview,setEditorType } = useDesignEditorContext()

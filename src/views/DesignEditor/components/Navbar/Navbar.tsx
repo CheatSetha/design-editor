@@ -23,6 +23,7 @@ import PreviewModal from "./components/PreviewModal"
 import PreviewALl from "../Preview/TestPreview"
 import loadinggif from "~/assets/loading/loading.gif"
 import api from "~/services/api"
+import Loading from "~/components/Loading"
 
 const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   height: "64px",
@@ -33,8 +34,7 @@ const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   alignItems: "center",
 }))
 
-
-const BASE_URL = "https://photostad-api.istad.co/api/v1/"
+const BASE_URL = "https://photostad-api.istad.co/api/v1"
 
 const Navbar = () => {
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
@@ -50,9 +50,9 @@ const Navbar = () => {
   const [donwloadType, setDonwloadType] = useState("PDF") //PDF AND ZIP
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
   const { currentUser, setCurrentUser, blobList, setBlobList } = useAppContext()
-  
 
-  console.log(currentUser, "currentUser");
+  console.log(currentUser, "currentUser")
+  console.log(BASE_URL, "BASE_URL");
 
   // console.log(blobList, "blobList in navbar");
 
@@ -64,7 +64,6 @@ const Navbar = () => {
   }
 
   const handleUpload = async (): Promise<void> => {
-
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
@@ -106,7 +105,7 @@ const Navbar = () => {
         folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
-      const response = await fetch("https://photostad-api.istad.co/api/v1/watermarks/generate-watermark", {
+      const response = await fetch(`${BASE_URL}/watermarks/generate-watermark`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,8 +118,6 @@ const Navbar = () => {
       // if success, redirect to download url
       if (result.code === 200) {
         window.location.href = result.data.downloadUrl
-  
-        
       }
     } else {
       console.log("NO CURRENT DESIGN")
@@ -175,7 +172,7 @@ const Navbar = () => {
 
         // createdBy: 135, // add createdBy property
       }
-      const reposeInsertFeature = await fetch("https://photostad-api.istad.co/api/v1/features", {
+      const reposeInsertFeature = await fetch(`${BASE_URL}/features`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -190,8 +187,9 @@ const Navbar = () => {
       localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
 
       console.log(idFeature, "idFeature")
+    
 
-      const response = await fetch("https://photostad-api.istad.co/api/v1/certificates/export", {
+      const response = await fetch(`${BASE_URL}/certificates/export`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -293,7 +291,7 @@ const Navbar = () => {
     }
     setLoading(false)
   }
-  
+
   const makeDownload = (data: Object) => {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
     const a = document.createElement("a")
@@ -345,7 +343,7 @@ const Navbar = () => {
         body: raw,
       }
       try {
-        const res = await fetch(`${BASE_URL}certificates/generate-certificate/${donwloadType}/${uuid}`, requestOptions)
+        const res = await fetch(`${BASE_URL}/certificates/generate-certificate/${donwloadType}/${uuid}`, requestOptions)
         const result = await res.json()
         const url = result?.data?.downloadUrl
         setTimeout(() => {
@@ -380,7 +378,7 @@ const Navbar = () => {
     try {
       // @ts-ignore
       const res = await fetch(
-        `https://photostad-api.istad.co/api/v1/certificates/generate-certificate/${donwloadType}`,
+        `${BASE_URL}12A/certificates/generate-certificate/${donwloadType}`,
         requestOptions
       )
       const result = await res.json()
@@ -408,8 +406,6 @@ const Navbar = () => {
   }
 
   const { uploads, setUploads } = useContext(AppContext)
-
-  
 
   const loadGraphicTemplate = async (payload: IDesign) => {
     const scenes = []
@@ -550,7 +546,6 @@ const Navbar = () => {
     <ThemeProvider theme={DarkTheme}>
       <Container className="z-200">
         <img src={logo} alt="logo" style={{ width: "100px" }} />
-
         <DesignTitle />
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
           <input
@@ -691,7 +686,7 @@ const Navbar = () => {
                       <div className="space-y-2 w-full">
                         <label
                           htmlFor="modal-2"
-                          onClick={handleOpenPreview}
+                          onClick={() => setDisplayPreview(true)}
                           className="btn btn-outline-primary border-black w-full hover:bg-black text-black hover:text-white"
                         >
                           Preview
@@ -771,9 +766,10 @@ const Navbar = () => {
       </Container>
       {/* {loading && <div className="loader"></div>} */}
       {loading && (
-        <div className="w-full h-screen bg-opacity-30 bg-black fixed  left-0  top-0 z-50 flex justify-center items-center  ">
-          <img className="w-[400px]" src={loadinggif} alt="loading" />
-        </div>
+        // <div className="w-full h-screen bg-opacity-30 bg-black fixed  left-0  top-0 z-50 flex justify-center items-center  ">
+        //   <img className="w-[400px]" src={loadinggif} alt="loading" />
+        // </div>
+        <Loading />
       )}
     </ThemeProvider>
   )
