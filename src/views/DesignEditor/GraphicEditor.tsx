@@ -4,15 +4,14 @@ import Canvas from "./components/Canvas"
 import Footer from "./components/Footer"
 import Toolbox from "./components/Toolbox"
 import EditorContainer from "./components/EditorContainer"
-import ContextMenu from "./components/ContextMenu"
 import useAppContext from "~/hooks/useAppContext"
-import NotFound from "~/constants/no-found"
+import Loading from "~/components/Loading"
 
  
 const GraphicEditor = () => {
-  const { currentUser, setCurrentUser } = useAppContext()
+  const { currentUser } = useAppContext()
   if(currentUser === null){
-    return <NotFound />
+    return <Loading />
   }
   return (
     <EditorContainer>

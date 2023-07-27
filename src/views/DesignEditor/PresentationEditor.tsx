@@ -6,11 +6,12 @@ import Toolbox from "./components/Toolbox"
 import EditorContainer from "./components/EditorContainer"
 import NotFound from "~/constants/no-found"
 import useAppContext from "~/hooks/useAppContext"
+import Loading from "~/components/Loading"
 
 const PresentationEditor = () => {
-  const { currentUser, setCurrentUser } = useAppContext()
+  const { currentUser } = useAppContext()
   if (currentUser === null) {
-    return <NotFound />
+    return <Loading />
   }
 
   return (

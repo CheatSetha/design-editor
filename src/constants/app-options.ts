@@ -16,7 +16,7 @@ export const BASE_ITEMS = [
     name: "Images",
   },
   {
-    id: "uploads",
+    id: "uploads", 
     name: "Uploads",
   },
   {
