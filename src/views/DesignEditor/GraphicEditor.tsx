@@ -11,21 +11,6 @@ import { useLocation } from "react-router-dom"
 import Unauthorized from "~/utils/Unauthorized"
 
 const GraphicEditor = () => {
-  const [countdown, setCountdown] = useState(5)
-
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1)
-    }, 1000)
-
-    setTimeout(() => {
-      clearInterval(interval)
-      window.location.href = "https://photostad.istad.co"
-    }, countdown * 1000)
-
-    return () => clearInterval(interval)
-  }, [])
   const { currentUser } = useAppContext()
   if (currentUser === null) {
     return  <Unauthorized />

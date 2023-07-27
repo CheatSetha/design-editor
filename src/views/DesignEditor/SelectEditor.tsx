@@ -48,13 +48,12 @@ const SelectEditor = () => {
       toast.error(`You are being Unauthorized`, {
         icon: "😢",
         duration: 5000,
-      }) 
+      })
     }
   }
   useEffect(() => {
     getUserinfo()
   }, [])
-
 }
 
 export default SelectEditor
