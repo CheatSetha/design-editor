@@ -40,10 +40,9 @@ const DesignEditorWatermak = () => {
 
   const { displayPreview, setDisplayPreview, setEditorType } = useDesignEditorContext()
   setEditorType("GRAPHIC")
-  if(currentUser === null){
+  if (currentUser === null) {
     return <NotFound />
   }
- 
 
   return (
     <>

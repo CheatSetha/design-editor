@@ -11,20 +11,6 @@ const SelectEditor = () => {
   const { setEditorType } = useDesignEditorContext()
   const { currentUser, setCurrentUser } = useAppContext()
   const location = useLocation()
-  const [countdown, setCountdown] = useState(5)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1)
-    }, 1000)
-
-    setTimeout(() => {
-      clearInterval(interval)
-      window.location.href = "https://photostad.istad.co"
-    }, countdown * 1000)
-
-    return () => clearInterval(interval)
-  }, [])
-
   const routedUrl = location.search || "?watermark?sdfjklsfl"
   // @ts-ignore
   const type = routedUrl.match(/(?<=\?).+?(?=\?)/)[0]
