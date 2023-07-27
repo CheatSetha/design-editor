@@ -228,9 +228,9 @@ const Common = () => {
         <Button onClick={handleRedo} kind={KIND.tertiary} size={SIZE.compact}>
           <Icons.Redo size={22} />
         </Button>
-        <Button onClick={handleHistory} kind={KIND.tertiary} size={SIZE.compact}>
+        {/* <Button onClick={handleHistory} kind={KIND.tertiary} size={SIZE.compact}>
           <Icons.TimePast size={16} />
-        </Button>
+        </Button> */}
       </div>
     </Container>
   )
