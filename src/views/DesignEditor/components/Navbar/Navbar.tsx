@@ -24,6 +24,7 @@ import PreviewALl from "../Preview/TestPreview"
 import loadinggif from "~/assets/loading/loading.gif"
 import api from "~/services/api"
 import Loading from "~/components/Loading"
+import { Toaster, toast } from "react-hot-toast"
 
 const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   height: "64px",
@@ -51,9 +52,6 @@ const Navbar = () => {
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
   const { currentUser, setCurrentUser, blobList, setBlobList } = useAppContext()
 
-  console.log(currentUser, "currentUser")
-  console.log(BASE_URL, "BASE_URL");
-
   // console.log(blobList, "blobList in navbar");
 
   const handleOpenPreview = () => {
@@ -64,6 +62,7 @@ const Navbar = () => {
   }
 
   const handleUpload = async (): Promise<void> => {
+    toast.loading("Downloading", { duration: 2000 })
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     // udpatedScenes is an array of scenes that are updated
@@ -105,19 +104,30 @@ const Navbar = () => {
         folderName: uploadTemp.folderName, // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
-      const response = await fetch(`${BASE_URL}/watermarks/generate-watermark`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-      const result = await response.json()
-      setLoading(false)
-      console.log(result, "result")
-      // if success, redirect to download url
-      if (result.code === 200) {
-        window.location.href = result.data.downloadUrl
+      try {
+        const response = await fetch(`${BASE_URL}/watermarks/generate-watermark`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        setLoading(false);
+      
+        console.log(result, "result");
+        // if success, redirect to download url
+        if (result.code === 200) {
+          toast.success("Download Success");
+          window.location.href = result.data.downloadUrl;
+        }
+        if (result.code !== 200) {
+          toast.error(`Failed to download . Error ${result.message}`);
+        }
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+        toast.error("Failed to download");
       }
     } else {
       console.log("NO CURRENT DESIGN")
@@ -125,6 +135,7 @@ const Navbar = () => {
   }
 
   const handleExportToExcell = async (): Promise<void> => {
+    toast.loading("Exporting to Excell", { duration: 2000 })
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     const updatedScenes = scenes.map((scn) => {
@@ -159,7 +170,6 @@ const Navbar = () => {
         editorJson: template,
         qualityPhoto: "HIGH",
         createdBy: currentUser?.data?.id,
-      
       }
       const dataFeature = {
         sample: template,
@@ -181,8 +191,6 @@ const Navbar = () => {
       let idFeature = resultInsertFeature?.data?.id
       localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
 
-    
-
       const response = await fetch(`${BASE_URL}/certificates/export`, {
         method: "POST",
         headers: {
@@ -192,6 +200,7 @@ const Navbar = () => {
       })
       const result = await response.json()
       const uuid = result?.data?.uuid
+      toast.success("Export Success")
       // set uuit to localstorage
       localStorage.setItem("uuid", uuid.toString())
       setLoading(false)
@@ -295,6 +304,7 @@ const Navbar = () => {
   }
 
   const handleDownloadCertificate = async () => {
+    toast.loading("Downloading", { duration: 2000 })
     setLoading(true)
     const uuid = localStorage.getItem("uuid")
     const currentScene = editor.scene.exportToJSON()
@@ -343,12 +353,14 @@ const Navbar = () => {
         setTimeout(() => {
           setLoading(false)
         }, 2000)
+        toast.success("Download Success")
         // route donwlod url if success
         if (result.code === 200) {
           window.location.href = url
         }
       } catch (error) {
         console.log(error)
+        toast.error(`error ${error}`)
       }
     } else {
       console.log("NO CURRENT DESIGN")
@@ -371,20 +383,19 @@ const Navbar = () => {
 
     try {
       // @ts-ignore
-      const res = await fetch(
-        `${BASE_URL}12A/certificates/generate-certificate/${donwloadType}`,
-        requestOptions
-      )
+      const res = await fetch(`${BASE_URL}12A/certificates/generate-certificate/${donwloadType}`, requestOptions)
       const result = await res.json()
       const url = result?.data?.downloadUrl
       setLoading(false)
       const downloadLink = document.createElement("a")
+      toast.success("Certificate Download Success")
       // @ts-ignore
       downloadLink.href = url
       downloadLink.download = "MyCertificate"
       downloadLink.click()
     } catch (error) {
       console.log(error)
+      toast.error(`error ${error}`)
     }
   }
 
@@ -468,6 +479,7 @@ const Navbar = () => {
   }
 
   const handleExcelInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    toast.loading("Importing", { duration: 2000 })
     setLoading(true)
     const files = event.target.files
     const id = localStorage.getItem("idFeature")
@@ -498,6 +510,7 @@ const Navbar = () => {
     const result = await response.json()
     const design = result?.data
     // generate each scence to scences in editor
+    toast.success("Import Success")
 
     handleImportTemplate(design)
     setLoading(false)
@@ -759,9 +772,7 @@ const Navbar = () => {
         </Block>
       </Container>
 
-      {loading && (
-        <Loading />
-      )}
+      {loading && <Loading />}
     </ThemeProvider>
   )
 }

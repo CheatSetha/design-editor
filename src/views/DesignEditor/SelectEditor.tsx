@@ -1,19 +1,16 @@
 import React, { useEffect } from "react"
-import { Block } from "baseui/block"
-import { Button } from "baseui/button"
 import { DesignType } from "~/interfaces/DesignEditor"
 import useDesignEditorContext from "~/hooks/useDesignEditorContext"
-import Images from "~/components/Icons/Images"
-import Presentation from "~/components/Icons/Presentation"
 import { BASE_URl } from "~/constants/base-api"
 import { useLocation } from "react-router-dom"
 import useAppContext from "~/hooks/useAppContext"
-import NotFound from "~/constants/no-found"
+import toast, { Toaster } from 'react-hot-toast';
 
 const SelectEditor = () => {
   const [selectedEditor, setSelectedEditor] = React.useState<DesignType>("GRAPHIC")
   const { setEditorType } = useDesignEditorContext()
   const { currentUser, setCurrentUser } = useAppContext()
+  
   const location = useLocation()
   const routedUrl = location.search
   // @ts-ignore
@@ -27,6 +24,10 @@ const SelectEditor = () => {
 
     if (data?.code === 200) {
       setCurrentUser(data)
+      toast.success(`Welcome ${data?.data?.username}`,{
+        icon: '🎉',
+        duration: 2000,
+      })
     }
     if (data?.code !== 200) {
       setCurrentUser(null)

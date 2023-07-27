@@ -14,7 +14,7 @@ import { DesignEditorContext } from "~/contexts/DesignEditor"
 import useAppContext from "~/hooks/useAppContext"
 import { AppContext } from "~/contexts/AppContext"
 import loadinggif from "~/assets/loading/loading.gif"
-import api from "~/services/api"
+import toast, { Toaster } from "react-hot-toast"
 import { add } from "lodash"
 import useEditorType from "~/hooks/useEditorType"
 import { BASE_URl } from "~/constants/base-api"
@@ -71,7 +71,7 @@ export default function () {
                   }
                 }
 
-                canvas.width = width 
+                canvas.width = width
                 canvas.height = height
                 const ctx = canvas.getContext("2d")
                 console.log(width, height, "width, height")
@@ -151,10 +151,12 @@ export default function () {
         `The following files are not images and will be removed: ${invalidFiles.map((file) => file.name).join(", ")}`
       )
     }
+
     const formData = new FormData()
     validFiles.forEach((file) => {
       formData.append("files", file)
     })
+
     try {
       setLoading(true)
       const response = await fetch(`${BASE_URl}/files/upload-folder`, {
@@ -163,6 +165,7 @@ export default function () {
       })
 
       if (!response.ok) {
+        toast.error(`Error : ${response.statusText} `)
         throw new Error("Failed to upload files")
       }
       const data = await response.json()
@@ -171,6 +174,7 @@ export default function () {
       setIsUploading(false)
     } catch {
       console.log("error")
+      
     }
   }
 
@@ -228,11 +232,13 @@ export default function () {
       })
 
       if (!response.ok) {
+        toast.error(`Error : ${response.statusText} `)
         throw new Error("Failed to upload files")
       }
 
       const data = await response.json()
       setIsUploading(false)
+      toast.success(`Upload success`)
 
       setUploadTemp(data.data)
       console.log(data?.data?.url[0], "data uploaded")
@@ -271,6 +277,7 @@ export default function () {
     } catch (error) {
       console.error(error)
       setLoading(false)
+      toast.error(`Error : ${error} `)
       throw error
     }
   }
@@ -331,11 +338,13 @@ export default function () {
 
       if (!response.ok) {
         setLoading(false)
+        toast.error(`Error : ${response.statusText} `)
         throw new Error("Failed to upload files")
       }
 
       const data = await response.json()
       setIsUploading(false)
+      toast.success(`Upload success`)
 
       setUploadTemp(data.data)
       console.log(data?.data?.url[0], "data uploaded")
@@ -408,8 +417,13 @@ export default function () {
       console.log(data?.data?.url, "data")
       const url = data?.data?.url
       addObject(url)
+      toast.success(`Add logo success`, {
+        icon: "🎉",
+        duration: 2000,
+      })
     } catch (error) {
       console.log("error", error)
+      toast.error(`Error : ${error} `)
     }
   }
   // handle upload template
@@ -427,6 +441,10 @@ export default function () {
       const data = await res.json()
       console.log(data?.data?.url, "data")
       const url = data?.data?.url
+      toast.success(`Add template success`, {
+        icon: "🎉",
+        duration: 2000,
+      })
 
       const image = new Image()
       image.src = url
@@ -456,6 +474,7 @@ export default function () {
       addImageToCanvas2(upload)
     } catch (error) {
       console.log("error", error)
+      toast.error(`Error : ${error} `)
     }
   }
 

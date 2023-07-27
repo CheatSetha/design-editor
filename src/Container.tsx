@@ -7,6 +7,7 @@ import { getFonts } from "./store/slices/fonts/actions"
 import { getPixabayResources } from "./store/slices/resources/actions"
 import { getUploads } from "./store/slices/uploads/actions"
 import { useAppDispatch } from "./store/store"
+import toast, { Toaster } from 'react-hot-toast';
 
 
 const Container = ({ children }: { children: React.ReactNode }) => {
@@ -62,6 +63,7 @@ const Container = ({ children }: { children: React.ReactNode }) => {
         width: "100vw",
       }}
     >
+      <Toaster />
       {children}
     </div>
   )

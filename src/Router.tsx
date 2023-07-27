@@ -17,8 +17,6 @@ const Router = () => {
         <Route path="/previewall" element={<Skeleton />} />
         <Route path="/watermark" element={<DesignEditorWatermak />} />
         <Route path="/generatecertificate" element={<DesignEditorCertificate/>} />
-
-
       </Routes>
     </BrowserRouter>
   )
