@@ -7,11 +7,12 @@ import EditorContainer from "./components/EditorContainer"
 import NotFound from "~/constants/no-found"
 import useAppContext from "~/hooks/useAppContext"
 import Loading from "~/components/Loading"
+import Unauthorized from "~/utils/Unauthorized"
 
 const PresentationEditor = () => {
   const { currentUser } = useAppContext()
   if (currentUser === null) {
-    return <Loading />
+    return <Unauthorized />
   }
 
   return (
