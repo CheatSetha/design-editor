@@ -412,7 +412,7 @@ console.log(desiredFont, "desiredFont");
 
           <Block width={"1px"} height={"24px"} backgroundColor="rgb(213,213,213)" margin={"0 4px"} />
 
-          <TextSpacing />
+          {/* <TextSpacing /> */}
           {/* <Block width={"1px"} height={"24px"} backgroundColor="rgb(213,213,213)" margin={"0 4px"} /> */}
           {/* <Button onClick={() => setActiveSubMenu("TextEffects")} size={SIZE.compact} kind={KIND.tertiary}>
             Effects
@@ -690,7 +690,7 @@ function TextSpacing() {
       placement={PLACEMENT.bottom}
       content={() => (
         <Block padding={"12px"} width={"200px"} backgroundColor={"#ffffff"} display={"grid"} gridGap={"8px"}>
-          <Block>
+          {/* <Block>
             <Block $style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <Block $style={{ fontSize: "14px" }}>Line height</Block>
               <Block width={"52px"}>
@@ -751,7 +751,7 @@ function TextSpacing() {
                 onChange={({ value }) => handleChange("lineHeight", value)}
               />
             </Block>
-          </Block>
+          </Block> */}
           <Block>
             <Block $style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <Block $style={{ fontSize: "14px" }}>Char spacing</Block>

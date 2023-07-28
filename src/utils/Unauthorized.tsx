@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom";
 import logo  from '~/assets/logos/mainlogo-blackv2.png'
 
 export default function Unauthorized() {
@@ -18,7 +19,7 @@ export default function Unauthorized() {
 //   }, [])
   return (
     <div className="grid h-screen w-full px-4 bg-white place-content-center">
-      <div className="text-center skeleton-pulse bg-white">
+      <div className="text-center  bg-white">
         <div className="flex justify-center items-center mb-5 ">
           <img
             src={logo}
@@ -30,10 +31,16 @@ export default function Unauthorized() {
           Unauthorized 401!
         </p>
 
-        <p className="mt-4 text-gray-600">
+        <p className="my-4 text-gray-600">
           You must be logged in to access this page.
+          
         </p>
+
+       <a href={'https://photostad.istad.co/'}>
+       <button className="btn bg-black rounded-[16px] text-white">Go to Home page</button>
+       </a>
       </div>
+
     </div>
   );
   

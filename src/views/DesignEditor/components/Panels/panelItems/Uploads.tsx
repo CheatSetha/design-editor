@@ -34,10 +34,15 @@ export default function () {
   const { uploadTemp, setUploadTemp } = useAppContext()
   const [loading, setLoading] = useState(false)
   const frame = useFrame()
+  const activeObject = useActiveObject()
   const editorType = useEditorType()
   const { blobList, setBlobList } = useAppContext()
 
   console.log(uploadTemp, "uploadTemp")
+  console.log(activeObject,'active object');
+  if(activeObject){
+    editor.objects.lock()
+  }
 
   const handleUploadAndCompressImgae = async (files: FileList) => {
     setLoading(true)
@@ -638,6 +643,7 @@ export default function () {
               style={{ display: "none" }}
               multiple
             />
+
             <input
               // back soon
               onChange={handleInputTemplateFile}
@@ -660,6 +666,7 @@ export default function () {
               directory="true"
               multiple
             />
+
             <input
               onChange={handleFileInput}
               type="file"
@@ -668,6 +675,7 @@ export default function () {
               style={{ display: "none" }}
               multiple
             />
+
             <input
               onChange={handleFolderInput}
               type="file"
@@ -679,6 +687,7 @@ export default function () {
               directory="true"
               multiple
             />
+
             <input
               accept="image/*"
               onChange={handleInputCompressInputOnChange}
@@ -697,6 +706,7 @@ export default function () {
                 gridTemplateColumns: "1fr 1fr",
               }}
             >
+
               {uploads.map((upload) => (
                 <div
                   key={upload.id}
@@ -706,6 +716,7 @@ export default function () {
                     cursor: "pointer",
                   }}
                   onClick={() => addImageToCanvas(upload)}
+                  
                 >
                   <div>
                     <img

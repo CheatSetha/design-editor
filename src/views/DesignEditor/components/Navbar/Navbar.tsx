@@ -19,12 +19,12 @@ import { add, template } from "lodash"
 import useAppContext from "~/hooks/useAppContext"
 import { nanoid } from "nanoid"
 import { Link, useNavigate } from "react-router-dom"
-import PreviewModal from "./components/PreviewModal"
 import PreviewALl from "../Preview/TestPreview"
 import loadinggif from "~/assets/loading/loading.gif"
 import api from "~/services/api"
 import Loading from "~/components/Loading"
 import { Toaster, toast } from "react-hot-toast"
+import Title from "./Title"
 
 const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
   height: "64px",
@@ -50,9 +50,7 @@ const Navbar = () => {
   const [quality, setQuality] = useState("HIGH")
   const [donwloadType, setDonwloadType] = useState("PDF") //PDF AND ZIP
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
-  const { currentUser, setCurrentUser, blobList, setBlobList } = useAppContext()
-
-  // console.log(blobList, "blobList in navbar");
+  const { currentUser, setCurrentUser, blobList, setBlobList, currentTemplate } = useAppContext()
 
   const handleOpenPreview = () => {
     setIsPreviewOpen(true)
@@ -111,23 +109,23 @@ const Navbar = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        });
-        const result = await response.json();
-        setLoading(false);
-      
-        console.log(result, "result");
+        })
+        const result = await response.json()
+        setLoading(false)
+
+        console.log(result, "result")
         // if success, redirect to download url
         if (result.code === 200) {
-          toast.success("Download Success");
-          window.location.href = result.data.downloadUrl;
+          toast.success("Download Success")
+          window.location.href = result.data.downloadUrl
         }
         if (result.code !== 200) {
-          toast.error(`Failed to download . Error ${result.message}`);
+          toast.error(`Failed to download . Error ${result.message}`)
         }
       } catch (error) {
-        console.error(error);
-        setLoading(false);
-        toast.error("Failed to download");
+        console.error(error)
+        setLoading(false)
+        toast.error("Failed to download")
       }
     } else {
       console.log("NO CURRENT DESIGN")
@@ -551,9 +549,14 @@ const Navbar = () => {
   return (
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
-      <Container className="z-200">
-        <img src={logo} alt="logo" style={{ width: "100px" }} />
-        <DesignTitle />
+      <Container className="z-20">
+        <a href="https://photostad.istad.co">
+          <img src={logo} alt="logo" style={{ width: "100px" }} />
+        </a>
+
+        {/* <DesignTitle /> */}
+        <Title />
+
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
           <input
             multiple={true}
@@ -563,6 +566,7 @@ const Navbar = () => {
             ref={inputFileRef}
             style={{ display: "none" }}
           />
+
           {/* for upload excell and list of image at the same time */}
           <input
             multiple={true}
