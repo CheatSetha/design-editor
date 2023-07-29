@@ -40,9 +40,7 @@ export default function () {
 
   console.log(uploadTemp, "uploadTemp")
   console.log(activeObject,'active object');
-  if(activeObject){
-    editor.objects.lock()
-  }
+
 
   const handleUploadAndCompressImgae = async (files: FileList) => {
     setLoading(true)
