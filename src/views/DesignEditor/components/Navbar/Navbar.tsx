@@ -705,7 +705,7 @@ const Navbar = () => {
                         <label onClick={handleUpload} className="btn bg-black text-white btn-block" htmlFor="modal-2">
                           Donwload
                         </label>
-                      </div>
+                      </div> 
                     </>
                   ) : (
                     <>

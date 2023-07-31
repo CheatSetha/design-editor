@@ -38,9 +38,6 @@ export default function () {
   const editorType = useEditorType()
   const { blobList, setBlobList } = useAppContext()
 
-  console.log(uploadTemp, "uploadTemp")
-  console.log(activeObject,'active object');
-
 
   const handleUploadAndCompressImgae = async (files: FileList) => {
     setLoading(true)
@@ -584,7 +581,7 @@ export default function () {
                 },
               }}
             >
-              Add photos
+              Add Photos
             </Button>
             {/* upload certificate template */}
             <Button
