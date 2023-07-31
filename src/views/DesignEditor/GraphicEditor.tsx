@@ -9,11 +9,12 @@ import Loading from "~/components/Loading"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import Unauthorized from "~/utils/Unauthorized"
+import NotFound from "~/NotFound"
 
 const GraphicEditor = () => {
   const { currentUser } = useAppContext()
   if (currentUser === null) {
-    return  <Unauthorized />
+    return  <NotFound />
   }
   return (
     <EditorContainer>

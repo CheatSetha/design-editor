@@ -12,7 +12,7 @@ import Unauthorized from "~/utils/Unauthorized"
 const PresentationEditor = () => {
   const { currentUser } = useAppContext()
   if (currentUser === null) {
-    return <Unauthorized />
+    return <NotFound />
   }
 
   return (

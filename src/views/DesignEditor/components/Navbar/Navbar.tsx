@@ -549,13 +549,14 @@ const Navbar = () => {
   return (
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
-      <Container className="z-20">
+      <Container className="">
         <a href="https://photostad.istad.co">
           <img src={logo} alt="logo" style={{ width: "100px" }} />
         </a>
 
         {/* <DesignTitle /> */}
-        <Title />
+        {/* <Title /> */}
+        <div></div>
 
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
           <input
