@@ -14,7 +14,7 @@ import NotFound from "~/NotFound"
 const GraphicEditor = () => {
   const { currentUser } = useAppContext()
   if (currentUser === null) {
-    return  <NotFound />
+    return  <Loading />
   }
   return (
     <EditorContainer>
