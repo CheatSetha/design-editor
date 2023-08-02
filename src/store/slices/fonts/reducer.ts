@@ -29,7 +29,7 @@ function fuzzySearch(items: IFontFamily[], query: string) {
       }
     });
     if (matches == search.length) {
-      console.log(i, found, "was found");
+      // console.log(i, found, "was found");
       found.push(i);
     }
     return found;

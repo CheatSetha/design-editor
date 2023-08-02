@@ -8,7 +8,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl:'https://photostad-api.istad.co/api/v1' ,
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.accessToken;
-    console.log("token smos: " + token);
+    // console.log("token smos: " + token);
     headers.set("content-type", "application/json");
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
@@ -21,7 +21,7 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 500) {
     const refreshToken = await getDecryptedRefreshToken();
-    console.log("resfreshToken in apiSlice", refreshToken);
+    // console.log("resfreshToken in apiSlice", refreshToken);
     if (refreshToken) {
       try {
         const response = await fetch(
@@ -33,7 +33,7 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
           }
         );
         const resultResponse = await response.json();
-        console.log("response", resultResponse);
+        // console.log("response", resultResponse);
 
         if (resultResponse.code === 200) {
           api.dispatch(setCredentials(resultResponse.data));

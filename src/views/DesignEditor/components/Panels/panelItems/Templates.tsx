@@ -20,12 +20,12 @@ export default function () {
   const [designs, setDesigns] = React.useState(template)
 
   const editorType = useEditorType()
-  console.log("type editor",editorType)
+  // console.log("type editor",editorType)
   const loadGraphicTemplate = async (payload: IDesign): Promise<{ scenes: IScene[]; design: IDesign }> => {
     const scenes: IScene[] = []
     const design = payload
     const scns = design.scenes
-    console.log("payload",payload);
+    // console.log("payload",payload);
 
     for (const scn of scns) {
       const scene: IScene = {
@@ -49,7 +49,7 @@ export default function () {
       if (editor) {
         // const design = await api.getPublicDesignById(designId)
         const design = designs.find((d) => d.id === designId)
-        console.log("design",design)
+        // console.log("design",design)
         //@ts-ignore
         const loadedDesign = await loadGraphicTemplate(design)
         setScenes(loadedDesign.scenes)

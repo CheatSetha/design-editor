@@ -19,7 +19,7 @@ const Graphic = () => {
 
   const scences = useDesignEditorScenes()
   const uploads = useDesignEditorUpload()
-  console.log(uploads, "uploads in preview context upload")
+  // console.log(uploads, "uploads in preview context upload")
   const [images, setImages] = useState<{ id: string; preview: string }[]>([])
   // console.log(scences, "scences in preview ")
   const loadImage = useCallback(
@@ -57,7 +57,7 @@ const Graphic = () => {
     if (editor) {
       template = editor.scene.exportToJSON()
 
-      console.log(template, "template")
+      // console.log(template, "template")
 
       const image = (await editor.renderer.render(template)) as string
       setState({ image })
@@ -72,7 +72,7 @@ const Graphic = () => {
   const makePreview2 = async (currentIndex: number) => {
     setCurrentIndex(currentIndex)
     template2 = editor.scene.exportToJSON()
-    console.log(template2, "template2")
+    // console.log(template2, "template2")
     const oldPreview = template2.layers[1]?.preview
     const newPreview = listOfurl[currentIndex]
     // const newPreview = blobList[currentIndex]

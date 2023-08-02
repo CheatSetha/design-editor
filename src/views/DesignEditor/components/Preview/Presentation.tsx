@@ -16,10 +16,10 @@ const Presentation = () => {
   const { setDisplayPreview } = useDesignEditorContext()
   const [loading, setLoading] = React.useState(true)
   const [images, setImages] = useState<{ id: string; preview: string }[]>([])
-  console.log("upload context", uploads)
+  // console.log("upload context", uploads)
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  console.log(scenes, "scenes i love you")
+  // console.log(scenes, "scenes i love you")
   const loadSlides = React.useCallback(
     async (scenes: IScene[]) => {
       setLoading(false)
@@ -52,7 +52,7 @@ const Presentation = () => {
     setImages(images)
     setLoading(false)
   }, [editor])
-  console.log("img", images)
+  // console.log("img", images)
 
   React.useEffect(() => {
     if (scenes && editor) {

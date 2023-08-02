@@ -45,7 +45,7 @@ const Scenes = () => {
   React.useEffect(() => {
     // check if the current scene is loaded in the editor
     if (editor && scenes && currentScene) {
-      console.log(scences,'scences in footer');
+      // console.log(scences,'scences in footer');
       // if edtor and scenes and currentScene are not null then check if the current scene is loaded in the editor
       // it's meant to check if the current scene is loaded in the editor and
       const isCurrentSceneLoaded = scenes.find((s) => s.id === currentScene?.id)
@@ -76,9 +76,9 @@ const Scenes = () => {
   }, [editor])
   const scences = useDesignEditorScenes()
   const { uploads, setUploads } = useContext(AppContext)
-  console.log("upload in scecnes morning", uploads[0]?.height);
-  console.log("upload in scecnes morning", uploads[0]?.width);
-  console.log(frame, "frame");
+  // console.log("upload in scecnes morning", uploads[0]?.height);
+  // console.log("upload in scecnes morning", uploads[0]?.width);
+  // console.log(frame, "frame");
   let resizedHeight = uploads[0]?.height || 800
   let resizedWidth = uploads[0]?.width || 1200
 
@@ -137,7 +137,7 @@ const Scenes = () => {
     const updatedTemplate = editor.scene.exportToJSON()
 
     const updatedPreview = await editor.renderer.render(updatedTemplate)
-    console.log(updatedPreview, "updatedPreview")
+    // console.log(updatedPreview, "updatedPreview")
     const updatedPages = scenes.map((p) => {
       if (p.id === updatedTemplate.id) {
         return { ...updatedTemplate, preview: updatedPreview }

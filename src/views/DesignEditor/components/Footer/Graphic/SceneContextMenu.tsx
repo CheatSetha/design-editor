@@ -65,7 +65,7 @@ const SceneContextMenu = () => {
     setScenes(updatedScenes)
     setContextMenuTimelineRequest({ ...contextMenuTimelineRequest, visible: false })
   }
-  console.log({ contextMenuTimelineRequest })
+  // console.log({ contextMenuTimelineRequest })
   return (
     <Block
       ref={ref}

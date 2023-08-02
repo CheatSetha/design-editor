@@ -74,7 +74,7 @@ export default function () {
                 canvas.width = width
                 canvas.height = height
                 const ctx = canvas.getContext("2d")
-                console.log(width, height, "width, height")
+                // console.log(width, height, "width, height")
 
                 if (ctx) {
                   ctx.drawImage(image, 0, 0, width, height)
@@ -101,7 +101,7 @@ export default function () {
     ).then((compressedUrls) => {
       //got array of compressed urls
       setBlobList(compressedUrls)
-      console.log(compressedUrls, "compressedUrls")
+      // console.log(compressedUrls, "compressedUrls")
       const upload = {
         id: nanoid(),
         src: compressedUrls[1],
@@ -241,7 +241,7 @@ export default function () {
       toast.success(`Upload success`)
 
       setUploadTemp(data.data)
-      console.log(data?.data?.url[0], "data uploaded")
+      // console.log(data?.data?.url[0], "data uploaded")
 
       let preview = data?.data?.url[0]
       let width = 0
@@ -269,7 +269,7 @@ export default function () {
         width: width,
         height: height,
       }
-      console.log(upload, "upload")
+      // console.log(upload, "upload")
       setLoading(false)
       setUploads([...uploads, upload])
       addImageToCanvas2(upload)
@@ -347,7 +347,7 @@ export default function () {
       toast.success(`Upload success`)
 
       setUploadTemp(data.data)
-      console.log(data?.data?.url[0], "data uploaded")
+      // console.log(data?.data?.url[0], "data uploaded")
 
       let preview = data?.data?.url[0]
       let width = 0
@@ -374,7 +374,7 @@ export default function () {
         width: width,
         height: height,
       }
-      console.log(upload, "upload")
+      // console.log(upload, "upload")
       setLoading(false)
       setUploads([...uploads, upload])
       addImageToCanvas2(upload)
@@ -414,7 +414,7 @@ export default function () {
       // @ts-ignore
       const res = await fetch(`${BASE_URl}/files`, requestOptions)
       const data = await res.json()
-      console.log(data?.data?.url, "data")
+      // console.log(data?.data?.url, "data")
       const url = data?.data?.url
       addObject(url)
       toast.success(`Add logo success`, {
@@ -439,7 +439,7 @@ export default function () {
       // @ts-ignore
       const res = await fetch(`${BASE_URl}/files`, requestOptions)
       const data = await res.json()
-      console.log(data?.data?.url, "data")
+      // console.log(data?.data?.url, "data")
       const url = data?.data?.url
       toast.success(`Add template success`, {
         icon: "🎉",

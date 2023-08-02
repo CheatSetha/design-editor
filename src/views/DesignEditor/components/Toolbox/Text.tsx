@@ -188,14 +188,14 @@ export default function () {
   }, [editor, activeObject])
 
   const makeBold = React.useCallback(async () => {
-    console.log("state ", state)
+    // console.log("state ", state)
 
     if (state.bold) {
 
       let desiredFont
 
       if (state.italic) {
-        console.log("setha fake ..............." )
+        // console.log("setha fake ..............." )
 
         // look for regular italic
         desiredFont = state.styleOptions.options.find((option) => {
@@ -207,7 +207,7 @@ export default function () {
         // look for  regular
           desiredFont = state.styleOptions.options.find((option) => {
           const postScriptNames = option.postScriptName.split("-")
-          console.log("postScriptNames", postScriptNames)
+          // console.log("postScriptNames", postScriptNames)
           return postScriptNames[postScriptNames.length - 1].match(/^Regular$/)
         })
       }
@@ -234,14 +234,14 @@ export default function () {
         })
       } else {
         // look for bold
-        console.log("setha ..............." )
+        // console.log("setha ..............." )
           desiredFont = state.styleOptions.options.find((option) => {
             const postScriptNames = option.postScriptName.split("-")
-            console.log("postScriptNames", postScriptNames)
+            // console.log("postScriptNames", postScriptNames)
             return postScriptNames[postScriptNames.length -1 ].match(/^Bold$/)
         })
       }
-console.log(desiredFont, "desiredFont");
+// console.log(desiredFont, "desiredFont");
       const font = {
         name: desiredFont.postScriptName,
         url: desiredFont.url,

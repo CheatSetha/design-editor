@@ -15,7 +15,7 @@ const Presentation = () => {
   const uploads = useDesignEditorUpload()
   const [loading, setLoading] = React.useState(false)
   const [images , setImages]= useState<{id:string,preview:string}[]>([])
-console.log('upload context', uploads);
+// console.log('upload context', uploads);
   const loadSlides = React.useCallback(
 
     async (scenes: IScene[]) => {
@@ -55,7 +55,7 @@ console.log('upload context', uploads);
     },
     [editor]
   )
-  console.log("img", images)
+  // console.log("img", images)
 
   React.useEffect(() => {
     if (scenes && editor) {

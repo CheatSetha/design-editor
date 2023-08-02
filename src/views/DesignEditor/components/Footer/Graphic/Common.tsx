@@ -61,7 +61,7 @@ const Common = () => {
   const handleHistory = () => {
     if (editor) {
       editor.history.getStatus()
-      console.log(editor.history.getStatus());
+      // console.log(editor.history.getStatus());
 
     }
   }

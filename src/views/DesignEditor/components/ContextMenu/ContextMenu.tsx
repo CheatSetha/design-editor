@@ -17,7 +17,7 @@ const ContextMenu = () => {
     if (editor) {
       const component: any = await editor.scene.exportAsComponent()
       if (component) {
-        console.log({ component })
+        // console.log({ component })
       }
     }
   }

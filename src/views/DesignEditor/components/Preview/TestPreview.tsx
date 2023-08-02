@@ -22,7 +22,7 @@ const PreviewALl = ({ close }: props) => {
   const [loading, setLoading] = React.useState(true)
   const { uploadTemp, blobList } = useAppContext()
   const listOfurl = uploadTemp?.url
-  console.log(listOfurl, "listOfurl")
+  // console.log(listOfurl, "listOfurl")
 
   //+++++++++++++++ test code ++++++++++++++++++++++++//
   const scences = useDesignEditorScenes()
@@ -30,7 +30,7 @@ const PreviewALl = ({ close }: props) => {
   const { uploads, setUploads } = useContext(AppContext)
 
   const [state, setState] = React.useState({ image: "" })
-  console.log(state, "state")
+  // console.log(state, "state")
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -39,14 +39,14 @@ const PreviewALl = ({ close }: props) => {
   const makePreview2 = async (currentIndex: number) => {
     setCurrentIndex(currentIndex)
     template2 = editor.scene.exportToJSON()
-    console.log(template2, "template2")
+    // console.log(template2, "template2")
     const oldPreview = template2.layers[1]?.preview
     const newPreview = listOfurl[currentIndex]
     // const newPreview = blobList[currentIndex]
     //replace oldPreview with another image
     template2.layers[1].preview = newPreview
     template2.layers[1].src = newPreview
-    console.log(template2.layers[1].preview, "setha")
+    // console.log(template2.layers[1].preview, "setha")
 
     // image return as base64
     const image = (await editor.renderer.render(template2)) as string

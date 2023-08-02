@@ -17,14 +17,14 @@ const DesignEditorWatermak = () => {
   const editorType = useEditorType()
   const { currentUser, setCurrentUser } = useAppContext()
   const location = useLocation()
-  console.log(location.search, "location.pathname")
+  // console.log(location.search, "location.pathname")
   const routedUrl = location.search
   const uuid = routedUrl.substring(1)
 
   const getUserinfo = async () => {
     const respone = await fetch(`${BASE_URl}/auth/check-uuid/${uuid}`)
     const data = await respone.json()
-    console.log(data?.code, "data from uuid")
+    // console.log(data?.code, "data from uuid")
     if (data?.code === 200) {
       setCurrentUser(data)
     }
@@ -32,7 +32,7 @@ const DesignEditorWatermak = () => {
       setCurrentUser(null)
     }
   }
-  console.log(currentUser, "currentUser")
+  // console.log(currentUser, "currentUser")
 
   useEffect(() => {
     getUserinfo()

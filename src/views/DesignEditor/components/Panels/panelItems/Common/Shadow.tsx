@@ -45,7 +45,7 @@ const Shadow = () => {
   const handleChange = (key: string, value: any) => {
     setOptions({ ...options, [key]: value })
     if (editor) {
-      console.log({ ...options, [key]: value })
+      // console.log({ ...options, [key]: value })
       editor.objects.setShadow({ ...options, [key]: value })
     }
   }

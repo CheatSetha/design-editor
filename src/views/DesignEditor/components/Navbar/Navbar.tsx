@@ -113,7 +113,7 @@ const Navbar = () => {
         const result = await response.json()
         setLoading(false)
 
-        console.log(result, "result")
+        // console.log(result, "result")
         // if success, redirect to download url
         if (result.code === 200) {
           toast.success("Download Success")
@@ -137,7 +137,7 @@ const Navbar = () => {
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     const updatedScenes = scenes.map((scn) => {
-      console.log(scn, "scn")
+      // console.log(scn, "scn")
       if (scn.id === currentScene.id) {
         return {
           id: currentScene.id,
@@ -184,8 +184,8 @@ const Navbar = () => {
       })
 
       const resultInsertFeature = await reposeInsertFeature.json()
-      console.log(resultInsertFeature?.data?.id, "resultInsertFeature")
-      console.log(resultInsertFeature, "resultInsertFeature")
+      // console.log(resultInsertFeature?.data?.id, "resultInsertFeature")
+      // console.log(resultInsertFeature, "resultInsertFeature")
       let idFeature = resultInsertFeature?.data?.id
       localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
 
@@ -202,8 +202,8 @@ const Navbar = () => {
       // set uuit to localstorage
       localStorage.setItem("uuid", uuid.toString())
       setLoading(false)
-      console.log(result, "result when export to excell")
-      console.log(uuid, "uuid")
+      // console.log(result, "result when export to excell")
+      // console.log(uuid, "uuid")
       // if success, redirect to download url
       if (result.code === 200) {
         window.location.href = result.data.downloadUrl
@@ -220,7 +220,7 @@ const Navbar = () => {
     // the current scene is updated with the current scene's layers
 
     const updatedScenes = scenes.map((scn) => {
-      console.log(scn, "scn")
+      // console.log(scn, "scn")
       if (scn.id === currentScene.id) {
         return {
           id: currentScene.id,
@@ -512,8 +512,8 @@ const Navbar = () => {
 
     handleImportTemplate(design)
     setLoading(false)
-    console.log(result?.data?.scenes, "result.data")
-    console.log(design, "design")
+    // console.log(result?.data?.scenes, "result.data")
+    // console.log(design, "design")
   }
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -536,13 +536,13 @@ const Navbar = () => {
 
   // select type or formart
   const hanleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value, "e.target.value")
+    // console.log(e.target.value, "e.target.value")
     alert(e.target.value)
     setQuality(e.target.value)
   }
 
   const hanldeSelectTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value, "e.target.value")
+    // console.log(e.target.value, "e.target.value")
     setDonwloadType(e.target.value)
   }
 

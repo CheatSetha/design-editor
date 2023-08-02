@@ -17,7 +17,7 @@ const Elements = () => {
     (item: any) => {
       if (editor) {
        const test =  editor.objects.add(item)
-       console.log(test);
+      //  console.log(test);
       }
     },
     [editor]
