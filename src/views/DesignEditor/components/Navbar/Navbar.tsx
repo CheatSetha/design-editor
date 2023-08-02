@@ -15,7 +15,7 @@ import { IDesign } from "~/interfaces/DesignEditor"
 import logo from "~/assets/logos/mainlogov2.png"
 import useDesignEditorScenes from "~/hooks/useDesignEditorScenes"
 import { AppContext } from "~/contexts/AppContext"
-import { add, template } from "lodash"
+import { add, set, template } from "lodash"
 import useAppContext from "~/hooks/useAppContext"
 import { nanoid } from "nanoid"
 import { Link, useNavigate } from "react-router-dom"
@@ -38,6 +38,7 @@ const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
 const BASE_URL = "https://photostad-api.istad.co/api/v1"
 
 const Navbar = () => {
+  const { setEditorType } = useDesignEditorContext()
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
   const editorType = useEditorType()
   const editor = useEditor()
@@ -546,17 +547,35 @@ const Navbar = () => {
     setDonwloadType(e.target.value)
   }
 
+  const handleSwitchEditorType = () => {
+    setEditorType((prevEditorType) => (prevEditorType === "PRESENTATION" ? "GRAPHIC" : "PRESENTATION"))
+  }
+
   return (
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
       <Container className="">
-        <a href="https://photostad.istad.co">
-          <img src={logo} alt="logo" style={{ width: "100px" }} />
-        </a>
+      <div>
+        <label
+          onClick={handleSwitchEditorType}
+          className={`text-white text-sm cursor-pointer p-3 rounded-lg py-2.5 ${
+            editorType === "GRAPHIC" ? 'bg-[#333333]' : 'hover:bg-[#333333]'
+          }`}
+        >
+          Watermark
+        </label>
+        <label
+          onClick={handleSwitchEditorType}
+          className={`text-white text-sm ms-1 cursor-pointer p-3 rounded-lg py-2.5 ${
+            editorType === "PRESENTATION" ? 'bg-[#333333]' : 'hover:bg-[#333333]'
+          }`}
+        >
+          Certificate
+        </label>
+      </div>
 
         {/* <DesignTitle /> */}
-        {/* <Title /> */}
-        <div></div>
+        <Title />
 
         <Block $style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
           <input
@@ -706,7 +725,7 @@ const Navbar = () => {
                         <label onClick={handleUpload} className="btn bg-black text-white btn-block" htmlFor="modal-2">
                           Donwload
                         </label>
-                      </div> 
+                      </div>
                     </>
                   ) : (
                     <>
