@@ -8,16 +8,17 @@ import NotFound from "~/constants/no-found"
 import useAppContext from "~/hooks/useAppContext"
 import Loading from "~/components/Loading"
 import Unauthorized from "~/utils/Unauthorized"
+import { useEffect } from "react"
+import { toast } from "react-hot-toast"
 
-const PresentationEditor = () => {
+const PresentationEditor = ({uuid}) => {
   const { currentUser } = useAppContext()
   if (currentUser === null) {
     return <Loading />
   }
-
   return (
     <EditorContainer>
-      <Navbar />
+      <Navbar uuid={uuid}/>
       <div style={{ display: "flex", flex: 1 }}>
         <Panels />
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>

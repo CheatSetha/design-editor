@@ -37,7 +37,7 @@ const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
 
 const BASE_URL = "https://photostad-api.istad.co/api/v1"
 
-const Navbar = () => {
+const Navbar = ({uuid}) => {
   const { setEditorType } = useDesignEditorContext()
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
   const editorType = useEditorType()
@@ -52,7 +52,8 @@ const Navbar = () => {
   const [donwloadType, setDonwloadType] = useState("PDF") //PDF AND ZIP
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
   const { currentUser, setCurrentUser, blobList, setBlobList, currentTemplate } = useAppContext()
-
+  const router = useNavigate()
+  
   const handleOpenPreview = () => {
     setIsPreviewOpen(true)
   }
@@ -95,14 +96,17 @@ const Navbar = () => {
       }
 
       let template = graphicTemplate
+      let folderName = null
       const data = {
         editorJson: template,
         qualityPhoto: quality,
         // createdBy: 32, // add createdBy property
         createdBy: currentUser?.data?.id,
-        folderName: uploadTemp.folderName, // add folderName property
+        folderName: uploadTemp?.folderName || 'notfound', // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
+     
+
       try {
         const response = await fetch(`${BASE_URL}/watermarks/generate-watermark`, {
           method: "POST",
@@ -120,13 +124,14 @@ const Navbar = () => {
           toast.success("Download Success")
           window.location.href = result.data.downloadUrl
         }
+
         if (result.code !== 200) {
-          toast.error(`Failed to download . Error ${result.message}`)
+          toast.error(`Failed to download .${result.errors}`)
         }
       } catch (error) {
-        console.error(error)
         setLoading(false)
-        toast.error("Failed to download")
+
+        toast.error(`Failed to download ${error}`)
       }
     } else {
       console.log("NO CURRENT DESIGN")
@@ -134,7 +139,7 @@ const Navbar = () => {
   }
 
   const handleExportToExcell = async (): Promise<void> => {
-    toast.loading("Exporting to Excell", { duration: 2000 })
+    toast.loading("Exporting to Excel", { duration: 2000 })
     setLoading(true)
     const currentScene = editor.scene.exportToJSON()
     const updatedScenes = scenes.map((scn) => {
@@ -185,8 +190,6 @@ const Navbar = () => {
       })
 
       const resultInsertFeature = await reposeInsertFeature.json()
-      // console.log(resultInsertFeature?.data?.id, "resultInsertFeature")
-      // console.log(resultInsertFeature, "resultInsertFeature")
       let idFeature = resultInsertFeature?.data?.id
       localStorage.setItem("idFeature", idFeature.toString()) //set idFeature to localstorage
 
@@ -203,11 +206,11 @@ const Navbar = () => {
       // set uuit to localstorage
       localStorage.setItem("uuid", uuid.toString())
       setLoading(false)
-      // console.log(result, "result when export to excell")
-      // console.log(uuid, "uuid")
-      // if success, redirect to download url
       if (result.code === 200) {
         window.location.href = result.data.downloadUrl
+      }
+      if (result.code !== 200) {
+        toast.error(`Failed to export .${result.errors}`)
       }
     } else {
       console.log("NO CURRENT DESIGN")
@@ -356,10 +359,15 @@ const Navbar = () => {
         // route donwlod url if success
         if (result.code === 200) {
           window.location.href = url
+          setLoading(false)
+        }
+        if (result.code !== 200) {
+          setLoading(false)
+          toast.error(`Failed to download .${result.errors}`)
         }
       } catch (error) {
-        console.log(error)
-        toast.error(`error ${error}`)
+        // console.log(error)
+        toast.error(`error ${error?.message}`)
       }
     } else {
       console.log("NO CURRENT DESIGN")
@@ -393,7 +401,7 @@ const Navbar = () => {
       downloadLink.download = "MyCertificate"
       downloadLink.click()
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       toast.error(`error ${error}`)
     }
   }
@@ -537,8 +545,6 @@ const Navbar = () => {
 
   // select type or formart
   const hanleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // console.log(e.target.value, "e.target.value")
-    alert(e.target.value)
     setQuality(e.target.value)
   }
 
@@ -548,31 +554,56 @@ const Navbar = () => {
   }
 
   const handleSwitchEditorType = () => {
-    setEditorType((prevEditorType) => (prevEditorType === "PRESENTATION" ? "GRAPHIC" : "PRESENTATION"))
+
+    const confirmed = window.confirm("Are you sure you want to switch editor type? It's will reset your current design.")
+    if (!confirmed) {
+      return
+    }
+    if(confirmed){
+
+      setEditorType((prevEditorType) => (prevEditorType === "PRESENTATION" ? "GRAPHIC" : "PRESENTATION"))
+      if(editorType==="PRESENTATION"){
+        
+        router(`/watermark?${uuid}`)
+        window.location.reload()
+        
+        
+      }
+      if(editorType==="GRAPHIC"){
+        router(`/generatecertificate?${uuid}`)
+        window.location.reload()
+       
+      }
+        
+ 
+
+    }
+
+    
   }
 
   return (
     // @ts-ignore
     <ThemeProvider theme={DarkTheme}>
       <Container className="">
-      <div>
-        <label
-          onClick={handleSwitchEditorType}
-          className={`text-white text-sm cursor-pointer p-3 rounded-lg py-2.5 ${
-            editorType === "GRAPHIC" ? 'bg-[#333333]' : 'hover:bg-[#333333]'
-          }`}
-        >
-          Watermark
-        </label>
-        <label
-          onClick={handleSwitchEditorType}
-          className={`text-white text-sm ms-1 cursor-pointer p-3 rounded-lg py-2.5 ${
-            editorType === "PRESENTATION" ? 'bg-[#333333]' : 'hover:bg-[#333333]'
-          }`}
-        >
-          Certificate
-        </label>
-      </div>
+        <div>
+          <label
+            onClick={handleSwitchEditorType}
+            className={`text-white text-sm cursor-pointer p-3 rounded-lg py-2.5 ${
+              editorType === "GRAPHIC" ? "bg-[#333333]" : "hover:bg-[#333333]"
+            }`}
+          >
+            Watermark
+          </label>
+          <label
+            onClick={handleSwitchEditorType}
+            className={`text-white text-sm ms-1 cursor-pointer p-3 rounded-lg py-2.5 ${
+              editorType === "PRESENTATION" ? "bg-[#333333]" : "hover:bg-[#333333]"
+            }`}
+          >
+            Certificate
+          </label>
+        </div>
 
         {/* <DesignTitle /> */}
         <Title />

@@ -11,14 +11,14 @@ import { useLocation } from "react-router-dom"
 import Unauthorized from "~/utils/Unauthorized"
 import NotFound from "~/NotFound"
 
-const GraphicEditor = () => {
+const GraphicEditor = ({uuid}) => {
   const { currentUser } = useAppContext()
   if (currentUser === null) {
     return  <Loading />
   }
   return (
     <EditorContainer>
-      <Navbar />
+      <Navbar uuid={uuid}/>
       <div style={{ display: "flex", flex: 1 }}>
         <Panels />
         <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative" }}>

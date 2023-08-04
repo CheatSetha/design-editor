@@ -12,12 +12,12 @@ import { useLocation } from "react-router-dom"
 import { useEffect } from "react"
 import { BASE_URl } from "~/constants/base-api"
 import NotFound from "~/constants/no-found"
+import Loading from "~/components/Loading"
 
 const DesignEditorCertificate = () => {
   const editorType = useEditorType()
   const { currentUser, setCurrentUser } = useAppContext()
   const location = useLocation()
-// get uuid from url
   const routedUrl = location.search
   const uuid = routedUrl.substring(1)  // remove ? from url
 
@@ -25,7 +25,6 @@ const DesignEditorCertificate = () => {
   const getUserinfo =  async ()=>{
     const respone = await fetch(`${BASE_URl}/auth/check-uuid/${uuid}`)
     const data = await respone.json()
-  
     setCurrentUser(data)
   }
 
@@ -33,7 +32,7 @@ const DesignEditorCertificate = () => {
     getUserinfo()
   },[])
   if(currentUser === null){
-    return <NotFound />
+    return <Loading />
   }
 
   
@@ -46,9 +45,9 @@ const DesignEditorCertificate = () => {
       {
         {
           // NONE: <SelectEditor />,
-          PRESENTATION: <PresentationEditor />,
+          PRESENTATION: <PresentationEditor uuid={uuid}/>,
           VIDEO: <VideoEditor />,
-          GRAPHIC: <GraphicEditor />,
+          GRAPHIC: <GraphicEditor uuid={uuid} />,
         }[editorType]
       }
     </>

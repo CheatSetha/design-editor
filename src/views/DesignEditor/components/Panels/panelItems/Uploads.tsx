@@ -282,7 +282,151 @@ export default function () {
     }
   }
 
+  // handle compress image 
+  const compressImage = async (imageUrl: string): Promise<string> => {
+    const maxWidth = 3000;
+    const maxHeight = 3000;
+    const quality = 0.8;
+  
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = imageUrl;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+  
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+  
+        canvas.width = width;
+        canvas.height = height;
+  
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+  
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(dataUrl);
+      };
+      img.onerror = (error) => reject(error);
+    });
+  };
+
   // @ts-ignore
+  // const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
+  //   setIsUploading(true)
+
+  //   const imageTypes = [
+  //     "image/jpeg",
+  //     "image/png",
+  //     "image/gif",
+  //     "image/bmp",
+  //     "image/tiff",
+  //     "image/webp",
+  //     "image/svg+xml",
+  //     "image/vnd.microsoft.icon",
+  //     "image/x-icon",
+  //     "image/vnd.wap.wbmp",
+  //     "image/avif",
+  //     "image/apng",
+  //     "image/jxr",
+  //     "image/heif",
+  //     "image/heic",
+  //     "image/heif-sequence",
+  //     "image/heic-sequence",
+  //     "image/heif-image-sequence",
+  //     "image/heic-image-sequence",
+  //   ]
+  //   const validFiles: File[] = []
+  //   const invalidFiles: File[] = []
+
+  //   Array.from(files).forEach((file) => {
+  //     if (imageTypes.includes(file.type)) {
+  //       validFiles.push(file)
+  //     } else {
+  //       invalidFiles.push(file)
+  //     }
+  //   })
+
+  //   if (invalidFiles.length > 0) {
+  //     alert(
+  //       `The following files are not images and will be removed: ${invalidFiles.map((file) => file.name).join(", ")}`
+  //     )
+  //   }
+
+  //   const formData = new FormData()
+  //   validFiles.forEach((file) => {
+  //     formData.append("files", file)
+  //   })
+
+  //   try {
+  //     setLoading(true)
+  //     const response = await fetch(`${BASE_URl}/files/upload-folder`, {
+  //       method: "POST",
+  //       body: formData,
+  //     })
+
+  //     if (!response.ok) {
+  //       setLoading(false)
+  //       toast.error(`Error : ${response.statusText} `)
+  //       throw new Error("Failed to upload files")
+  //     }
+
+  //     const data = await response.json()
+  //     setIsUploading(false)
+  //     toast.success(`Upload success`)
+
+  //     setUploadTemp(data.data)
+  //     // console.log(data?.data?.url[0], "data uploaded")
+
+  //     let preview = data?.data?.url[0]
+  //     let width = 0
+  //     let height = 0
+  //     const maxWidth = 3000
+  //     const image = new Image()
+  //     const imagePromise = new Promise((resolve) => {
+  //       image.onload = () => {
+  //         width = image.width
+  //         height = image.height
+  //         // @ts-ignore
+  //         resolve()
+  //       }
+  //     })
+
+  //     image.src = data?.data?.url[0]
+  //     await imagePromise
+  //     const type = "StaticImage"
+  //     const upload = {
+  //       id: nanoid(),
+  //       src: data?.data?.url[0],
+  //       preview: preview,
+  //       type: type,
+  //       width: width,
+  //       height: height,
+  //     }
+  //     // console.log(upload, "upload")
+  //     setLoading(false)
+  //     setUploads([...uploads, upload])
+  //     addImageToCanvas2(upload)
+  //     return [upload]
+  //   } catch (error) {
+  //     console.error(error, "about loading")
+  //     setLoading(!loading)
+  //     // @ts-ignore
+  //     alert(error?.message)
+  //     throw error
+  //   }
+  // }
   const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
     setIsUploading(true)
 
@@ -307,6 +451,7 @@ export default function () {
       "image/heif-image-sequence",
       "image/heic-image-sequence",
     ]
+    
     const validFiles: File[] = []
     const invalidFiles: File[] = []
 
@@ -352,7 +497,9 @@ export default function () {
       let preview = data?.data?.url[0]
       let width = 0
       let height = 0
-      const maxWidth = 3000
+
+      const compressedImg = await compressImage(data?.data?.url[0])
+    //  console.log(compressedImg," compreessed image");
       const image = new Image()
       const imagePromise = new Promise((resolve) => {
         image.onload = () => {
@@ -363,30 +510,34 @@ export default function () {
         }
       })
 
-      image.src = data?.data?.url[0]
+      // image.src = data?.data?.url[0]
+      image.src = compressedImg
       await imagePromise
       const type = "StaticImage"
       const upload = {
         id: nanoid(),
-        src: data?.data?.url[0],
-        preview: preview,
+        // src: data?.data?.url[0],
+        src: compressedImg,
+        preview: compressedImg,
         type: type,
         width: width,
         height: height,
       }
       // console.log(upload, "upload")
       setLoading(false)
-      setUploads([...uploads, upload])
+      // setUploads([...uploads, upload])
       addImageToCanvas2(upload)
       return [upload]
     } catch (error) {
       console.error(error, "about loading")
       setLoading(!loading)
       // @ts-ignore
-      alert(error?.message)
+     toast.error(`Error : ${error.message} `)
       throw error
     }
   }
+
+
 
   const addObject = React.useCallback(
     (url: string) => {
@@ -400,6 +551,8 @@ export default function () {
     },
     [editor]
   )
+
+
 
   // for uploading logo
   const handleUploadLogo = async (files: FileList) => {
@@ -426,6 +579,9 @@ export default function () {
       toast.error(`Error : ${error} `)
     }
   }
+
+
+
   // handle upload template
   const handleUploadTemplate = async (files: FileList) => {
     const formdata = new FormData()
@@ -470,7 +626,7 @@ export default function () {
         width: width,
         height: height,
       }
-      setUploads([...uploads, upload])
+      // setUploads([...uploads, upload])
       addImageToCanvas2(upload)
     } catch (error) {
       console.log("error", error)

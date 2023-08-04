@@ -120,7 +120,6 @@ const TextProperties = () => {
         </div>
         <div style={{ padding: "0 1.5rem", display: "grid", gridTemplateColumns: "1fr 2fr", gap: "0.5rem" }}>
           <Input size={SIZE.compact} value={24} />
-
           <Select
             size={SIZE.compact}
             options={state.styles}

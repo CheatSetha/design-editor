@@ -12,19 +12,20 @@ import { useEffect } from "react"
 import useAppContext from "~/hooks/useAppContext"
 import { BASE_URl } from "~/constants/base-api"
 import NotFound from "~/constants/no-found"
+import { toast } from "react-hot-toast"
+import Loading from "~/components/Loading"
 
 const DesignEditorWatermak = () => {
   const editorType = useEditorType()
   const { currentUser, setCurrentUser } = useAppContext()
   const location = useLocation()
-  // console.log(location.search, "location.pathname")
   const routedUrl = location.search
   const uuid = routedUrl.substring(1)
 
   const getUserinfo = async () => {
     const respone = await fetch(`${BASE_URl}/auth/check-uuid/${uuid}`)
     const data = await respone.json()
-    // console.log(data?.code, "data from uuid")
+
     if (data?.code === 200) {
       setCurrentUser(data)
     }
@@ -32,16 +33,17 @@ const DesignEditorWatermak = () => {
       setCurrentUser(null)
     }
   }
-  // console.log(currentUser, "currentUser")
+  
 
   useEffect(() => {
     getUserinfo()
+   
   }, [])
 
   const { displayPreview, setDisplayPreview, setEditorType } = useDesignEditorContext()
   setEditorType("GRAPHIC")
   if (currentUser === null) {
-    return <NotFound />
+    return <Loading />
   }
 
   return (
@@ -50,9 +52,9 @@ const DesignEditorWatermak = () => {
       {
         {
           // NONE: <SelectEditor />,
-          PRESENTATION: <PresentationEditor />,
+          PRESENTATION: <PresentationEditor uuid={uuid} />,
           VIDEO: <VideoEditor />,
-          GRAPHIC: <GraphicEditor />,
+          GRAPHIC: <GraphicEditor uuid={uuid} />,
         }[editorType]
       }
     </>
