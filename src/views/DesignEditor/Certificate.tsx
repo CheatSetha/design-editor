@@ -19,25 +19,24 @@ const DesignEditorCertificate = () => {
   const { currentUser, setCurrentUser } = useAppContext()
   const location = useLocation()
   const routedUrl = location.search
-  const uuid = routedUrl.substring(1)  // remove ? from url
+  const uuid = routedUrl.substring(1) // remove ? from url
 
-// find user with this uuid
-  const getUserinfo =  async ()=>{
+  // find user with this uuid
+  const getUserinfo = async () => {
     const respone = await fetch(`${BASE_URl}/auth/check-uuid/${uuid}`)
     const data = await respone.json()
     setCurrentUser(data)
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getUserinfo()
-  },[])
-  if(currentUser === null){
+  }, [])
+  if (currentUser === null) {
     return <Loading />
   }
 
-  
-  const { displayPreview, setDisplayPreview,setEditorType } = useDesignEditorContext()
-  setEditorType('PRESENTATION')
+  const { displayPreview, setDisplayPreview, setEditorType } = useDesignEditorContext()
+  setEditorType("PRESENTATION")
 
   return (
     <>
@@ -45,7 +44,7 @@ const DesignEditorCertificate = () => {
       {
         {
           // NONE: <SelectEditor />,
-          PRESENTATION: <PresentationEditor uuid={uuid}/>,
+          PRESENTATION: <PresentationEditor uuid={uuid} />,
           VIDEO: <VideoEditor />,
           GRAPHIC: <GraphicEditor uuid={uuid} />,
         }[editorType]

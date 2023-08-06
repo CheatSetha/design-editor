@@ -38,13 +38,7 @@ const SelectEditor = () => {
       })
     }
   }
-   // if width < 1000px alert notify to user that this editor is not support on mobile
-   if(window.innerWidth < 1000){
-    toast.error(`We recomment use bigger screen for better experience `, {
-      icon: "😢",
-      duration: 100000000000000000,
-    })
-  }
+  
   if (type === "watermark") {
     navigate(`/watermark?${uuid}`)
   } else {

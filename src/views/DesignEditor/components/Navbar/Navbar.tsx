@@ -37,7 +37,7 @@ const Container = styled<"div", {}, Theme>("div", ({ $theme }) => ({
 
 const BASE_URL = "https://photostad-api.istad.co/api/v1"
 
-const Navbar = ({uuid}) => {
+const Navbar = ({ uuid }) => {
   const { setEditorType } = useDesignEditorContext()
   const { setDisplayPreview, setScenes, setCurrentDesign, currentDesign, scenes } = useDesignEditorContext()
   const editorType = useEditorType()
@@ -53,12 +53,20 @@ const Navbar = ({uuid}) => {
   const [isePreviewOpen, setIsPreviewOpen] = useState(false)
   const { currentUser, setCurrentUser, blobList, setBlobList, currentTemplate } = useAppContext()
   const router = useNavigate()
-  
+
   const handleOpenPreview = () => {
     setIsPreviewOpen(true)
   }
   const handleClosePreview = () => {
     setIsPreviewOpen(false)
+  }
+
+  const handleAlertWhenSmallScreen = () => {
+    toast.error("We recommend you to use a larger screen to use this editor", { position: "top-left", duration: 5000 })
+  }
+
+  if (window.innerWidth < 1024) {
+    handleAlertWhenSmallScreen()
   }
 
   const handleUpload = async (): Promise<void> => {
@@ -102,10 +110,9 @@ const Navbar = ({uuid}) => {
         qualityPhoto: quality,
         // createdBy: 32, // add createdBy property
         createdBy: currentUser?.data?.id,
-        folderName: uploadTemp?.folderName || 'notfound', // add folderName property
+        folderName: uploadTemp?.folderName || "notfound", // add folderName property
         // folderName: "6048a5ad-8692-4076-adb4-276a9e3daede", // add folderName property
       }
-     
 
       try {
         const response = await fetch(`${BASE_URL}/watermarks/generate-watermark`, {
@@ -118,11 +125,15 @@ const Navbar = ({uuid}) => {
         const result = await response.json()
         setLoading(false)
 
-        // console.log(result, "result")
         // if success, redirect to download url
         if (result.code === 200) {
-          toast.success("Download Success")
           window.location.href = result.data.downloadUrl
+
+          // alert when donwload success and clear scene by reload page
+          toast.success("Your design has been downloaded and your design will be cleared soon", { duration: 3000 })
+          setTimeout(() => {
+            window.location.reload()
+          }, 3000)
         }
 
         if (result.code !== 200) {
@@ -202,12 +213,13 @@ const Navbar = ({uuid}) => {
       })
       const result = await response.json()
       const uuid = result?.data?.uuid
-      toast.success("Export Success")
+
       // set uuit to localstorage
       localStorage.setItem("uuid", uuid.toString())
       setLoading(false)
       if (result.code === 200) {
         window.location.href = result.data.downloadUrl
+        toast.success("Export Success")
       }
       if (result.code !== 200) {
         toast.error(`Failed to export .${result.errors}`)
@@ -215,94 +227,6 @@ const Navbar = ({uuid}) => {
     } else {
       console.log("NO CURRENT DESIGN")
     }
-  }
-
-  const parseGraphicJSON = () => {
-    setLoading(true)
-    const currentScene = editor.scene.exportToJSON()
-    // udpatedScenes is an array of scenes that are updated
-    // the current scene is updated with the current scene's layers
-
-    const updatedScenes = scenes.map((scn) => {
-      // console.log(scn, "scn")
-      if (scn.id === currentScene.id) {
-        return {
-          id: currentScene.id,
-          layers: currentScene.layers,
-          name: currentScene.name,
-        }
-      }
-      return {
-        id: scn.id,
-        layers: scn.layers,
-        name: scn.name,
-      }
-    })
-
-    if (currentDesign) {
-      const graphicTemplate: IDesign = {
-        id: currentDesign.id,
-        type: "GRAPHIC",
-        name: currentDesign.name,
-        frame: currentDesign.frame,
-        scenes: updatedScenes,
-        metadata: {},
-        preview: "",
-      }
-      makeDownload(graphicTemplate)
-
-      // makeDownloadCertificate(graphicTemplate)
-    } else {
-      console.log("NO CURRENT DESIGN")
-    }
-    setLoading(false)
-  }
-
-  const parsePresentationJSON = () => {
-    setLoading(true)
-    const currentScene = editor.scene.exportToJSON()
-    const updatedScenes = scenes.map((scn) => {
-      if (scn.id === currentScene.id) {
-        return {
-          id: currentScene.id,
-          duration: 5000,
-          layers: currentScene.layers,
-          name: currentScene.name,
-        }
-      }
-      return {
-        id: scn.id,
-        duration: 5000,
-        layers: scn.layers,
-        name: scn.name,
-      }
-    })
-
-    if (currentDesign) {
-      const presentationTemplate: IDesign = {
-        id: currentDesign.id,
-        type: "PRESENTATION",
-        name: currentDesign.name,
-        frame: currentDesign.frame,
-        scenes: updatedScenes,
-        metadata: {},
-        preview: "",
-      }
-      // makeDownload(presentationTemplate)
-
-      makeDownloadCertificate(presentationTemplate)
-    } else {
-      console.log("NO CURRENT DESIGN")
-    }
-    setLoading(false)
-  }
-
-  const makeDownload = (data: Object) => {
-    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
-    const a = document.createElement("a")
-    a.href = dataStr
-    a.download = "template.json"
-    a.click()
   }
 
   const handleDownloadCertificate = async () => {
@@ -355,11 +279,16 @@ const Navbar = ({uuid}) => {
         setTimeout(() => {
           setLoading(false)
         }, 2000)
-        toast.success("Download Success")
+
         // route donwlod url if success
         if (result.code === 200) {
           window.location.href = url
           setLoading(false)
+          // alert when donwload success and clear scene by reload page
+          toast.success("Your design has been downloaded and  will be cleared soon", { duration: 3000 })
+          setTimeout(() => {
+            window.location.reload()
+          }, 3000)
         }
         if (result.code !== 200) {
           setLoading(false)
@@ -371,49 +300,6 @@ const Navbar = ({uuid}) => {
       }
     } else {
       console.log("NO CURRENT DESIGN")
-    }
-  }
-
-  const makeDownloadCertificate = async (data: Object) => {
-    const raw = JSON.stringify({
-      editorJson: data,
-      qualityPhoto: "HIGH",
-      // createdBy: 31, // add createdBy property
-      createdBy: currentUser?.data?.id || 31,
-    })
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: raw,
-      redirect: "follow",
-    }
-
-    try {
-      // @ts-ignore
-      const res = await fetch(`${BASE_URL}12A/certificates/generate-certificate/${donwloadType}`, requestOptions)
-      const result = await res.json()
-      const url = result?.data?.downloadUrl
-      setLoading(false)
-      const downloadLink = document.createElement("a")
-      toast.success("Certificate Download Success")
-      // @ts-ignore
-      downloadLink.href = url
-      downloadLink.download = "MyCertificate"
-      downloadLink.click()
-    } catch (error) {
-      // console.log(error)
-      toast.error(`error ${error}`)
-    }
-  }
-
-  // for donwload certificate
-  const makeDownloadTemplate = async () => {
-    if (editor) {
-      if (editorType === "GRAPHIC") {
-        return parseGraphicJSON()
-      } else if (editorType === "PRESENTATION") {
-        return parsePresentationJSON()
-      }
     }
   }
 
@@ -478,9 +364,6 @@ const Navbar = ({uuid}) => {
     [editor]
   )
 
-  const handleInputFileRefClick = () => {
-    inputFileRef.current?.click()
-  }
   const handleInputExelRefClick = () => {
     inputExelRef.current?.click()
   }
@@ -554,32 +437,23 @@ const Navbar = ({uuid}) => {
   }
 
   const handleSwitchEditorType = () => {
-
-    const confirmed = window.confirm("Are you sure you want to switch editor type? It's will reset your current design.")
+    const confirmed = window.confirm(
+      "Are you sure you want to switch editor type? It's will reset your current design."
+    )
     if (!confirmed) {
       return
     }
-    if(confirmed){
-
+    if (confirmed) {
       setEditorType((prevEditorType) => (prevEditorType === "PRESENTATION" ? "GRAPHIC" : "PRESENTATION"))
-      if(editorType==="PRESENTATION"){
-        
+      if (editorType === "PRESENTATION") {
         router(`/watermark?${uuid}`)
         window.location.reload()
-        
-        
       }
-      if(editorType==="GRAPHIC"){
+      if (editorType === "GRAPHIC") {
         router(`/generatecertificate?${uuid}`)
         window.location.reload()
-       
       }
-        
- 
-
     }
-
-    
   }
 
   return (
@@ -627,21 +501,7 @@ const Navbar = ({uuid}) => {
             ref={inputExelRef}
             style={{ display: "none" }}
           />
-          {/* <Button
-            style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
-            size="compact"
-            onClick={handleInputFileRefClick}
-            kind={KIND.tertiary}
-            overrides={{
-              StartEnhancer: {
-                style: {
-                  marginRight: "4px",
-                },
-              },
-            }}
-          >
-            Import
-          </Button> */}
+
           <Button
             className="whitespace-nowrap"
             style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
@@ -659,27 +519,9 @@ const Navbar = ({uuid}) => {
             Import
           </Button>
 
-          {/* <Button
-            style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
-            size="compact"
-            onClick={makeDownloadTemplate}
-            // onClick={handleExportToExcell}
-            kind={KIND.tertiary}
-            overrides={{
-              StartEnhancer: {
-                style: {
-                  marginRight: "4px",
-                },
-              },
-            }}
-          >
-            Export
-          </Button> */}
-
           <Button
             style={{ display: editorType === "PRESENTATION" ? "block" : "none" }}
             size="compact"
-            // onClick={makeDownloadTemplate}
             onClick={handleExportToExcell}
             kind={KIND.tertiary}
             overrides={{
@@ -692,22 +534,7 @@ const Navbar = ({uuid}) => {
           >
             Export
           </Button>
-          {/* dowload template watermark */}
-          {/* <Button
-            size="compact"
-            onClick={handleUpload}
-            kind={KIND.tertiary}
-            overrides={{
-              StartEnhancer: {
-                style: {
-                  marginRight: "4px",
-                },
-              },
-            }}
-            style={{ display: editorType === "PRESENTATION" ? "none" : "block" }}
-          >
-            Download
-          </Button> */}
+
           <div className={`${isePreviewOpen ? " " : "hidden"} absolute top-0 right-0 w-screen h-screen bg-white z-50`}>
             <PreviewALl close={handleClosePreview} />
           </div>
@@ -788,7 +615,6 @@ const Navbar = ({uuid}) => {
                         Preview
                       </label>
                       <label
-                        // onClick={makeDownloadTemplate}
                         onClick={handleDownloadCertificate}
                         className="btn bg-black text-white w-full "
                         htmlFor="modal-2"
@@ -801,23 +627,7 @@ const Navbar = ({uuid}) => {
               </div>
             </div>
           </div>
-          {/* end of modal */}
-          {/* dowload template certificate*/}
-          {/* <Button
-            size="compact"
-            onClick={makeDownloadTemplate}
-            kind={KIND.tertiary}
-            overrides={{
-              StartEnhancer: {
-                style: {
-                  marginRight: "4px",
-                },
-              },
-            }}
-            style={{ display: editorType === "GRAPHIC" ? "none" : "block" }}
-          >
-            Download
-          </Button> */}
+
           <button
             className="py-2.5 p-3 rounded-lg btn hover:bg-[#333333] text-white"
             onClick={() => setDisplayPreview(true)}

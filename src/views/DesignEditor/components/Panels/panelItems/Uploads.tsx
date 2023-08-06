@@ -36,147 +36,7 @@ export default function () {
   const frame = useFrame()
   const activeObject = useActiveObject()
   const editorType = useEditorType()
-  const { blobList, setBlobList } = useAppContext()
 
-
-  const handleUploadAndCompressImgae = async (files: FileList) => {
-    setLoading(true)
-
-    // compress image
-
-    const imgArray = Array.from(files)
-    let width = 0
-    let height = 0
-    Promise.all(
-      imgArray.map((file) => {
-        return new Promise<string>((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = (event) => {
-            const image = new Image()
-            if (event.target) {
-              image.src = event.target.result as string
-              image.onload = () => {
-                const canvas = document.createElement("canvas")
-                const maxImageSize = 1600 // Set the maximum width/height for the compressed image
-                width = image.width
-                height = image.height
-
-                if (width > maxImageSize || height > maxImageSize) {
-                  if (width > height) {
-                    height *= maxImageSize / width
-                    width = maxImageSize
-                  } else {
-                    width *= maxImageSize / height
-                    height = maxImageSize
-                  }
-                }
-
-                canvas.width = width
-                canvas.height = height
-                const ctx = canvas.getContext("2d")
-                // console.log(width, height, "width, height")
-
-                if (ctx) {
-                  ctx.drawImage(image, 0, 0, width, height)
-                  canvas.toBlob(
-                    (blob) => {
-                      if (blob) {
-                        const compressedFile = new File([blob], file.name, {
-                          type: file.type,
-                          lastModified: Date.now(),
-                        })
-                        resolve(URL.createObjectURL(compressedFile))
-                      }
-                    },
-                    file.type,
-                    0.5
-                  ) // Adjust the compression quality (0 to 1)
-                }
-              }
-            }
-          }
-          reader.readAsDataURL(file)
-        })
-      })
-    ).then((compressedUrls) => {
-      //got array of compressed urls
-      setBlobList(compressedUrls)
-      // console.log(compressedUrls, "compressedUrls")
-      const upload = {
-        id: nanoid(),
-        src: compressedUrls[1],
-        preview: compressedUrls[1],
-        type: "StaticImage",
-        width: width,
-        height: height,
-      }
-      setUploads([...uploads, upload])
-      addImageToCanvas2(upload)
-      setLoading(false)
-    })
-
-    const imageTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/bmp",
-      "image/tiff",
-      "image/webp",
-      "image/svg+xml",
-      "image/vnd.microsoft.icon",
-      "image/x-icon",
-      "image/vnd.wap.wbmp",
-      "image/avif",
-      "image/apng",
-      "image/jxr",
-      "image/heif",
-      "image/heic",
-      "image/heif-sequence",
-      "image/heic-sequence",
-      "image/heif-image-sequence",
-      "image/heic-image-sequence",
-    ]
-    const validFiles: File[] = []
-    const invalidFiles: File[] = []
-    Array.from(files).forEach((file) => {
-      if (imageTypes.includes(file.type)) {
-        validFiles.push(file)
-      } else {
-        invalidFiles.push(file)
-      }
-    })
-
-    if (invalidFiles.length > 0) {
-      alert(
-        `The following files are not images and will be removed: ${invalidFiles.map((file) => file.name).join(", ")}`
-      )
-    }
-
-    const formData = new FormData()
-    validFiles.forEach((file) => {
-      formData.append("files", file)
-    })
-
-    try {
-      setLoading(true)
-      const response = await fetch(`${BASE_URl}/files/upload-folder`, {
-        method: "POST",
-        body: formData,
-      })
-
-      if (!response.ok) {
-        toast.error(`Error : ${response.statusText} `)
-        throw new Error("Failed to upload files")
-      }
-      const data = await response.json()
-      alert("upload success")
-      setUploadTemp(data?.data) // we need featur id from this
-      setIsUploading(false)
-    } catch {
-      console.log("error")
-      
-    }
-  }
 
   const handleDropFiles = async (files: FileList) => {
     setIsUploading(true)
@@ -281,46 +141,6 @@ export default function () {
       throw error
     }
   }
-
-  // handle compress image 
-  const compressImage = async (imageUrl: string): Promise<string> => {
-    const maxWidth = 3000;
-    const maxHeight = 3000;
-    const quality = 0.8;
-  
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = imageUrl;
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        let width = img.width;
-        let height = img.height;
-  
-        if (width > height) {
-          if (width > maxWidth) {
-            height *= maxWidth / width;
-            width = maxWidth;
-          }
-        } else {
-          if (height > maxHeight) {
-            width *= maxHeight / height;
-            height = maxHeight;
-          }
-        }
-  
-        canvas.width = width;
-        canvas.height = height;
-  
-        const ctx = canvas.getContext("2d");
-        ctx?.drawImage(img, 0, 0, width, height);
-  
-        const dataUrl = canvas.toDataURL("image/jpeg", quality);
-        resolve(dataUrl);
-      };
-      img.onerror = (error) => reject(error);
-    });
-  };
 
   // @ts-ignore
   const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
@@ -427,117 +247,6 @@ export default function () {
       throw error
     }
   }
-  // const uploadMultipleImages = async (files: FileList): Promise<Upload[]> => {
-  //   setIsUploading(true)
-
-  //   const imageTypes = [
-  //     "image/jpeg",
-  //     "image/png",
-  //     "image/gif",
-  //     "image/bmp",
-  //     "image/tiff",
-  //     "image/webp",
-  //     "image/svg+xml",
-  //     "image/vnd.microsoft.icon",
-  //     "image/x-icon",
-  //     "image/vnd.wap.wbmp",
-  //     "image/avif",
-  //     "image/apng",
-  //     "image/jxr",
-  //     "image/heif",
-  //     "image/heic",
-  //     "image/heif-sequence",
-  //     "image/heic-sequence",
-  //     "image/heif-image-sequence",
-  //     "image/heic-image-sequence",
-  //   ]
-    
-  //   const validFiles: File[] = []
-  //   const invalidFiles: File[] = []
-
-  //   Array.from(files).forEach((file) => {
-  //     if (imageTypes.includes(file.type)) {
-  //       validFiles.push(file)
-  //     } else {
-  //       invalidFiles.push(file)
-  //     }
-  //   })
-
-  //   if (invalidFiles.length > 0) {
-  //     alert(
-  //       `The following files are not images and will be removed: ${invalidFiles.map((file) => file.name).join(", ")}`
-  //     )
-  //   }
-
-  //   const formData = new FormData()
-  //   validFiles.forEach((file) => {
-  //     formData.append("files", file)
-  //   })
-
-  //   try {
-  //     setLoading(true)
-  //     const response = await fetch(`${BASE_URl}/files/upload-folder`, {
-  //       method: "POST",
-  //       body: formData,
-  //     })
-
-  //     if (!response.ok) {
-  //       setLoading(false)
-  //       toast.error(`Error : ${response.statusText} `)
-  //       throw new Error("Failed to upload files")
-  //     }
-
-  //     const data = await response.json()
-  //     setIsUploading(false)
-  //     toast.success(`Upload success`)
-
-  //     setUploadTemp(data.data)
-  //     // console.log(data?.data?.url[0], "data uploaded")
-
-  //     let preview = data?.data?.url[0]
-  //     let width = 0
-  //     let height = 0
-
-  //     const compressedImg = await compressImage(data?.data?.url[0])
-  //   //  console.log(compressedImg," compreessed image");
-  //     const image = new Image()
-  //     const imagePromise = new Promise((resolve) => {
-  //       image.onload = () => {
-  //         width = image.width
-  //         height = image.height
-  //         // @ts-ignore
-  //         resolve()
-  //       }
-  //     })
-
-  //     // image.src = data?.data?.url[0]
-  //     image.src = compressedImg
-  //     await imagePromise
-  //     const type = "StaticImage"
-  //     const upload = {
-  //       id: nanoid(),
-  //       // src: data?.data?.url[0],
-  //       src: compressedImg,
-  //       preview: compressedImg,
-  //       type: type,
-  //       width: width,
-  //       height: height,
-  //     }
-  //     // console.log(upload, "upload")
-  //     setLoading(false)
-  //     // setUploads([...uploads, upload])
-  //     addImageToCanvas2(upload)
-  //     return [upload]
-  //   } catch (error) {
-  //     console.error(error, "about loading")
-  //     setLoading(!loading)
-  //     // @ts-ignore
-  //    toast.error(`Error : ${error.message} `)
-  //     throw error
-  //   }
-  // }
-
-
 
   const addObject = React.useCallback(
     (url: string) => {
@@ -634,14 +343,6 @@ export default function () {
     }
   }
 
-  const handleInputFileCompressRefClick = () => {
-    inputCompresseRef.current?.click()
-  }
-
-  const handleInputFileRefClick = () => {
-    inputFileRef.current?.click()
-  }
-
   const handleInputSingleFileRefClick = () => {
     inputTemplateRef.current?.click()
   }
@@ -671,9 +372,7 @@ export default function () {
     // @ts-ignore
     // setBlob(URL.createObjectURL(e.target.files[0]))
   }
-  const handleInputCompressInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleUploadAndCompressImgae(e.target.files!)
-  }
+
 
   const addImageToCanvas2 = (props: Partial<ILayer>) => {
     editor.objects.add(props)
@@ -771,21 +470,7 @@ export default function () {
               {editorType === "PRESENTATION" ? "Add Placeholder" : "Add Logo"}
             </Button>
 
-            {/* <Button
-              // onClick={handleInputSingleFileRefClick}
-              onClick={handleInputFileCompressRefClick}
-              size={SIZE.compact}
-              overrides={{
-                Root: {
-                  style: {
-                    width: "100%",
-                    marginTop: "0.5rem",
-                  },
-                },
-              }}
-            >
-              Test Compress
-            </Button> */}
+           
             <input
               onChange={handleInputLogoFile}
               type="file"
@@ -836,16 +521,6 @@ export default function () {
               // @ts-ignore
               mozdirectory="true"
               directory="true"
-              multiple
-            />
-
-            <input
-              accept="image/*"
-              onChange={handleInputCompressInputOnChange}
-              type="file"
-              id="file"
-              ref={inputCompresseRef}
-              style={{ display: "none" }}
               multiple
             />
 

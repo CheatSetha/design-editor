@@ -33,11 +33,9 @@ const DesignEditorWatermak = () => {
       setCurrentUser(null)
     }
   }
-  
 
   useEffect(() => {
     getUserinfo()
-   
   }, [])
 
   const { displayPreview, setDisplayPreview, setEditorType } = useDesignEditorContext()

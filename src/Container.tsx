@@ -25,6 +25,11 @@ const Container = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
+
+   
+
+  
+
   useEffect(() => {
    
     const containerElement = containerRef.current!
@@ -49,6 +54,7 @@ const Container = ({ children }: { children: React.ReactNode }) => {
     dispatch(getPublicComponents())
     dispatch(getPixabayResources())
     dispatch(getPublicDesigns())
+   
   }, [])
 
  
