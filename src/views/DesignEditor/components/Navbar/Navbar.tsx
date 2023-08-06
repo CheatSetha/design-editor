@@ -632,7 +632,7 @@ const Navbar = ({ uuid }) => {
             className="py-2.5 p-3 rounded-lg btn hover:bg-[#333333] text-white"
             onClick={() => setDisplayPreview(true)}
           >
-            <Play size={24} /> preview
+            <Play size={24} /> Preview
           </button>
         </Block>
       </Container>
