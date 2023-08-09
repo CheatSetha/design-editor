@@ -131,9 +131,7 @@ const Navbar = ({ uuid }) => {
 
           // alert when donwload success and clear scene by reload page
           toast.success("Your design has been downloaded and your design will be cleared soon", { duration: 3000 })
-          setTimeout(() => {
-            window.location.reload()
-          }, 3000)
+          
         }
 
         if (result.code !== 200) {

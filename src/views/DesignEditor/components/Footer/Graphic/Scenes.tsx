@@ -58,22 +58,22 @@ const Scenes = () => {
   // console.log(currentScene, "currentScene")
 
 
-  React.useEffect(() => {
-    // watcher is a function that watches for changes in the editor and updates the current preview
-    let watcher = async () => {
-      const updatedTemplate = editor.scene.exportToJSON()
-      const updatedPreview = (await editor.renderer.render(updatedTemplate)) as string
-      setCurrentPreview(updatedPreview)
-    }
-    if (editor) {
-      editor.on("history:changed", watcher)
-    }
-    return () => {
-      if (editor) {
-        editor.off("history:changed", watcher)
-      }
-    }
-  }, [editor])
+  // React.useEffect(() => {
+  //   // watcher is a function that watches for changes in the editor and updates the current preview
+  //   let watcher = async () => {
+  //     const updatedTemplate = editor.scene.exportToJSON()
+  //     const updatedPreview = (await editor.renderer.render(updatedTemplate)) as string
+  //     setCurrentPreview(updatedPreview)
+  //   }
+  //   if (editor) {
+  //     editor.on("history:changed", watcher)
+  //   }
+  //   return () => {
+  //     if (editor) {
+  //       editor.off("history:changed", watcher)
+  //     }
+  //   }
+  // }, [editor])
   const scences = useDesignEditorScenes()
   const { uploads, setUploads } = useContext(AppContext)
   // console.log("upload in scecnes morning", uploads[0]?.height);
@@ -132,47 +132,28 @@ const Scenes = () => {
     [editor, currentScene]
   )
 
-  const addScene = React.useCallback(async () => {
-    setCurrentPreview("")
-    const updatedTemplate = editor.scene.exportToJSON()
 
-    const updatedPreview = await editor.renderer.render(updatedTemplate)
-    // console.log(updatedPreview, "updatedPreview")
-    const updatedPages = scenes.map((p) => {
-      if (p.id === updatedTemplate.id) {
-        return { ...updatedTemplate, preview: updatedPreview }
-      }
-      return p
-    })
 
-    const defaultTemplate = getDefaultTemplate(currentDesign.frame)
-    const newPreview = await editor.renderer.render(defaultTemplate)
-    const newPage = { ...defaultTemplate, id: nanoid(), preview: newPreview } as any
-    const newPages = [...updatedPages, newPage] as any[]
-    setScenes(newPages)
-    setCurrentScene(newPage)
-  }, [scenes, currentDesign])
+  // const changePage = React.useCallback(
+  //   async (page: any) => {
+  //     setCurrentPreview("")
+  //     if (editor) {
+  //       const updatedTemplate = editor.scene.exportToJSON()
+  //       const updatedPreview = await editor.renderer.render(updatedTemplate)
 
-  const changePage = React.useCallback(
-    async (page: any) => {
-      setCurrentPreview("")
-      if (editor) {
-        const updatedTemplate = editor.scene.exportToJSON()
-        const updatedPreview = await editor.renderer.render(updatedTemplate)
+  //       const updatedPages = scenes.map((p) => {
+  //         if (p.id === updatedTemplate.id) {
+  //           return { ...updatedTemplate, preview: updatedPreview }
+  //         }
+  //         return p
+  //       }) as any[]
 
-        const updatedPages = scenes.map((p) => {
-          if (p.id === updatedTemplate.id) {
-            return { ...updatedTemplate, preview: updatedPreview }
-          }
-          return p
-        }) as any[]
-
-        setScenes(updatedPages)
-        setCurrentScene(page)
-      }
-    },
-    [editor, scenes, currentScene]
-  )
+  //       setScenes(updatedPages)
+  //       setCurrentScene(page)
+  //     }
+  //   },
+  //   [editor, scenes, currentScene]
+  // )
 
   const handleDragStart = (event: any) => {
     const draggedScene = scenes.find((s) => s.id === event.active.id)
@@ -195,14 +176,7 @@ const Scenes = () => {
     setDraggedScene(null)
   }
 
-  const makeDuplicateScene = () => {
-    const currentScene = scenes.find((s) => s.id === contextMenuTimelineRequest.id)
-  
-    const updatedScenes = [...scenes, { ...currentScene, id: nanoid() }]
-    // @ts-ignore
-    setScenes(updatedScenes)
-    setContextMenuTimelineRequest({ ...contextMenuTimelineRequest, visible: false })
-  }
+
 
 
   return (
@@ -221,16 +195,16 @@ const Scenes = () => {
           <div className={css({ display: "flex", alignItems: "center" })}>
             {contextMenuTimelineRequest.visible && <SceneContextMenu />}
             <SortableContext items={scenes} strategy={horizontalListSortingStrategy}>
-              {scenes.map((s, i) => (
+              {/* {scenes.map((s, i) => (
                 <SceneItem
                   key={i}
                   isCurrentScene={s.id === currentScene?.id}
                   scene={s}
                   index={i}
-                  changePage={changePage}
+                  // changePage={changePage}
                   preview={currentPreview && s.id === currentScene?.id ? currentPreview : s.preview ? s.preview : ""}
                 /> 
-              ))}
+              ))} */}
 
             </SortableContext>
             <DragOverlay>
